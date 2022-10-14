@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { register, reset } from "../../features/auth/authSlice";
-import Router from 'next/router'
+import Router from "next/router";
+import Image from "next/image";
+import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +19,6 @@ const Register = () => {
     (state) => state.auth
   );
 
-
   const dispatch = useDispatch();
 
   const onChange = (e) => {
@@ -29,24 +30,22 @@ const Register = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message);
+      console.log("error");
     }
 
     if (isSuccess || user) {
-      Router.push('/')
+      Router.push("/");
     }
     dispatch(reset);
   }, [user]);
-
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (password !== password2) {
-      toast("Passwords do not match");
-      if(username.isError) {
-        toast("Passwords do not match");
-
+      console.log("Passwords do not match");
+      if (username.isError) {
+        console.log("Passwords do not match");
       }
     } else {
       const userData = {
@@ -59,21 +58,32 @@ const Register = () => {
     }
   };
 
-
-  
   return (
-    <section className="main__section">
-    <div className="div__color">
-        <div className="main__text">
-          <h2 className="main__h2">Create an account</h2>
-          <p className="main__p">Let's see what other people are doing.</p>
+    <div className="register__main">
+      <div className="register__wrapper">
+        <div className="register__left">
+          <img className="register__img" src={"/assets/left.png"} alt="" />
         </div>
-        <section className="main__input">
+
+        <div className="register__inputs">
+          <div className="register__text">
+            <h1>Sign up</h1>
+            <p>
+              Welcome to conncevtive create your account and have an instant
+              access to the platform
+            </p>
+          </div>
+          <button className="register__google__btn">
+            <FcGoogle size={25} /> Sign Up with Google
+          </button>
+          {/* or line */}
+
           <form className="main__form" onSubmit={onSubmit}>
             <div className="main__form">
+              <p className="mov">Name</p>
               <input
                 type="text"
-                className="form-control"
+                className="form-control inp"
                 id="name"
                 name="name"
                 value={name}
@@ -82,9 +92,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
+              <p className="mov">Username</p>
               <input
                 type="text"
-                className="form-control"
+                className="form-control inp"
                 id="username"
                 name="username"
                 value={username}
@@ -93,9 +104,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
+              <p className="mov">Email</p>
               <input
                 type="email"
-                className="form-control"
+                className="form-control inp"
                 id="email"
                 name="email"
                 value={email}
@@ -104,9 +116,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
+              <p className="mov">Password</p>
               <input
                 type="password"
-                className="form-control"
+                className="form-control inp"
                 id="password"
                 name="password"
                 value={password}
@@ -115,9 +128,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
+              <p className="mov">Confirm Password</p>
               <input
                 type="password"
-                className="form-control"
+                className="form-control inp"
                 id="password2"
                 name="password2"
                 value={password2}
@@ -126,18 +140,15 @@ const Register = () => {
               />
             </div>
             <div className="form-btn">
-            <button className='btn btn-block'>
-            submit
-            </button>
-          </div>
+              <button className="btn btn-block">
+                <p className="btn__text">Sign up && Create my account</p>
+              </button>
+            </div>
           </form>
-          <div className="link">
-          <p>Do you have an account ? <a className="main__a" href="/auth/login">Login</a></p>
-          </div>
-        </section>
+        </div>
+      </div>
     </div>
-      </section>
-  ) 
+  );
 };
 
 export default Register;
