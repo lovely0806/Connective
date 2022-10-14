@@ -1,7 +1,6 @@
 .register__img {
   position: absolute;
-  height: 100vh;
-  /* width: 300px; */
+  height: 100%;
   border-radius: 0px 40px 40px 0px;
 }
 
@@ -27,10 +26,10 @@
   border-radius: 5px;
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 14px;
-
   color: rgba(0, 0, 0, 0.4);
+  text-indent: 10px;
 }
 
 .register__google__btn {
@@ -44,6 +43,7 @@
   border-radius: 5px;
   border: #f9f9f9;
   cursor: pointer;
+  gap: 10px;
 }
 
 .register__google__btn:hover {
@@ -52,8 +52,8 @@
 }
 
 .register__inputs {
-  margin-left: 8rem;
-  margin-top: 20px;
+  margin-left: 11rem;
+  margin-top: 5px;
 }
 
 .btn-block {
@@ -63,16 +63,14 @@
   text-align: center;
   width: 671px;
   height: 47px;
-  left: 557px;
-  top: 747px;
   
   background: #0F172A;
   border-radius: 5px;
-margin-top: 3rem;
+margin-top: 2rem;
 }
 
 .register__text {
-  margin-right: 7rem;
+  margin-right: 4rem;
 }
 
 .mov {
@@ -89,19 +87,95 @@ color: #000000;
 }
 
 .btn__text {
-  width: 176px;
   height: 16px;
-  left: 804px;
-  top: 764px;
-  
-  font-family: 'Glacial Indifference';
   font-style: normal;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 16px;
   /* identical to box height */
   
-  
+  cursor: pointer;
   color: #FFFFFF;
   
+}
+
+h2 {
+  overflow: hidden;
+  text-align: center;
+}
+
+h2:before,
+h2:after {
+  background-color: #000;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 325px;
+}
+
+h2:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+
+h2:after {
+  left: 0.5em;
+  margin-right: -50%;
+}
+
+.register__line {
+
+height: 22.53px;
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 18px;
+letter-spacing: 0.12em;
+
+/* button stroke */
+
+color: #524C4C;
+
+}
+
+.register__h1 {
+  width: 85px;
+height: 29px;
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 29px;
+/* identical to box height */
+
+
+color: #000000;
+}
+
+.register__p {
+font-family: 'Glacial Indifference';
+color: rgba(0, 0, 0, 0.6); 
+}
+
+
+.font {
+font-family: 'Glacial Indifference';
+}
+
+.login__move {
+  margin-right: 15rem;
+}
+
+.move__text {
+  margin-left: 15rem;
+  margin-top: 7rem;
+}
+
+.terms {
+  margin-top: 10px;
+}
+
+.move__p {
+  margin-left: 2px;
 }

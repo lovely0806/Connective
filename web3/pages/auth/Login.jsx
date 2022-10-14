@@ -2,102 +2,133 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../../features/auth/authSlice";
 import Router from 'next/router'
+import { FcGoogle } from "react-icons/fc";
+import {useFormik} from 'formik'
+import * as Yup from 'yup'
+
 
 //show error messages propertly: 
 // password is too short, don't match, 
 
 const Login = () => {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-      })
-    
-    
-      const dispatch = useDispatch()
-      
-      const { email, password } = formData
-      const { user, isError, isSuccess, message } = useSelector(
-        (state) => state.auth
-      )
+ const [error, setError] = useState(false)
+ const [pass, setpass] = useState(false)
 
-      useEffect(() => {
-        if (isError) {
-        console.log('error')
-        }
-    
-        if (isSuccess || user) {
-            Router.push('/')
+  const { user, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  )
+     const dispatch = useDispatch()
 
-        }
-    
-        dispatch(reset())
-      }, [user, isError, isSuccess, message])
-    
-    
-      const onChange = (e) => {
-        setFormData((prevState) => ({
-          ...prevState,
-          [e.target.name]: e.target.value,
-        }))
+  const wrongEmail = 'Request failed with status code 400'
+  const wrongPass = 'Request failed with status code 402'
+
+
+     useEffect(() => {
+
+      if(isError && message ===  wrongEmail) {
+      setError(true)
       }
+      if(isError && message ===  wrongPass) {
+        setpass(true)
+        }
 
-      const onSubmit = (e) => {
-        e.preventDefault()
+      if (isSuccess || user) {
+        setError(false)
+          Router.push('/')
+      }
+  
+      dispatch(reset())
+    }, [user, isSuccess, message])
     
+
+    
+
+      const formik = useFormik({
+        initialValues: {
+          email: '',
+          password: ''
+        },
+        validationSchema: Yup.object({
+         email: Yup.string().email('invalid email').required('Email Required'),
+         password: Yup.string().min(8, 'password must be 8 characters or longer').required('Password Required')
+        }),
+        onSubmit: (values) => {
+
         const userData = {
-          email,
-          password,
+         email: values.email,
+         password: values.password
         }
-    
         dispatch(login(userData))
-      }
+      
+        }
 
-
-
+      })
 
   return (
-<section className="main__section">
-<div className="div__color">
-        <div className="main__text">
-          <h2 className="main__h2">Login to your Account</h2>
-          <p className="main__p">Let's see what other people are doing.</p>
+    <div className="register__main">
+      <div className="register__wrapper">
+      
+        <div className="register__left">
+          <img className="register__img" src={"/assets/left.png"} alt="" />
         </div>
-        <section className="main__input">
-          <form className="main__form" onSubmit={onSubmit}>
+
+        <div className="register__inputs move__text">
+          <div className="register__text login__move">
+            <h1 className="register__h1 font">Sign in</h1>
+            <p className="register__p font">
+                Welcome back! Sign in with the data you have registered with.
+            </p>
+          </div>
+          <button className="register__google__btn font">
+            <FcGoogle size={25} /> Sign in with Google
+          </button>
+          <h2 className="register__line font">or</h2>
+          {error === true && <p>Wrong email</p>}
+          {pass === true && <p>Wrong PassWord</p>}
+
+          <form className="main__form" onSubmit={formik.handleSubmit}>
             <div className="main__form">
+              <p className="mov font">Email</p>
               <input
                 type="email"
-                className="form-control"
+                className="form-control inp font"
                 id="email"
                 name="email"
-                value={email}
                 placeholder="Enter your email"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                onChange={formik.handleChange}
               />
+              {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : ''}
             </div>
+          
             <div className="main__form">
+              <p className="mov font">Password</p>
               <input
                 type="password"
-                className="form-control"
+                className="form-control inp font"
                 id="password"
                 name="password"
-                value={password}
                 placeholder="Enter password"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                onChange={formik.handleChange}
               />
+              {formik.touched.password && formik.errors.password ? <p>{formik.errors.password}</p> : ''}
             </div>
-            <div className="form-group">
-            <button type='submit' className='btn btn-block'>
-            submit
-            </button>
-          </div>
+            <div className="terms">
+              <input type="checkbox" /> Remember Information
+              <p className="font move__p">Don't have an account ? <a href="/auth/Register">Sign up</a></p>
+            </div>
+            <div className="form-btn">
+              <button className="btn btn-block" type="submit">
+                <p className="btn__text font">Sign in</p>
+              </button>
+            </div>
           </form>
-          <div className="main__Link">
-          <p>Don't you have an account ? <a className="main__a" href="/auth/Register">Register</a></p>
-          </div>
-        </section>
+        </div>
+      </div>
     </div>
-      </section>
   )
 }
 

@@ -61,26 +61,27 @@ const Register = () => {
   return (
     <div className="register__main">
       <div className="register__wrapper">
+
         <div className="register__left">
           <img className="register__img" src={"/assets/left.png"} alt="" />
         </div>
 
         <div className="register__inputs">
           <div className="register__text">
-            <h1>Sign up</h1>
-            <p>
+            <h1 className="register__h1 font">Sign up</h1>
+            <p className="register__p font">
               Welcome to conncevtive create your account and have an instant
               access to the platform
             </p>
           </div>
-          <button className="register__google__btn">
+          <button className="register__google__btn font">
             <FcGoogle size={25} /> Sign Up with Google
           </button>
-          {/* or line */}
+          <h2 className="register__line font">or</h2>
 
           <form className="main__form" onSubmit={onSubmit}>
             <div className="main__form">
-              <p className="mov">Name</p>
+              <p className="mov font font">Name</p>
               <input
                 type="text"
                 className="form-control inp"
@@ -92,10 +93,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
-              <p className="mov">Username</p>
+              <p className="mov font">Username</p>
               <input
                 type="text"
-                className="form-control inp"
+                className="form-control inp font"
                 id="username"
                 name="username"
                 value={username}
@@ -104,10 +105,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
-              <p className="mov">Email</p>
+              <p className="mov font">Email</p>
               <input
                 type="email"
-                className="form-control inp"
+                className="form-control inp font"
                 id="email"
                 name="email"
                 value={email}
@@ -116,10 +117,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
-              <p className="mov">Password</p>
+              <p className="mov font">Password</p>
               <input
                 type="password"
-                className="form-control inp"
+                className="form-control inp font"
                 id="password"
                 name="password"
                 value={password}
@@ -128,10 +129,10 @@ const Register = () => {
               />
             </div>
             <div className="main__form">
-              <p className="mov">Confirm Password</p>
+              <p className="mov font">Confirm Password</p>
               <input
                 type="password"
-                className="form-control inp"
+                className="form-control inp font"
                 id="password2"
                 name="password2"
                 value={password2}
@@ -139,9 +140,13 @@ const Register = () => {
                 onChange={onChange}
               />
             </div>
+            <div className="terms">
+              <input type="checkbox" /> I accept the terms & conditions and I have read the privacy policy 
+              <p className="font move__p">Already have an account? <a href="/auth/Login">Sign in</a></p>
+            </div>
             <div className="form-btn">
               <button className="btn btn-block">
-                <p className="btn__text">Sign up && Create my account</p>
+                <p className="btn__text font">Sign up & Create my account</p>
               </button>
             </div>
           </form>
