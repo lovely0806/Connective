@@ -6,8 +6,8 @@ const ProfileTypeSelector = ({type, setType}) => {
 
     return (
         <div className="flex flex-row gap-5 mx-auto">
-            <button onClick={()=>{setType("buisness")}} className={type == "buisness" ? selectedClass : unselectedClass}>
-                <p>I am a buisness</p>
+            <button onClick={()=>{setType("business")}} className={type == "business" ? selectedClass : unselectedClass}>
+                <p>I am a business</p>
             </button>
 
             <button onClick={()=>{setType("individual")}} className={type == "individual" ? selectedClass : unselectedClass}>
