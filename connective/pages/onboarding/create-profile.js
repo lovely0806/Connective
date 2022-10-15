@@ -155,7 +155,7 @@ export default function CreateProfile({user}) {
             method: "post",
             url: "/api/profiles/business",
             data
-        })
+        }) 
         .then((res) => {
             if(res.status == 200) {
                 console.log("success")
