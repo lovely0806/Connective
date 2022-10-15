@@ -103,7 +103,7 @@ export default function CreateProfile({user}) {
         let exists = bExists || iExists
         if(exists) {
             console.log("Forwarding")
-            router.push("/")
+            router.push("/app/profile")
         }
     }
 
@@ -170,7 +170,7 @@ export default function CreateProfile({user}) {
         .then((res) => {
             if(res.status == 200) {
                 console.log("success")
-                router.push("/projects")
+                router.push("/app/profile")
             }
         })
         .catch(e => {
