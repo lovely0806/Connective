@@ -4,29 +4,20 @@ import { register, reset } from "../../features/auth/authSlice";
 import Router from "next/router";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
+import {useFormik} from 'formik'
+import * as Yup from 'yup'
+
+
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    password2: "",
-  });
+ 
 
-  const { name, email, username, password, password2 } = formData;
+
   const { user, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
   const dispatch = useDispatch();
-
-  const onChange = (e) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   useEffect(() => {
     if (isError) {
@@ -39,24 +30,34 @@ const Register = () => {
     dispatch(reset);
   }, [user]);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
 
-    if (password !== password2) {
-      console.log("Passwords do not match");
-      if (username.isError) {
-        console.log("Passwords do not match");
-      }
-    } else {
-      const userData = {
-        name,
-        username,
-        email,
-        password,
-      };
-      dispatch(register(userData));
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      username: '',
+      email: '',
+      password: '',
+      password2: ''
+    },
+    validationSchema: Yup.object({
+     name: Yup.string().required('name is required').min(3, 'name must be 2 characters or longer') ,
+     username: Yup.string().required('username is required').min(4, 'username must be 4 characters or longer').max(26, "username cannot be longer than 26 characters") ,
+     email: Yup.string().email('invalid email').required('Email Required'),
+     password: Yup.string().min(8, 'password must be 8 characters or longer').required('Password Required')
+    }),
+    onSubmit: (values) => {
+
+    const userData = {
+     name: values.name,
+     username: values.username,
+     email: values.email,
+     password: values.password
     }
-  };
+    dispatch(register(userData))
+  
+    }
+
+  })
 
   return (
     <div className="register__main">
@@ -79,7 +80,7 @@ const Register = () => {
           </button>
           <h2 className="register__line font">or</h2>
 
-          <form className="main__form" onSubmit={onSubmit}>
+          <form className="main__form" onSubmit={formik.handleSubmit}>
             <div className="main__form">
               <p className="mov font font">Name</p>
               <input
@@ -87,9 +88,10 @@ const Register = () => {
                 className="form-control inp"
                 id="name"
                 name="name"
-                value={name}
                 placeholder="Enter your name"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="main__form">
@@ -99,9 +101,10 @@ const Register = () => {
                 className="form-control inp font"
                 id="username"
                 name="username"
-                value={username}
                 placeholder="Enter username"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.username}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="main__form">
@@ -111,9 +114,10 @@ const Register = () => {
                 className="form-control inp font"
                 id="email"
                 name="email"
-                value={email}
                 placeholder="Enter your email"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="main__form">
@@ -123,9 +127,10 @@ const Register = () => {
                 className="form-control inp font"
                 id="password"
                 name="password"
-                value={password}
                 placeholder="Enter password"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="main__form">
@@ -135,9 +140,10 @@ const Register = () => {
                 className="form-control inp font"
                 id="password2"
                 name="password2"
-                value={password2}
                 placeholder="Confirm  password"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password2}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="terms">
@@ -145,7 +151,7 @@ const Register = () => {
               <p className="font move__p">Already have an account? <a href="/auth/Login">Sign in</a></p>
             </div>
             <div className="form-btn">
-              <button className="btn btn-block">
+              <button className="btn btn-block" type="submit">
                 <p className="btn__text font">Sign up & Create my account</p>
               </button>
             </div>

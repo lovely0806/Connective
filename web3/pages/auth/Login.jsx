@@ -17,7 +17,8 @@ const Login = () => {
   const { user, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   )
-     const dispatch = useDispatch()
+  
+  const dispatch = useDispatch()
 
   const wrongEmail = 'Request failed with status code 400'
   const wrongPass = 'Request failed with status code 402'
@@ -83,12 +84,11 @@ const Login = () => {
             <FcGoogle size={25} /> Sign in with Google
           </button>
           <h2 className="register__line font">or</h2>
-          {error === true && <p>Wrong email</p>}
-          {pass === true && <p>Wrong PassWord</p>}
 
           <form className="main__form" onSubmit={formik.handleSubmit}>
             <div className="main__form">
               <p className="mov font">Email</p>
+          {error === true  ? <p className="error font">Wrong email {error.length}</p> : ''}
               <input
                 type="email"
                 className="form-control inp font"
@@ -99,11 +99,12 @@ const Login = () => {
                 value={formik.values.email}
                 onChange={formik.handleChange}
               />
-              {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : ''}
+              {formik.touched.email && formik.errors.email ? <p className="error">{formik.errors.email}</p> : ''}
             </div>
           
             <div className="main__form">
               <p className="mov font">Password</p>
+          {pass === true ?  <p className="error font" >Wrong password</p> : ''}
               <input
                 type="password"
                 className="form-control inp font"
@@ -114,7 +115,7 @@ const Login = () => {
                 value={formik.values.password}
                 onChange={formik.handleChange}
               />
-              {formik.touched.password && formik.errors.password ? <p>{formik.errors.password}</p> : ''}
+              {formik.touched.password && formik.errors.password ? <p className="error">{formik.errors.password}</p> : ''}
             </div>
             <div className="terms">
               <input type="checkbox" /> Remember Information

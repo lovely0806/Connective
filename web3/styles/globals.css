@@ -179,3 +179,16 @@ font-family: 'Glacial Indifference';
 .move__p {
   margin-left: 2px;
 }
+
+
+.error {
+  font-style: normal;
+  font-weight: 400;
+font-size: 13px;
+line-height: 16px;
+/* identical to box height */
+
+letter-spacing: 0.12em;
+
+color: #ff6161;
+}
