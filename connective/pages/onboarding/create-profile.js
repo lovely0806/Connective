@@ -25,7 +25,7 @@ export default function CreateProfile({user}) {
     let [fileBlob, setFileBlob] = useState()
 
     useEffect(() => {
-        //forwardIfProfileSetup()
+        forwardIfProfileSetup()
     }, [])
 
     const industryOptions = [
@@ -84,12 +84,23 @@ export default function CreateProfile({user}) {
         })
     }
 
-
+    async function individualAccountExists() {
+        return new Promise(async (resolve, reject) => {
+            await axios.get("/api/profiles/individual")
+            .then(res => {
+                if(typeof(res.data) != "undefined") {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+        })
+    }
 
     async function forwardIfProfileSetup() {
-        let exists = await businessAccountExists()
-        console.log("Exists?")
-        console.log(exists)
+        let bExists = await businessAccountExists()
+        let iExists = await individualAccountExists()
+        let exists = bExists || iExists
         if(exists) {
             console.log("Forwarding")
             router.push("/")
