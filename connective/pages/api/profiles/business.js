@@ -16,8 +16,9 @@ const parseFormData = async (req) => {
         form.parse(req, async function(err, fields, files) {
             //console.log(fields)
             //console.log(files)
-            let logoBlob = new Blob([fs.readFileSync(files.logo.filepath)])
-            resolve({fields, logoBlob})
+            //let logoBlob = new Blob([fs.readFileSync(files.logo.filepath)])
+            //resolve({fields, logoBlob})
+            resolve({fields})
         })
     })
 }

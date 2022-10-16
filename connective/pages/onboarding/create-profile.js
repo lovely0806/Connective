@@ -8,6 +8,7 @@ import OnboardingSidebar from "../../components/onboarding-sidebar";
 import ProfileTypeSelector from "../../components/onboarding/profile-type-selector";
 import FileUpload from "../../components/file-upload";
 import Select from "react-select"
+import Util from "../../util"
 
 export default function CreateProfile({user}) {
     const [name, setName] = useState("")
@@ -17,7 +18,7 @@ export default function CreateProfile({user}) {
     const [url, setUrl] = useState("")
     const [location, setLocation] = useState("")
     const [pfp, setPfp] = useState("")
-    const [type, setType] = useState("buisness")
+    const [type, setType] = useState("business")
     const [industry, setIndustry] = useState("")
     const [industryError, setIndustryError] = useState("")
     const [size, setSize] = useState("")
@@ -70,38 +71,9 @@ export default function CreateProfile({user}) {
             reader.readAsDataURL(logo);
         }
     }, [logo])
-
-    async function businessAccountExists() {
-        return new Promise(async (resolve, reject) => {
-            await axios.get("/api/profiles/business")
-            .then(res => {
-                if(typeof(res.data) != "undefined") {
-                    resolve(true)
-                } else {
-                    resolve(false)
-                }
-            })
-        })
-    }
-
-    async function individualAccountExists() {
-        return new Promise(async (resolve, reject) => {
-            await axios.get("/api/profiles/individual")
-            .then(res => {
-                if(typeof(res.data) != "undefined") {
-                    resolve(true)
-                } else {
-                    resolve(false)
-                }
-            })
-        })
-    }
-
+    
     async function forwardIfProfileSetup() {
-        let bExists = await businessAccountExists()
-        let iExists = await individualAccountExists()
-        let exists = bExists || iExists
-        if(exists) {
+        if(await Util.profileConfigured(user.id)) {
             console.log("Forwarding")
             router.push("/app/profile")
         }
@@ -205,7 +177,7 @@ export default function CreateProfile({user}) {
         .then((res) => {
             if(res.status == 200) {
                 console.log("success")
-                router.push("/projects")
+                router.push("/app/profile")
             }
         })
         .catch(e => {
@@ -219,14 +191,14 @@ export default function CreateProfile({user}) {
             
             <div className="flex flex-col w-[40vw] mx-auto text-[Montserrat] bg-[#F9F9F9] rounded-xl shadow-md p-5 my-20">
                 <div className="flex flex-row gap-10 mb-10">
-                    <p className="text-3xl font-bold">Create {type == "buisness" ? "Company" : "Individual"} Profile</p>
+                    <p className="text-3xl font-bold">Create {type == "business" ? "Company" : "Individual"} Profile</p>
                 </div>
                 
                 <p className="text-center mb-5 font-medium text-lg">Which best describes you?</p>
 
                 <ProfileTypeSelector type={type} setType={setType}></ProfileTypeSelector>
 
-                {type == "buisness" ? (
+                {type == "business" ? (
                     <div className="flex flex-col gap-5 mt-10">
                         <InputField name={"Name*"} placeholder={"Enter company name"} updateValue={setName} errorText={nameError}></InputField>
                         <InputField name={"Description"} placeholder={"Enter company description"} updateValue={setDescription} textarea={true}></InputField>
