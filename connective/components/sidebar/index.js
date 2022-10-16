@@ -9,10 +9,10 @@ const SidebarItem = ({text, route, icon, selected}) => {
 
 const Sidebar = () => {
     return (
-        <div className="w-[15vw] h-fill rounded-r-lg bg-[#0F172A] flex flex-col text-white text-[Montserrat]">
+        <div className="z-10 h-fill w-[15vw] 2xl:w-[13vw] bg-[#0F172A] flex flex-col text-white text-[Montserrat]">
             <div className="flex flex-row my-5 mx-auto">
-                <img className="my-auto w-[3vw]" src="../assets/logo-icon-white.png"></img>
-                <img className="mt-1 w-[10vw] object-scale-down" src="../assets/logo-text-white.png"></img>
+                <img className="my-auto w-[2vw]" src="../assets/logo-icon-white.png"></img>
+                <img className="mt-1 w-[8vw] object-scale-down" src="../assets/logo-text-white.png"></img>
             </div>
 
             <SidebarItem text="Dashboard" icon="/assets/navbar/DashboardIcon.svg"></SidebarItem>
