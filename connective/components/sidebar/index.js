@@ -14,7 +14,7 @@ const Sidebar = () => {
     const router = useRouter()
     const signout = async () => {
         await axios.get("/api/auth/signout")
-        router.reload()
+        router.push("/")
     }
 
     return (
