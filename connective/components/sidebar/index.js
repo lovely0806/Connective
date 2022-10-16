@@ -25,10 +25,10 @@ const Sidebar = () => {
             </div>
 
             <SidebarItem text="Dashboard" icon="/assets/navbar/DashboardIcon.svg"></SidebarItem>
-            <SidebarItem text="Profile" icon="" selected={true}></SidebarItem>
+            <SidebarItem text="Profile" icon="/assets/navbar/ProfileIcon.svg" selected={true}></SidebarItem>
 
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[2vh]">As a buyer</p>
-            <SidebarItem text="Marketplace" icon=""></SidebarItem>
+            <SidebarItem text="Marketplace" icon="/assets/navbar/MarketplaceIcon.svg"></SidebarItem>
             <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg"></SidebarItem>
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[2vh]">As a seller</p>
@@ -37,7 +37,7 @@ const Sidebar = () => {
             <SidebarItem text="Requests List" icon="/assets/navbar/RequestsListIcon.svg"></SidebarItem>
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[2vh]">Support</p>
-            <SidebarItem text="Feedback" icon=""></SidebarItem>
+            <SidebarItem text="Feedback" icon="/assets/navbar/FeedbackIcon.svg"></SidebarItem>
             <SidebarItem text="Contact Us" icon="/assets/navbar/ContactUsIcon.svg"></SidebarItem>
             <SidebarItem text="Sign Out" icon="/assets/navbar/SignOutIcon.svg" onClick={signout}></SidebarItem>
         </div>
