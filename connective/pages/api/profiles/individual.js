@@ -1,27 +1,5 @@
 const mysql = require("mysql2")
 import {withIronSession} from "next-iron-session"
-import formidable from "formidable"
-import fs from "fs"
-import {Blob} from "buffer"
-
-export const config = {
-    api: {
-        bodyParser: false
-    }
-}
-
-const parseFormData = async (req) => {
-    return new Promise((resolve, reject) => {
-        const form = new formidable.IncomingForm()
-        form.parse(req, async function(err, fields, files) {
-            //console.log(fields)
-            //console.log(files)
-            //let logoBlob = new Blob([fs.readFileSync(files.pfp.filepath)])
-            //resolve({fields, logoBlob})
-            resolve({fields})
-        })
-    })
-}
 
 export async function handler(req, res) {
     try {
@@ -35,15 +13,14 @@ export async function handler(req, res) {
             res.status(200).json(results[0])
         }
         if(req.method == "POST") {
-            let data = await parseFormData(req)
-            console.log(data)
+            const {name, bio, pfp, location} = req.body
                 
             const connection = mysql.createConnection(process.env.DATABASE_URL)
             await connection.promise().execute(`
                 INSERT INTO Individual (
-                    user_id, name, bio, location
+                    user_id, name, profile_picture, bio, location
                 ) VALUES (
-                    '${user.id}', '${data.fields.name}', '${data.fields.bio}', '${data.fields.location}'
+                    '${user.id}', '${name}', '${pfp}', '${bio}', '${location}'
                 );`)
 
             connection.end()

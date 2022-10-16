@@ -14,16 +14,16 @@ export default function CreateProfile({user}) {
     const [name, setName] = useState("")
     const [nameError, setNameError] = useState("")
     const [description, setDescription] = useState("")
-    const [logo, setLogo] = useState()
     const [url, setUrl] = useState("")
     const [location, setLocation] = useState("")
     const [pfp, setPfp] = useState("")
+    const [src, setSrc] = useState("")
     const [type, setType] = useState("business")
     const [industry, setIndustry] = useState("")
     const [industryError, setIndustryError] = useState("")
     const [size, setSize] = useState("")
     const [sizeError, setSizeError] = useState("")
-    let [fileBlob, setFileBlob] = useState()
+    const [processing, setProcessing] = useState(false)
 
     useEffect(() => {
         forwardIfProfileSetup()
@@ -47,30 +47,10 @@ export default function CreateProfile({user}) {
     const router = useRouter()
 
     useEffect(() => {
-        console.log("PFP Change")
-        console.log(pfp)
+        if(pfp == "" || typeof(pfp) == "undefined") return
 
-        if(pfp != "" && typeof(pfp) != "undefined") {
-            var reader = new FileReader();
-            reader.onload = function() {
-                setFileBlob(dataURItoBlob(reader.result))
-            };
-            reader.readAsDataURL(pfp);
-        }
+        setSrc(URL.createObjectURL(pfp))
     }, [pfp])
-
-    useEffect(() => {
-        console.log("Logo Change")
-        console.log(logo)
-
-        if(logo != "" && typeof(logo) != "undefined") {
-            var reader = new FileReader();
-            reader.onload = function() {
-                setFileBlob(dataURItoBlob(reader.result))
-            };
-            reader.readAsDataURL(logo);
-        }
-    }, [logo])
     
     async function forwardIfProfileSetup() {
         if(await Util.profileConfigured(user.id)) {
@@ -79,23 +59,15 @@ export default function CreateProfile({user}) {
         }
     }
 
-    function dataURItoBlob(dataURI) {
-        var byteString = atob(dataURI.split(',')[1]);
-        var ab = new ArrayBuffer(byteString.length);
-        var ia = new Uint8Array(ab);
-        for (var i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        var bb = new Blob([ab]);
-        return bb;
-    }
-
     const submit = async () => {
         if(type == "business") submitBusiness()
         if(type == "individual") submitIndividual()
     }
 
     const submitBusiness = async () => {
+        if(processing) return
+        setProcessing(true)
+
         if(name == "") {
             setNameError("You must enter a name.")
             setIndustryError("")
@@ -119,26 +91,49 @@ export default function CreateProfile({user}) {
         setSizeError("")
         setIndustryError("")
 
-        let hasLogo = false
-        if(logo != "" && typeof(logo) != "undefined") {
-            hasLogo = true
+        let hasPfp = false
+        if(pfp != "" && typeof(pfp) != "undefined") {
+            hasPfp = true
         }
-        console.log(fileBlob)
         
-        const data = new FormData()
-        data.append("logo", logo)
-        data.append("name", name)
-        data.append("description", description)
-        data.append("url", url)
-        data.append("location", location)
-        data.append("industry", industry)
-        data.append("size", size)
+        let uploadData
+        if(hasPfp) {
+            let {data} = await axios.post(
+                "/api/upload-file",
+                {
+                    name: user.id + "-pfp",
+                    type: pfp.type
+                }
+            )
+            .catch((e) => {
+                console.log(e)
+            })
 
-        await axios({
-            method: "post",
-            url: "/api/profiles/business",
-            data
-        }) 
+            uploadData = data
+            console.log(uploadData.url)
+    
+            await axios.put(uploadData.url, pfp, {
+                headers: {
+                    "Content-type": pfp.type,
+                    "Access-Control-Allow-Origin": "*"
+                }
+            })
+            .then(() => {
+                setSrc("")
+                setPfp("")
+            })
+        }
+
+        await axios.post("/api/profiles/business",
+        {
+            pfp: hasPfp ? uploadData.url.split("?")[0] : "",
+            name,
+            description,
+            location,
+            url,
+            industry,
+            size
+        })
         .then((res) => {
             if(res.status == 200) {
                 console.log("success")
@@ -148,9 +143,14 @@ export default function CreateProfile({user}) {
         .catch(e => {
             if(e.response.status == 403 || e.response.data.error == "Account does not exist") setPasswordError("Incorrect email or password")
         })
+
+        setProcessing(false)
     }
 
     const submitIndividual = async () => {
+        if(processing) return
+        setProcessing(true)
+
         if(name == "") {
             setNameError("You must enter a name.")
             return
@@ -162,17 +162,41 @@ export default function CreateProfile({user}) {
         if(pfp != "" && typeof(pfp) != "undefined") {
             hasPfp = true
         }
-        
-        const data = new FormData()
-        data.append("pfp", pfp)
-        data.append("name", name)
-        data.append("bio", description)
-        data.append("location", location)
 
-        await axios({
-            method: "post",
-            url: "/api/profiles/individual",
-            data
+        let uploadData
+        if(hasPfp) {
+            let {data} = await axios.post(
+                "/api/upload-file",
+                {
+                    name: pfp.name,
+                    type: pfp.type
+                }
+            )
+            .catch((e) => {
+                console.log(e)
+            })
+
+            uploadData = data
+    
+            await axios.put(uploadData.url, pfp, {
+                headers: {
+                    "Content-type": pfp.type,
+                    "Access-Control-Allow-Origin": "*"
+                }
+            })
+            .then(() => {
+                setSrc("")
+                setPfp("")
+            })
+        }
+        
+
+        await axios.post("/api/profiles/individual",
+        {
+            pfp: hasPfp ? uploadData.url.split("?")[0] : "",
+            name,
+            bio: description,
+            location
         })
         .then((res) => {
             if(res.status == 200) {
@@ -183,6 +207,8 @@ export default function CreateProfile({user}) {
         .catch(e => {
             if(e.response.status == 403 || e.response.data.error == "Account does not exist") setPasswordError("Incorrect email or password")
         })
+
+        setProcessing(false)
     }
 
     return (
@@ -204,7 +230,7 @@ export default function CreateProfile({user}) {
                         <InputField name={"Description"} placeholder={"Enter company description"} updateValue={setDescription} textarea={true}></InputField>
                         <div>
                             <p className="text-sm mb-2">Logo</p>
-                            <FileUpload text="Upload company logo" file={logo} setFile={setLogo} id={"Company pfp upload"}></FileUpload>
+                            <FileUpload text="Upload company logo" file={pfp} setFile={setPfp} id={"Company pfp upload"}></FileUpload>
                         </div>
                         <InputField name={"Website"} placeholder={"Enter company website URL"} updateValue={setUrl}></InputField>
                         <InputField name={"Location"} placeholder={"Enter where your company is located"} updateValue={setLocation}></InputField>
@@ -223,7 +249,7 @@ export default function CreateProfile({user}) {
                     </div>
                 ) : (
                     <div className="flex flex-col gap-5 mt-10">
-                        <InputField name={"Name*"} placeholder={"Enter company name"} updateValue={setName} errorText={nameError}></InputField>
+                        <InputField name={"Name*"} placeholder={"Enter your name"} updateValue={setName} errorText={nameError}></InputField>
                         <InputField name={"Bio"} placeholder={"Enter your bio"} updateValue={setDescription} textarea={true}></InputField>
                         <div>
                             <p className="text-sm mb-2">Profile picture</p>
@@ -233,7 +259,7 @@ export default function CreateProfile({user}) {
                     </div>
                 )}
                 
-                <button onClick={submit} className="w-full bg-[#0F172A] font-bold text-white py-4 mt-20 rounded-md shadow-md transition-all hover:scale-105 hover:shadow-lg">
+                <button onClick={submit} disabled={processing} className={`w-full  font-bold text-white py-4 mt-20 rounded-md shadow-md transition-all ${!processing ? "hover:scale-105 hover:shadow-lg bg-[#0F172A]" : "bg-[#0F172A]/70"}`}>
                     Create Profile
                 </button>
             </div>

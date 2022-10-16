@@ -7,6 +7,7 @@ export default function BusinessProfile({user}) {
     const router = useRouter()
 
     const [data, setData] = useState()
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
         getProfile()
@@ -24,14 +25,23 @@ export default function BusinessProfile({user}) {
                 if(typeof(res.data) != "undefined") {
                     setData(res.data)
                     console.log(res.data)
+                    setLoaded(true)
                 }
         })
     }
 
     return (
         <div className="flex flex-col w-full h-full">
+            {loaded && (
+            <>
             <img className="h-[18vh] w-full object-cover relative shadow-md" src="/assets/banners/waves-min.jpeg"></img>
-            <img className="rounded-full w-32 h-32 -mt-16 z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md" src="https://avatars.dicebear.com/api/micah/4.svg"></img>
+            {data.logo == "" ? (
+                <img className="rounded-full w-32 h-32 -mt-16 z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md" src={`https://avatars.dicebear.com/api/micah/${user.id}.svg`}></img> 
+            ) : (
+                <img className="rounded-full w-32 h-32 -mt-16 z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md" src={data.logo}></img> 
+            )}
+            
+            
             <div className="mt-10 ml-16 text-black">
                 <div className="flex flex-row">
                     <p className="font-bold text-3xl 2xl:text-4xl mb-5">{data?.company_name}</p>
@@ -60,6 +70,8 @@ export default function BusinessProfile({user}) {
                     <p>{data?.description}</p>
                 </div>
             </div>
+            </>
+            )}
         </div>
     )
 }
