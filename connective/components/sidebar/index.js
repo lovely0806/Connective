@@ -1,6 +1,9 @@
-const SidebarItem = ({text, route, icon, selected}) => {
+import {useRouter} from "next/router"
+import axios from "axios"
+
+const SidebarItem = ({text, route, icon, selected, onClick}) => {
     return (
-        <div className={`flex flex-row gap-5 cursor-pointer text-[1.75vh] 2xl:text-[1.5vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] rounded-r-full w-full transition-all hover:bg-[#777777]/10 ${selected ? "bg-white/10" : ""} ${text == "Sign Out" ? "mt-auto" : ""}`}>
+        <div onClick={onClick} className={`flex flex-row gap-5 cursor-pointer text-[1.75vh] 2xl:text-[1.5vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] rounded-r-full w-full transition-all hover:bg-[#777777]/10 ${selected ? "bg-white/10" : ""} ${text == "Sign Out" ? "mt-auto" : ""}`}>
             <img className="w-[2vh] h-[2vh] my-auto" src={icon}/>
             <p>{text}</p>
         </div>
@@ -8,6 +11,12 @@ const SidebarItem = ({text, route, icon, selected}) => {
 }
 
 const Sidebar = () => {
+    const router = useRouter()
+    const signout = async () => {
+        await axios.get("/api/auth/signout")
+        router.reload()
+    }
+
     return (
         <div className="z-10 h-fill w-[15vw] 2xl:w-[13vw] bg-[#0F172A] flex flex-col text-white text-[Montserrat]">
             <div className="flex flex-row my-5 mx-auto">
@@ -30,7 +39,7 @@ const Sidebar = () => {
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[2vh]">Support</p>
             <SidebarItem text="Feedback" icon=""></SidebarItem>
             <SidebarItem text="Contact Us" icon="/assets/navbar/ContactUsIcon.svg"></SidebarItem>
-            <SidebarItem text="Sign Out" icon="/assets/navbar/SignOutIcon.svg"></SidebarItem>
+            <SidebarItem text="Sign Out" icon="/assets/navbar/SignOutIcon.svg" onClick={signout}></SidebarItem>
         </div>
     )
 }
