@@ -20,7 +20,9 @@ const ListCard = ({item}) => {
                     ${item.price}
                 </div>
             </div>
-            <ButtonDark text="Explore" className="ml-auto mr-auto mb-0 mt-10"></ButtonDark>
+            <div className="mx-auto mt-10 pl-10">
+                <ButtonDark text="Explore" className="ml-0 mr-0 mb-0 mt-0"></ButtonDark>
+            </div>
         </div>
     )
 }
