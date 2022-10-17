@@ -6,10 +6,9 @@ import Layout from "../../../../components/layout";
 import ButtonDark from "../../../../components/button-dark";
 import {useRouter} from "next/router"
 import InputField from "../../../../components/input-field";
+import ConfigurableTable from "../../../../components/lists/configurable-table";
 
 export default function Dashboard({user}) {
-    const [file, setFile] = useState()
-
     const [title, setTitle] = useState("")
     const [titleError, setTitleError] = useState("")
 
@@ -21,6 +20,8 @@ export default function Dashboard({user}) {
 
     const [obtain, setObtain] = useState("")
     const [obtainError, setObtainError] = useState("")
+
+    const [fields, setFields] = useState([])
 
     const router = useRouter()
 
@@ -50,7 +51,9 @@ export default function Dashboard({user}) {
                     <InputField name="Description" textarea={true} placeholder="Enter a description" updateValue={setDescription} errorText={descriptionError}></InputField>
                     <InputField name="Geographical area of resources" placeholder="Where are the resources on your list located?" updateValue={setGeo} errorText={geoError}></InputField>
                     <InputField name="How did you obtain this list?" textarea={true} placeholder="Describe how you compiled this list" updateValue={setObtain} errorText={obtainError}></InputField>
+                    <ConfigurableTable data={fields} setData={setFields} column1Name="Field name" column2Name="Field description" title="Enter your fields:"></ConfigurableTable>
                 </div>
+                
                 <ButtonDark text="Next" className="mr-0 mt-10" onClick={submit}></ButtonDark>
             </div>
         </Layout>

@@ -174,7 +174,7 @@ export default function CreateProfile({user}) {
         <main className="flex flex-row min-h-screen min-w-screen">
             <OnboardingSidebar></OnboardingSidebar>
             
-            <div className="flex flex-col w-[40vw] mx-auto text-[Montserrat] bg-[#F9F9F9] rounded-xl shadow-md p-5 my-20">
+            <div className="flex flex-col w-[40vw] mx-auto font-[Montserrat] bg-[#F9F9F9] rounded-xl shadow-md p-5 my-20">
                 <div className="flex flex-row gap-10 mb-10">
                     <p className="text-3xl font-bold">Create {type == "business" ? "Company" : "Individual"} Profile</p>
                 </div>

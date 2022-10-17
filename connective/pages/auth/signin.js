@@ -54,7 +54,7 @@ export default function SignIn({user}) {
         <main className="flex flex-row min-h-screen min-w-screen">
             <OnboardingSidebar></OnboardingSidebar>
 
-            <div className="flex flex-col my-auto w-[40vw] mx-auto text-[Montserrat]">
+            <div className="flex flex-col my-auto w-[40vw] mx-auto font-[Montserrat]">
                 <p className="font-bold text-3xl">Sign in</p>
                 <p className="text-black/50 mt-3">Welcome back! Sign in to access your account.</p>
                 <div className="flex flex-col gap-5 mt-10">

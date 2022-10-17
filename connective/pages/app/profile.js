@@ -17,7 +17,7 @@ export default function Profile({user}) {
     }, [])
 
     return (
-        <main className="flex flex-row min-h-screen min-w-screen text-[Montserrat] bg-[#F5F5F5]">
+        <main className="flex flex-row min-h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
             <Sidebar></Sidebar>
             {accountType == "Business" ? (
                 <BusinessProfile user={user}></BusinessProfile>

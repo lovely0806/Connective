@@ -72,7 +72,7 @@ export default function SignUp() {
         <main className="flex flex-row min-h-screen min-w-screen">
             <OnboardingSidebar></OnboardingSidebar>
 
-            <div className="flex flex-col my-auto w-[40vw] mx-auto text-[Montserrat]">
+            <div className="flex flex-col my-auto w-[40vw] mx-auto font-[Montserrat]">
                 <p className="font-bold text-3xl">Sign up</p>
                 <p className="text-black/50 mt-3">Welcome to Connective. Create your account and have instant access to hundreads of lists.</p>
                 <div className="flex flex-col gap-5 mt-10">
