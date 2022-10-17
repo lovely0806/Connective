@@ -35,4 +35,34 @@ Util.accountType = async (id) => {
     return type
 }
 
+Util.uploadFile = async (name, file) => {
+    let {data} = await axios.post(
+        "/api/upload-file",
+        {
+            name: name,
+            type: file.type
+        }
+    )
+    .catch((e) => {
+        console.log(e)
+    })
+
+    await axios.put(data.url, file, {
+        headers: {
+            "Content-type": file.type,
+            "Access-Control-Allow-Origin": "*"
+        }
+    })
+
+    return data.url.split("?")[0]
+}
+
+Util.verifyField = (value, setErrorText, errorTextValue) => {
+    if(value == "") {
+        setErrorText(errorTextValue)
+        return false
+    }
+    return true
+}
+
 export default Util

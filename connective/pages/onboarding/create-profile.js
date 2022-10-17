@@ -96,37 +96,16 @@ export default function CreateProfile({user}) {
             hasPfp = true
         }
         
-        let uploadData
+        let uploadUrl
         if(hasPfp) {
-            let {data} = await axios.post(
-                "/api/upload-file",
-                {
-                    name: user.id + "-pfp",
-                    type: pfp.type
-                }
-            )
-            .catch((e) => {
-                console.log(e)
-            })
-
-            uploadData = data
-            console.log(uploadData.url)
-    
-            await axios.put(uploadData.url, pfp, {
-                headers: {
-                    "Content-type": pfp.type,
-                    "Access-Control-Allow-Origin": "*"
-                }
-            })
-            .then(() => {
-                setSrc("")
-                setPfp("")
-            })
+            uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp)
+            setSrc("")
+            setPfp("")
         }
 
         await axios.post("/api/profiles/business",
         {
-            pfp: hasPfp ? uploadData.url.split("?")[0] : "",
+            pfp: hasPfp ? uploadUrl : "",
             name,
             description,
             location,
@@ -163,37 +142,17 @@ export default function CreateProfile({user}) {
             hasPfp = true
         }
 
-        let uploadData
+        let uploadUrl
         if(hasPfp) {
-            let {data} = await axios.post(
-                "/api/upload-file",
-                {
-                    name: pfp.name,
-                    type: pfp.type
-                }
-            )
-            .catch((e) => {
-                console.log(e)
-            })
-
-            uploadData = data
-    
-            await axios.put(uploadData.url, pfp, {
-                headers: {
-                    "Content-type": pfp.type,
-                    "Access-Control-Allow-Origin": "*"
-                }
-            })
-            .then(() => {
-                setSrc("")
-                setPfp("")
-            })
+            uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp)
+            setSrc("")
+            setPfp("")
         }
         
 
         await axios.post("/api/profiles/individual",
         {
-            pfp: hasPfp ? uploadData.url.split("?")[0] : "",
+            pfp: hasPfp ? uploadUrl : "",
             name,
             bio: description,
             location

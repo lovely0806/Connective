@@ -28,8 +28,8 @@ const Sidebar = () => {
     return (
         <div className="z-10 h-fill w-[15vw] 2xl:w-[13vw] bg-[#0F172A] flex flex-col text-white text-[Montserrat]">
             <div className="flex flex-row my-5 mx-auto">
-                <img className="my-auto w-[2vw]" src="../assets/logo-icon-white.png"></img>
-                <img className="mt-1 w-[8vw] object-scale-down" src="../assets/logo-text-white.png"></img>
+                <img className="my-auto w-[2vw]" src="/assets/logo-icon-white.png"></img>
+                <img className="mt-1 w-[8vw] object-scale-down" src="/assets/logo-text-white.png"></img>
             </div>
 
             <SidebarItem text="Dashboard" icon="/assets/navbar/DashboardIcon.svg" route="/app/dashboard"></SidebarItem>
@@ -40,7 +40,7 @@ const Sidebar = () => {
             <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg" route="/app/purchasedlists"></SidebarItem>
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[2vh]">As a seller</p>
-            <SidebarItem text="Lists" icon="/assets/navbar/ListsIcon.svg" route="/app/lists"></SidebarItem>
+            <SidebarItem text="Lists" icon="/assets/navbar/ListsIcon.svg" route="/app/lists/create/1"></SidebarItem>
             <SidebarItem text="Earnings" icon="/assets/navbar/EarningsIcon.svg" route="/app/earnings"></SidebarItem>
             <SidebarItem text="Requests List" icon="/assets/navbar/RequestsListIcon.svg" route="/app/requests"></SidebarItem>
             
