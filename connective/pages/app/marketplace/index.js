@@ -1,11 +1,9 @@
 import axios from "axios"
 import {useState, useEffect} from "react"
 import {withIronSession} from "next-iron-session"
-import Util from "../../util/"
-import Layout from "../../components/layout";
-import ButtonDark from "../../components/button-dark";
+import Layout from "../../../components/layout";
 import Select from "react-select"
-import ListCard from "../../components/marketplace/ListCard";
+import ListCard from "../../../components/marketplace/ListCard";
 
 export default function Dashboard({user}) {
     const [lists, setLists] = useState([])

@@ -10,10 +10,19 @@ export async function handler(req, res) {
         }
         if(req.method == "GET") {
             const connection = mysql.createConnection(process.env.DATABASE_URL)
-            var [listResults, fields, err] = await connection.promise().query(`SELECT * FROM Lists WHERE id=${id};`)
+            var [listResults, fields, err] = await connection.promise().query(`
+                select * from Lists
+                join Individual on Individual.user_id = creator
+                WHERE Lists.id=${id};`)
+            if(listResults.length == 0) {
+                [listResults, fields, err] = await connection.promise().query(`
+                select * from Lists
+                join Business on Business.user_id = creator
+                WHERE Lists.id=${id};`)
+            }
             let list = listResults[0]
-            var [fields, fields, err] = await connection.promise().query(`SELECT * FROM Fields WHERE list_id=${id};`)
-            list.fields = {fields}
+            var [fieldResults, fields, err] = await connection.promise().query(`SELECT name, description FROM Fields WHERE list_id=${id};`)
+            list.fields = {fieldResults}
             res.status(200).json(list)
         }
         if(req.method == "PATCH") {

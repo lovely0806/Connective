@@ -1,6 +1,9 @@
 import ButtonDark from "../../button-dark"
+import {useRouter} from "next/router"
 
 const ListCard = ({item, preview}) => {
+    const router = useRouter()
+
     return (
         <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-fit">
             <img className="rounded-xl object-cover h-[40%]" src={!item.img ? "/assets/banners/leaves-min.jpeg" : item.img}/>
@@ -19,7 +22,7 @@ const ListCard = ({item, preview}) => {
             </div>
             {!preview && (
                 <div className="mx-auto mt-10 pl-10">
-                    <ButtonDark text="Explore" className="ml-0 mr-0 mb-0 mt-0"></ButtonDark>
+                    <ButtonDark onClick={()=>{router.push(`/app/marketplace/list-details/${item.id}`)}} text="Explore" className="ml-0 mr-0 mb-0 mt-0"></ButtonDark>
                 </div>
             )}
         </div>
