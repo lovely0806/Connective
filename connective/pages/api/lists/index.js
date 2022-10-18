@@ -10,6 +10,10 @@ export async function handler(req, res) {
         if(req.method == "GET") {
             const connection = mysql.createConnection(process.env.DATABASE_URL)
             var [results, fields, err] = await connection.promise().query(`SELECT * FROM Lists;`)
+            var [purchaseResults, fields, err] = await connection.promise().query(`select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`)
+            results.forEach(list => {
+                list.buyers = purchaseResults.filter((i) => {if(i.list_id == list.id) return 1}).length
+            })
             res.status(200).json(results)
         }
         if(req.method == "POST") {
