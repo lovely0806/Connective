@@ -15,7 +15,7 @@ export default function SignIn({user}) {
 
     useEffect(() => {
         if(typeof(user) != "undefined") {
-          router.push("/onboarding/create-profile")
+          //router.push("/onboarding/create-profile")
         }
     }, [user])
 
