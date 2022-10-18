@@ -8,14 +8,18 @@ import FileUpload from "../../../../components/file-upload";
 import {useRouter} from "next/router"
 import {v4 as uuidv4} from "uuid"
 
-export default function Dashboard({user}) {
+export default function NewList({user}) {
+    const [processing, setProcessing] = useState(false)
     const [file, setFile] = useState()
     const router = useRouter()
 
     const submit = async () => {
+        if(processing) return
+        setProcessing(true)
         let uploadUrl = await Util.uploadFile("list_" + uuidv4(), file)
         localStorage.setItem("uploadUrl", uploadUrl) //Store the upload url in s3
         router.push("/app/lists/create/2")
+        setProcessing(false)
     }
 
     return (

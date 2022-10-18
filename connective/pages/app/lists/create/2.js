@@ -8,7 +8,7 @@ import {useRouter} from "next/router"
 import InputField from "../../../../components/input-field";
 import ConfigurableTable from "../../../../components/lists/configurable-table";
 
-export default function Dashboard({user}) {
+export default function NewList({user}) {
     const [title, setTitle] = useState("")
     const [titleError, setTitleError] = useState("")
 
@@ -36,7 +36,7 @@ export default function Dashboard({user}) {
            !Util.verifyField(geo, setGeoError, "Please enter a value.") || 
            !Util.verifyField(obtain, setObtainError, "Please enter a value.")) return
         
-        localStorage.setItem("newListValues", JSON.stringify({title, description, geo, obtain}))
+        localStorage.setItem("newListValues", JSON.stringify({title, description, geo, obtain, fieldDescription: fields}))
         router.push("/app/lists/create/3")
     }
 
