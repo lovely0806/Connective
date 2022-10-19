@@ -19,6 +19,7 @@ export default function NewList({user}) {
     const [fields, setFields] = useState()
     const [uploadUrl, setUploadUrl] = useState()
     const [previewUrl, setPreviewUrl] = useState()
+    const [coverUrl, setCoverUrl] = useState()
     const [processing, setProcessing] = useState(false)
 
     const router = useRouter()
@@ -27,6 +28,7 @@ export default function NewList({user}) {
         let newListvalues = JSON.parse(localStorage.getItem("newListValues"))
         let uploadUrl = localStorage.getItem("uploadUrl")
         let previewUrl = localStorage.getItem("previewUrl")
+        let coverUrlStr = localStorage.getItem("coverUrl")
         let newListPrice = localStorage.getItem("newListPrice")
 
         setPrice(newListPrice)
@@ -37,6 +39,7 @@ export default function NewList({user}) {
         setFields(newListvalues.fieldDescription)
         setUploadUrl(uploadUrl)
         setPreviewUrl(previewUrl)
+        setCoverUrl(coverUrlStr)
     }, [])
 
     const submit = async () => {
@@ -49,13 +52,14 @@ export default function NewList({user}) {
             obtain,
             uploadUrl,
             previewUrl,
+            coverUrl,
             price,
             fields
         })
         setProcessing(false)
         router.push("/app/marketplace")
     }
-
+3
     return (
         <Layout title="Lists">
             <div className="mx-[20vw] p-10 flex flex-col">
@@ -64,7 +68,7 @@ export default function NewList({user}) {
                 <p className="font-bold mb-10 text-xl">Preview:</p>
                 <div className="w-[30vw] mx-auto">
                     <ListCard preview={true} item={{
-                        img: "/assets/banners/leaves-min.jpeg",
+                        img: coverUrl == "" ? "/assets/banners/leaves-min.jpeg" : coverUrl,
                         title,
                         description,
                         price: price

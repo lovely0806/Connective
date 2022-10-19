@@ -13,6 +13,7 @@ export default function NewList({user}) {
     const [price, setPrice] = useState("")
     const [priceError, setPriceError] = useState("")
     const [file, setFile] = useState()
+    const [cover, setCover] = useState()
 
     const router = useRouter()
 
@@ -38,8 +39,13 @@ export default function NewList({user}) {
         }
 
         let uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file)
+        let coverUrl = await Util.uploadFile("cover_" + uuidv4(), cover)
+        console.log(coverUrl)
         
+        localStorage.setItem("previewUrl", "")
+        localStorage.setItem("coverUrl", "")
         localStorage.setItem("previewUrl", uploadUrl)
+        localStorage.setItem("coverUrl", coverUrl)
         localStorage.setItem("newListPrice", price)
         router.push("/app/lists/create/4")
     }
@@ -51,8 +57,12 @@ export default function NewList({user}) {
                 <p className="text-center mb-10">Step 3 of 4</p>
                 <p className="font-bold mb-10 text-xl">Price and preview:</p>
                 <InputField name="Price" placeholder="Enter a price for this list" price={true} updateValue={setPrice} errorText={priceError}></InputField>
-                <p className="text-sm mb-2 mt-10">Upload your CSV preview file</p>
-                <FileUpload text="Upload CSV" file={file} setFile={setFile} id="preview upload"></FileUpload>
+                
+                <p className="text-sm mb-2 mt-10">Upload a cover image (optional)</p>
+                <FileUpload text="Upload cover image" file={cover} setFile={setCover} id="cover upload"></FileUpload>
+                
+                <p className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
+                <FileUpload text="Upload Image" file={file} setFile={setFile} id="preview upload"></FileUpload>
                 <ButtonDark text="Next" className="mr-0 mt-10" onClick={submit}></ButtonDark>
             </div>
         </Layout>

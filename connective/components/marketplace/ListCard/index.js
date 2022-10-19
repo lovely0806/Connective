@@ -6,7 +6,7 @@ const ListCard = ({item, preview}) => {
 
     return (
         <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-fit">
-            <img className="rounded-xl object-cover h-[40%]" src={!item.img ? "/assets/banners/leaves-min.jpeg" : item.img}/>
+            <img className="rounded-xl object-cover h-[40%]" src={!item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}/>
             <p className="font-bold text-xl">{item.title}</p>
             <p className="text-[#8A8888]">{item.description}</p>
             <div className="flex flex-row gap-10 mx-auto">
