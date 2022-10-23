@@ -25,7 +25,7 @@ export const Checkout = ({ client_secret }) => {
 
 export const getServerSideProps = async (context) => {
   const { id } = context.params;
-  const clientData = await axios.get(`/api/verify-client/${id}`);
+  const clientData = await axios.get(`/api/stripe/verify-client/${id}`);
   return {
     props: {
       client_secret: clientData.data.client_secret
