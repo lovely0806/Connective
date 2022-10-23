@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^1.13.0",
+    "@stripe/stripe-js": "^1.42.0",
     "aws-sdk": "^2.1233.0",
     "axios": "^1.1.2",
     "bcryptjs": "^2.4.3",
