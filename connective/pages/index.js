@@ -4,10 +4,11 @@ import ButtonRounded from '../components/button-rounded'
 import Logo from '../components/logo'
 import Link from "next/link"
 import { useRouter } from 'next/router'
+import { useEffect } from 'react';
 
 export default function Home() {
   const router = useRouter()
-  React.useEffect(() => {
+  useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {
