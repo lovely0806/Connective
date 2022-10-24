@@ -39,7 +39,7 @@ export default function Dashboard({user}) {
                     <Select options={sortOptions} placeholder="Sort" className="w-96"></Select>
                 </div>
 
-                <div className="grid grid-cols-3 gap-10 pb-20">
+                <div className="grid grid-cols-3 auto-rows-[30vw] gap-10 pb-20">
                     {lists.map((item, index) => {
                         return (
                             <ListCard item={item}></ListCard>
