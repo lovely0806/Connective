@@ -1,3 +1,5 @@
+const mysql = require("mysql2");
+
 const stripe = require("stripe")(
   process.env.STRIPE_SECRET_KEY
 );
@@ -10,6 +12,7 @@ export default async function handler(req, res) {
       var [result, fields, err] = await connection
         .promise()
         .query(`SELECT * FROM Users WHERE id='${userID}';`);
+      connection.close();
       if (result.length > 0) {
         // fetch stripeID from the db;
         const accountLink = await stripe.accountLinks.create({
@@ -18,7 +21,6 @@ export default async function handler(req, res) {
           return_url: "http://localhost:3000/",
           type: "account_onboarding",
         });
-        connection.close();
         // give this link to the user via email for other things for connecting his/her bank information with stripe. 
       }
     }

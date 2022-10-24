@@ -1,3 +1,5 @@
+const mysql = require("mysql2");
+
 const stripe = require("stripe")(
   process.env.STRIPE_SECRET_KEY
 );
@@ -5,23 +7,23 @@ const stripe = require("stripe")(
 export default async function handler(req, res) {
   try {
     if (req.method == "GET") {
-      const productID = req.params.product_id;
+      const listID = req.params.list_id;
       // fetch connected account ID from the database
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [result, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Products WHERE id='${productID}';`);
+        .query(`SELECT * FROM Lists WHERE id='${listID}';`);
       connection.close();
-      const productInformation = result[0];
+      const listInformation = result[0];
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: productInformation.price,
+        amount: listInformation.price,
         currency: "usd",
         automatic_payment_methods: {
           enabled: true,
         },
-        application_fee_amount: 0.10 * productInformation.price,
+        application_fee_amount: 0.10 * listInformation.price,
         transfer_data: {
-          destination: productInformation.stripeID,
+          destination: listInformation.stripeID,
         },
       });
 
