@@ -2,7 +2,7 @@ import axios from "axios"
 import {useState, useEffect} from "react"
 import {withIronSession} from "next-iron-session"
 import Layout from "../../../../components/layout";
-import Select from "react-select"
+import Util from "../../../../util"
 import {useRouter} from "next/router"
 import ButtonDark from "../../../../components/button-dark";
 
@@ -15,6 +15,14 @@ export default function Dashboard({user}) {
         let {data} = await axios.get(`/api/lists/${id}`)
         setData(data)
         console.log(data)
+
+        let type = await Util.accountType(user.id)
+        console.log(type)
+        if(type == "Business") {
+            await axios.post("/api/profiles/viewList", {id, type: "business"})
+        } else {
+            await axios.post("/api/profiles/viewList", {id, type: "individual"})
+        }
     }
 
     useEffect(() => {
@@ -65,13 +73,13 @@ export default function Dashboard({user}) {
                         <img src="/assets/fieldsdescription.svg"></img>
                         <p className="font-bold text-xl my-auto">Fields Description</p>
                     </div>
-                    <div className="grid grid-cols-2 text-lg font-medium text-black/50 border-b border-black/20 mb-5">
+                    <div className="grid grid-cols-2 text-lg font-medium text-black/50 border-b border-black/20">
                         <p>Field</p>
                         <p>Description</p>
                     </div>
                     {data?.fields?.fieldResults.map((item, index) => {
                         return (
-                            <div className="grid grid-cols-2 border-b border-black/20 py-10">
+                            <div className="grid grid-cols-2 border-b border-black/20 py-5 text-sm">
                                 <p>{item.name}</p>
                                 <p>{item.description}</p>
                             </div>
