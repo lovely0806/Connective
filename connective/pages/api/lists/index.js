@@ -18,13 +18,16 @@ export async function handler(req, res) {
         }
         if(req.method == "POST") {
             const {title, description, geo, obtain, price, uploadUrl, previewUrl, coverUrl, fields} = req.body
-                
-            const connection = mysql.createConnection(process.env.DATABASE_URL)
+            
+            const connection = mysql.createConnection(process.env.DATABASE_URL);
+            const [userInfo, _, __] = await connection.promise().query(`SELECT * FROM Users WHERE id='${user.id}';`);
+            const stripeID = userInfo[0].stripeID;
+            // add this stripeID of the user to ListsTable
             let [result, err, returnFields] = await connection.promise().execute(`
                 INSERT INTO Lists (
-                    creator, title, description, location, list_obtained, price, url, preview_url, cover_url, published
+                    creator, title, description, location, list_obtained, price, url, preview_url, cover_url, published, stripeID
                 ) VALUES (
-                    '${user.id}', '${title}', '${description}', '${geo}', '${obtain}', '${price}', '${uploadUrl}', '${previewUrl}', '${coverUrl}', '1'
+                    '${user.id}', '${title}', '${description}', '${geo}', '${obtain}', '${price}', '${uploadUrl}', '${previewUrl}', '${coverUrl}', '1', '${stripeID}'
                 );`)
             
             let fieldValues = []

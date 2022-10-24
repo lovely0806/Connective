@@ -1,10 +1,12 @@
+import { withIronSession } from "next-iron-session";
+
 const mysql = require("mysql2");
 
 const stripe = require("stripe")(
   process.env.STRIPE_SECRET_KEY
 );
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
   try {
     if (req.method === "POST") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -25,4 +27,13 @@ export default async function handler(req, res) {
       }
     }
   } catch {}
-}
+};
+
+export default withIronSession(handler, {
+  password: process.env.APPLICATION_SECRET,
+  cookieName: "Connective",
+  // if your localhost is served on http:// then disable the secure flag
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+  },
+});

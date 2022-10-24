@@ -22,7 +22,8 @@ export default async function handler(req, res) {
     } else {
       const stripe_account = await stripe.accounts.create({ type: "express" });
       // stripe_account.id
-      // add stripe_account.id to the database # FieldName: stripeID
+      // add stripe_account.id to the User database # FieldName: stripeID
+    
       connection.execute(
         `INSERT INTO Users (username, password_hash, email, stripeID) VALUES ('${username}', '${hash}', '${email}', '${stripe_account.id}');`
       );
