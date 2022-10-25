@@ -40,18 +40,18 @@ export async function handler(req, res) {
         });
 
         const options = {
-          from: '',
-          to: '',
-          subject: '',
+          from: '', // your email
+          to: `${result[0].email}`,
+          subject: 'Connect your Bank Information',
           text: accountLink.url,
-          html: ''
+          html: '' // post your HTML page for email here
         };
 
         transporter.sendMail(options, (err, info)  => {
           if (err) {
             return res.json({ error: "Couldn't send email" })
           } else {
-
+            return res.json({ success: true })
           }
         })
 
