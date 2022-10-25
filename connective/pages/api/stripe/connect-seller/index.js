@@ -2,6 +2,8 @@ import { withIronSession } from "next-iron-session";
 
 const mysql = require("mysql2");
 const nodemailer = require('nodemailer');
+const client = require('@sendgrid/mail');
+client.setApiKey(process.env.SEND_GRID_API_KEY)
 
 const stripe = require("stripe")(
   process.env.STRIPE_SECRET_KEY
@@ -29,30 +31,24 @@ export async function handler(req, res) {
         });
         // give this link to the user via email for other things for connecting his/her bank information with stripe. 
         // email
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.connective.com',
-          port: 465,
-          secure: true,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-          }
-        });
+        client.send({
+          from: {
+            email: process.env.EMAIL_USER,
+            name: 'Connective'
+          },
 
-        const options = {
-          from: '', // your email
-          to: `${result[0].email}`,
-          subject: 'Connect your Bank Information',
-          text: accountLink.url,
-          html: '' // post your HTML page for email here
-        };
+          to: {
+            email: result[0].email,
+            name: result[0].username
+          },
 
-        transporter.sendMail(options, (err, info)  => {
-          if (err) {
-            return res.json({ error: "Couldn't send email" })
-          } else {
-            return res.json({ success: true })
-          }
+          subject: 'Bank Verification',
+          text: accountLink.url
+
+        }).then(() => {
+          return res.status(200).json({ success: true })
+        }). catch(() => {
+          return res.status(500).json({ error: 'Email doesnot work', success: false })
         })
 
       } else {
