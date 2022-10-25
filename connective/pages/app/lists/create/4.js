@@ -59,7 +59,7 @@ export default function NewList({user}) {
         setProcessing(false)
         router.push("/app/marketplace")
     }
-3
+
     return (
         <Layout title="Lists">
             <div className="mx-[20vw] p-10 flex flex-col">
@@ -68,7 +68,7 @@ export default function NewList({user}) {
                 <p className="font-bold mb-10 text-xl">Preview:</p>
                 <div className="sm:w-[30vw] 2xl:w-[20vw] mx-auto">
                     <ListCard preview={true} item={{
-                        img: coverUrl == "" ? "/assets/banners/leaves-min.jpeg" : coverUrl,
+                        cover_url: coverUrl,
                         title,
                         description,
                         price: price
