@@ -7,9 +7,27 @@ export async function handler(req, res) {
             return res.status(500).json({success: false, error: "Not signed in"})
         }
         if(req.method == "POST") {
+            /*
             const {id, type} = req.body 
             const connection = mysql.createConnection(process.env.DATABASE_URL)
             
+            let query
+            if(type == "business") query = `UPDATE Users 
+                                            JOIN Business ON Users.id = Business.user_id
+                                            SET listViews = listViews + 1
+                                            WHERE Users.id=${id};`
+            else query = `UPDATE Users 
+                          JOIN Individual ON Users.id = Individual.user_id
+                          SET listViews = listViews + 1
+                          WHERE Users.id=${id};`
+            await connection.promise().query(query)
+
+            res.status(200).json({success: true})
+            */
+
+            const {type} = req.body
+            let id = req.session.get().user.id
+            const connection = mysql.createConnection(process.env.DATABASE_URL)
             let query
             if(type == "business") query = `UPDATE Users 
                                             JOIN Business ON Users.id = Business.user_id

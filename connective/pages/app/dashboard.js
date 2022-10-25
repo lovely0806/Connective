@@ -60,19 +60,19 @@ export default function Dashboard({user}) {
     return (
         <Layout title="Dashboard">
             <DashboardRow title="As a Buyer" buttonText="Explore Marketplace">
-                <DashboardItem title="List Views" value={data?.listViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Viewed" value={data?.listViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Lists Sold" value="50" icon="/assets/dashboard/listCheck.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Bought" value="50" icon="/assets/dashboard/listCheck.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Total Spent" value="$150" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
+                <DashboardItem title="Total $ Spent" value="$150" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
             </DashboardRow>
 
             <DashboardRow title="As a Seller" buttonText="Create a List">
-                <DashboardItem title="Profile Views" value={data?.profileViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Created" value={data?.profileViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
                 <DashboardItem title="List Sold" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Total Earnings" value="$500" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
+                <DashboardItem title="Total $ Earned" value="$500" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
             </DashboardRow>
         </Layout>
     )

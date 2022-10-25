@@ -24,16 +24,16 @@ const ListCard = ({item, preview}) => {
     return (
         <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
             <img className="rounded-xl object-cover h-[40%]" src={!item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}/>
-            <p className="font-bold text-[1.15vw] w-full h-10">{truncatedTitle}</p>
-            <p className="text-[#8A8888] text-[0.9vw] overflow-clip">{truncatedDesc}</p>
+            <p className="font-bold text-lg w-full h-10 mb-5">{truncatedTitle}</p>
+            <p className="text-[#8A8888] text-sm overflow-clip">{truncatedDesc}</p>
             <div className="flex flex-row gap-10 mx-auto mt-auto">
                 {!preview && (
-                    <div className="bg-[#CCE0FE] text-black/70 font-bold text-sm p-[0.2vw] px-[0.1vw] rounded-full w-32 text-center">
+                    <div className="bg-[#CCE0FE] text-black/70 font-bold text-sm p-[0.2vw] px-[0.05vw] rounded-full w-32 text-center">
                         {item.buyers} buyers
                     </div>
                 )}
                 
-                <div className="bg-[#D3EBD5] text-black/70 font-bold text-sm p-[0.2vw] px-[0.1vw] rounded-full w-32 text-center">
+                <div className="bg-[#D3EBD5] text-black/70 font-bold text-sm p-[0.2vw] px-[0.05vw] rounded-full w-32 text-center">
                     ${item.price}
                 </div>
             </div>

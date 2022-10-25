@@ -27,7 +27,7 @@ export default function NewList({user}) {
             <div className="bg-white rounded-xl shadow-lg mx-20 p-10">
                 <p className="text-center font-bold text-xl mb-5">Create a list</p>
                 <p className="text-center mb-10">Step 1 of 4</p>
-                <FileUpload text="Upload CSV File" file={file} setFile={setFile} id="CSV Upload"></FileUpload>
+                <FileUpload text="Upload CSV File" file={file} setFile={setFile} id="CSV Upload" accept=".csv,.xls,.xlsx"></FileUpload>
                 <ButtonDark text="Next" className="mr-0 mt-10" onClick={submit}></ButtonDark>
             </div>
         </Layout>

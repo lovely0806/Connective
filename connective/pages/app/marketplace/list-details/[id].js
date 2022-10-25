@@ -19,9 +19,9 @@ export default function Dashboard({user}) {
         let type = await Util.accountType(user.id)
         console.log(type)
         if(type == "Business") {
-            await axios.post("/api/profiles/viewList", {id, type: "business"})
+            await axios.post("/api/profiles/viewList", {id: user.id, type: "business"})
         } else {
-            await axios.post("/api/profiles/viewList", {id, type: "individual"})
+            await axios.post("/api/profiles/viewList", {id: user.id, type: "individual"})
         }
     }
 
