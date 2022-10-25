@@ -66,7 +66,7 @@ export default function NewList({user}) {
                 <p className="text-center font-bold text-xl mb-5">Create a list</p>
                 <p className="text-center mb-10">Step 4 of 4</p>
                 <p className="font-bold mb-10 text-xl">Preview:</p>
-                <div className="w-[30vw] mx-auto">
+                <div className="sm:w-[30vw] 2xl:w-[20vw] mx-auto">
                     <ListCard preview={true} item={{
                         img: coverUrl == "" ? "/assets/banners/leaves-min.jpeg" : coverUrl,
                         title,
