@@ -1,6 +1,7 @@
 import { withIronSession } from "next-iron-session";
 
 const mysql = require("mysql2");
+const nodemailer = require('nodemailer');
 
 const stripe = require("stripe")(
   process.env.STRIPE_SECRET_KEY
@@ -28,6 +29,31 @@ export async function handler(req, res) {
         });
         // give this link to the user via email for other things for connecting his/her bank information with stripe. 
         // email
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.connective.com',
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        });
+
+        const options = {
+          from: '',
+          to: '',
+          subject: '',
+          text: accountLink.url,
+          html: ''
+        };
+
+        transporter.sendMail(options, (err, info)  => {
+          if (err) {
+            return res.json({ error: "Couldn't send email" })
+          } else {
+
+          }
+        })
 
       } else {
         return res.json({ error: "User not found", success: false });
