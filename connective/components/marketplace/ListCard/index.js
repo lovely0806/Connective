@@ -8,6 +8,9 @@ const ListCard = ({item, preview}) => {
     const [truncatedDesc, setTruncatedDesc] = useState("")
 
     useEffect(() => {
+        console.log(item)
+        if(typeof(item.title) == "undefined") return
+        
         let titleLen = 60
         let descLen = 180
         let isTitleLong = item.title.length > titleLen
