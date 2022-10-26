@@ -30,6 +30,7 @@ const ListCard = ({item, preview}) => {
             <div className="rounded-xl object-cover h-[40%] relative">
                 <Image
                     layout='fill'
+                    objectFit="cover"
                     src={!item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}
                 />
             </div>
@@ -37,12 +38,12 @@ const ListCard = ({item, preview}) => {
             <p className="text-[#8A8888] text-sm overflow-clip">{truncatedDesc}</p>
             <div className="flex flex-row gap-10 mx-auto mt-auto">
                 {!preview && (
-                    <div className="bg-[#CCE0FE] text-black/70 font-bold text-sm p-[0.2vw] px-[0.05vw] rounded-full w-32 text-center">
+                    <div className="bg-[#CCE0FE] text-black/70 font-bold text-sm p-[0.2vw] rounded-full w-32 text-center">
                         {item.buyers} buyers
                     </div>
                 )}
                 
-                <div className="bg-[#D3EBD5] text-black/70 font-bold text-sm p-[0.2vw] px-[0.05vw] rounded-full w-32 text-center">
+                <div className="bg-[#D3EBD5] text-black/70 font-bold text-sm p-[0.2vw] rounded-full w-32 text-center">
                     ${item.price}
                 </div>
             </div>
