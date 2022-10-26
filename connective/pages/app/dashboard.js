@@ -42,7 +42,7 @@ const Divider = () => {
 
 export default function Dashboard({user}) {
     const connectwithBankDetails = async () => {
-        const { data } = await axios.post('/api/stripe/connect-seller');
+        const { data } = await axios.post(process.env.URL + '/api/stripe/connect-seller');
         // further actions here
     };
 
