@@ -4,15 +4,10 @@ import {withIronSession} from "next-iron-session"
 import Layout from "../../../components/layout";
 import Select from "react-select"
 import ListCard from "../../../components/marketplace/ListCard";
+import {categoryOptions} from "../../../common/selectOptions"
 
 export default function Dashboard({user}) {
     const [lists, setLists] = useState([])
-    
-    const categoryOptions = [
-        {value: "Web Development", label: "Web Development"},
-        {value: "Event Planning", label: "Event Planning"},
-        {value: "Investors", label: "Investors"}
-    ]
 
     const sortOptions = [
         {value: "Buyers", label: "Buyers"},
