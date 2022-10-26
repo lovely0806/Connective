@@ -6,11 +6,15 @@ import Layout from "../../../../components/layout";
 import ButtonDark from "../../../../components/button-dark";
 import {useRouter} from "next/router"
 import InputField from "../../../../components/input-field";
+import Select from "react-select"
 import ConfigurableTable from "../../../../components/lists/configurable-table";
+import { categoryOptions } from "../../../../common/selectOptions";
 
 export default function NewList({user}) {
     const [title, setTitle] = useState("")
     const [titleError, setTitleError] = useState("")
+
+    const [category, setCategory] = useState()
 
     const [description, setDescription] = useState("")
     const [descriptionError, setDescriptionError] = useState("")
@@ -36,7 +40,7 @@ export default function NewList({user}) {
            !Util.verifyField(geo, setGeoError, "Please enter a value.") || 
            !Util.verifyField(obtain, setObtainError, "Please enter a value.")) return
         
-        localStorage.setItem("newListValues", JSON.stringify({title, description, geo, obtain, fieldDescription: fields}))
+        localStorage.setItem("newListValues", JSON.stringify({title, description, geo, obtain, category, fieldDescription: fields}))
         router.push("/app/lists/create/3")
     }
 
@@ -48,6 +52,10 @@ export default function NewList({user}) {
                 <p className="font-bold mb-10 text-xl">List details:</p>
                 <div className="flex flex-col gap-10">
                     <InputField name="Title" placeholder="Name your list" updateValue={setTitle} errorText={titleError}></InputField>
+                    <div>
+                        <p className="text-sm font-[Montserrat] mb-2">Category</p>
+                        <Select options={categoryOptions} onChange={(e)=>{setCategory(e.value)}}></Select>
+                    </div>
                     <InputField name="Description" textarea={true} placeholder="Enter a description" updateValue={setDescription} errorText={descriptionError}></InputField>
                     <InputField name="Geographical area of resources" placeholder="Where are the resources on your list located?" updateValue={setGeo} errorText={geoError}></InputField>
                     <InputField name="How did you obtain this list?" textarea={true} placeholder="Describe how you compiled this list" updateValue={setObtain} errorText={obtainError}></InputField>

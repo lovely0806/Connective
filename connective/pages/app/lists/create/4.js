@@ -13,6 +13,7 @@ import ListCard from "../../../../components/marketplace/ListCard";
 export default function NewList({user}) {
     const [price, setPrice] = useState("")
     const [title, setTitle] = useState()
+    const [category, setCategory] = useState()
     const [description, setDescription] = useState()
     const [geo, setGeo] = useState()
     const [obtain, setObtain] = useState()
@@ -33,6 +34,7 @@ export default function NewList({user}) {
 
         setPrice(newListPrice)
         setTitle(newListvalues.title)
+        setCategory(newListvalues.category)
         setDescription(newListvalues.description)
         setGeo(newListvalues.geo)
         setObtain(newListvalues.obtain)
@@ -47,6 +49,7 @@ export default function NewList({user}) {
         setProcessing(true)
         await axios.post("/api/lists", {
             title,
+            category,
             description,
             geo,
             obtain,
