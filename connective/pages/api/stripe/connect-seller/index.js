@@ -27,6 +27,7 @@ export async function handler(req, res) {
           return_url: process.env.returnURL,
           type: "account_onboarding",
         });
+        // also might update the db with userOnbarded to true
         // give this link to the user via email for other things for connecting his/her bank information with stripe. 
         // email
         client.setApiKey(process.env.SEND_GRID_API_KEY);
