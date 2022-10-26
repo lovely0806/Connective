@@ -6,7 +6,6 @@ export async function handler(req, res) {
   try {
     if (req.method == "GET") {
       const listID = req.query.list_id;
-      console.log(listID);
       // fetch connected account ID from the database
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [result, fields, err] = await connection
@@ -14,7 +13,6 @@ export async function handler(req, res) {
         .query(
           `SELECT Lists.price, Users.stripeID FROM Lists INNER JOIN Users ON Lists.creator = Users.id WHERE Lists.id="${listID}"`
         );
-      console.log(result);
       connection.close();
       if (result.length > 0) {
         const listInformation = result[0];

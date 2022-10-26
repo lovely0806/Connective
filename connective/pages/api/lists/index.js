@@ -20,8 +20,7 @@ export async function handler(req, res) {
             const {title, description, geo, obtain, price, uploadUrl, previewUrl, coverUrl, fields} = req.body
             
             const connection = mysql.createConnection(process.env.DATABASE_URL);
- 
-            // add this stripeID of the user to ListsTable
+
             let [result, err, returnFields] = await connection.promise().execute(`
                 INSERT INTO Lists (
                     creator, title, description, location, list_obtained, price, url, preview_url, cover_url, published

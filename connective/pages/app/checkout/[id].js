@@ -13,7 +13,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 const Checkout = ({ client_secret }) => {
   const options = {
     clientSecret: client_secret,
-    appearance: {/*...*/},
+    appearance: {/*...*/}, // edit the appearance from here
   };
 
   return (
