@@ -1,5 +1,6 @@
 import ButtonDark from "../../button-dark"
 import {useRouter} from "next/router"
+import Image from "next/image"
 import {useEffect, useState} from "react"
 
 const ListCard = ({item, preview}) => {
@@ -26,7 +27,12 @@ const ListCard = ({item, preview}) => {
 
     return (
         <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
-            <img className="rounded-xl object-cover h-[40%]" src={!item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}/>
+            <div className="rounded-xl object-cover h-[40%] relative">
+                <Image
+                    layout='fill'
+                    src={!item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}
+                />
+            </div>
             <p className="font-bold text-lg w-full h-10 mb-5">{truncatedTitle}</p>
             <p className="text-[#8A8888] text-sm overflow-clip">{truncatedDesc}</p>
             <div className="flex flex-row gap-10 mx-auto mt-auto">
