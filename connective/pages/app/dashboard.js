@@ -41,6 +41,11 @@ const Divider = () => {
 }
 
 export default function Dashboard({user}) {
+    const connectwithBankDetails = async () => {
+        const { data } = await axios.post('/api/stripe/connect-seller');
+        // further actions here
+    };
+
     return (
         <Layout title="Dashboard">
             <DashboardRow title="Buying" buttonText="Explore Marketplace">
