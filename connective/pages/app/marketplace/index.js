@@ -8,6 +8,7 @@ import {categoryOptions} from "../../../common/selectOptions"
 
 export default function Dashboard({user}) {
     const [lists, setLists] = useState([])
+    const [loading, setLoading] = useState(true)
     const [filteredLists, setFilteredLists] = useState([])
 
     const sortOptions = [
@@ -21,6 +22,7 @@ export default function Dashboard({user}) {
         let {data} = await axios.get("/api/lists")
         setLists(data)
         setFilteredLists(data)
+        setLoading(false)
     }
 
     const updateFilter = (e) => {
@@ -56,7 +58,11 @@ export default function Dashboard({user}) {
                     </div>
                 ) : (
                     <div className="w-full h-full flex">
-                        <p className="mx-auto mt-20 text-2xl">No lists exist for this category yet :(</p>
+                        {loading ? (
+                            <p className="mx-auto mt-20 text-2xl">Loading...</p>
+                        ) : (
+                            <p className="mx-auto mt-20 text-2xl">No lists exist for this category yet :(</p>
+                        )}
                     </div>
                 )}
                 
