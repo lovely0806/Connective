@@ -28,6 +28,7 @@
     "react-router-dom": "^6.4.2",
     "react-select": "^5.5.0",
     "sparkpost": "^2.1.4",
+    "stripe": "^10.15.0",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
   },
