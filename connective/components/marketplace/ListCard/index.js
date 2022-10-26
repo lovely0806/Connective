@@ -27,7 +27,7 @@ const ListCard = ({item, preview}) => {
 
     return (
         <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
-            <div className="rounded-xl object-cover h-[40%] relative">
+            <div className="rounded-xl object-cover h-[40%] relative overflow-hidden">
                 <Image
                     layout='fill'
                     objectFit="cover"
