@@ -38,8 +38,8 @@ export default function NewList({user}) {
             return
         }
 
-        let uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file)
-        let coverUrl = await Util.uploadFile("cover_" + uuidv4(), cover)
+        let uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file, true)
+        let coverUrl = await Util.uploadFile("cover_" + uuidv4(), cover, true)
         console.log(coverUrl)
         
         localStorage.setItem("previewUrl", "")

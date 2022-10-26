@@ -18,7 +18,7 @@ export async function handler(req, res) {
         }
         if(req.method == "POST") {
             const {title, description, geo, obtain, price, uploadUrl, previewUrl, coverUrl, fields} = req.body
-                
+
             const connection = mysql.createConnection(process.env.DATABASE_URL)
             let [result, err, returnFields] = await connection.promise().execute(`
                 INSERT INTO Lists (
@@ -32,8 +32,10 @@ export async function handler(req, res) {
                 fieldValues.push([result.insertId, field.name, field.description])
             })
 
-            let sql = "INSERT INTO Fields (list_id, name, description) VALUES ?"
-            await connection.promise().query(sql, [fieldValues])
+            if(fieldValues.length > 0) {
+                let sql = "INSERT INTO Fields (list_id, name, description) VALUES ?"
+                await connection.promise().query(sql, [fieldValues])
+            }
 
             connection.end()
             res.status(200).json({success: true})  

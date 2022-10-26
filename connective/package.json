@@ -12,6 +12,7 @@
     "aws-sdk": "^2.1233.0",
     "axios": "^1.1.2",
     "bcryptjs": "^2.4.3",
+    "compress.js": "^1.2.2",
     "formidable": "^2.0.1",
     "formik": "^2.2.9",
     "icons": "^1.0.0",
