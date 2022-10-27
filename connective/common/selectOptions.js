@@ -1,4 +1,5 @@
 exports.categoryOptions = [
+    {value: "all", label: "All"},
     {value: '1', label: 'Arts and Culture'},
     {value: '2', label: 'Blockchain and Crypto Currency'},
     {value: '3', label: 'Community Mobilization'},
