@@ -21,8 +21,8 @@ const Checkout = ({ client_secret }) => {
       <CheckoutForm />
     </Elements>
   );
-};
-
+}; 
+ 
 export const getServerSideProps = async (context) => {
   const referer = context.req.headers.referer;
   const host = context.req.headers.host;
