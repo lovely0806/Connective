@@ -9,42 +9,50 @@ export async function handler(req, res) {
       return res.status(500).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "GET") {
+      //Connect Database and fetch urls
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       let [lists, fields, err] = await connection
         .promise()
         .query(`SELECT url FROM Lists`);
-      const listsUsed = lists.map((elem) => {
-        return elem.url;
+      const usedLists = lists.map((elem) => {
+        return elem.url.replace(
+          "https://connective-data.s3.amazonaws.com/",
+          ""
+        );
       });
+      console.log(usedLists);
+
+      //Config s3 bucket
       const s3 = new AWS.S3({
         accessKeyId: process.env.AWS_ID,
         secretAccessKey: process.env.AWS_SECRET,
         region: "us-east-1",
         signatureVersion: "v4",
       });
-
-      const fileParams = {
+      let fileParams = {
         Bucket: process.env.S3_BUCKET,
         Prefix: "list_",
       };
 
-      //   const url = await s3.getSignedUrlPromise("putObject", fileParams);
-      //   let allKeys = [];
-      //   function listAllKeys(marker, cb)
-      //   {
-      //     s3.listObjects(fileParams, function(err, data){
-      //       allKeys.push(data.Contents);
+      //Fetch allKeys that have prefix "list_"
+      let allKeys = [];
+      const listAllKeys = async (opts) => {
+        opts = { ...opts };
+        do {
+          const data = await s3.listObjectsV2(opts).promise();
+          opts.ContinuationToken = data.NextContinuationToken;
+          allKeys = allKeys.concat(data.Contents);
+        } while (opts.ContinuationToken);
+      };
+      await listAllKeys(fileParams);
 
-      //       if(data.IsTruncated)
-      //         listAllKeys(data.NextMarker, cb);
-      //       else
-      //         cb();
-      //     });
-    
-      s3.listObjectsV2(fileParams, (result) => {
-        console.log(result);
-        //   res.status(200).json({ success: true, result });
-      });
+      //Get unUsedList
+      const unUsedLists = allKeys.filter(
+        (elem) => !usedLists.includes(elem.Key)
+      );
+      console.log(unUsedLists);
+
+      return res.status(500).json({ success: true });
     }
   } catch (e) {
     console.log(e);
