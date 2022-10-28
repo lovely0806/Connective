@@ -1,7 +1,7 @@
 import {useState} from "react"
 
 const ProfileTypeSelector = ({type, setType}) => {
-    let unselectedClass = "bg-white flex flex-row gap-5 px-10 py-2 w-fit border-2 border-black rounded-lg"
+    let unselectedClass = "text-black bg-white flex flex-row gap-5 px-10 py-2 w-fit border-2 border-black rounded-lg"
     let selectedClass = "bg-[#0F172A] text-white flex flex-row gap-5 px-10 py-2 w-fit border-2 border-black/50 rounded-lg"
 
     return (

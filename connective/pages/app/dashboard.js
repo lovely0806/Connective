@@ -68,7 +68,7 @@ export default function Dashboard({user}) {
     const connectwithBankDetails = async () => {
         const { data } = await axios.post('/api/stripe/connect-seller');
         console.log(data)
-        // further actions here
+        window.open(data.accountLink, '_blank')
     };
 
     return (
