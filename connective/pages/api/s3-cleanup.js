@@ -8,6 +8,7 @@ export async function handler(req, res) {
     if (typeof req.session.get().user == "undefined") {
       return res.status(500).json({ success: false, error: "Not signed in" });
     }
+
     if (req.method == "GET") {
       //Connect Database and fetch urls
       const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -20,7 +21,7 @@ export async function handler(req, res) {
           ""
         );
       });
-      console.log(usedLists);
+      console.log("Used Lists:", usedLists);
 
       //Config s3 bucket
       const s3 = new AWS.S3({
@@ -29,7 +30,7 @@ export async function handler(req, res) {
         region: "us-east-1",
         signatureVersion: "v4",
       });
-      let fileParams = {
+      let options = {
         Bucket: process.env.S3_BUCKET,
         Prefix: "list_",
       };
@@ -44,14 +45,27 @@ export async function handler(req, res) {
           allKeys = allKeys.concat(data.Contents);
         } while (opts.ContinuationToken);
       };
-      await listAllKeys(fileParams);
+      await listAllKeys(options);
 
       //Get unUsedList
-      const unUsedLists = allKeys.filter(
-        (elem) => !usedLists.includes(elem.Key)
-      );
-      console.log(unUsedLists);
+      const unUsedLists = allKeys
+        .filter((elem) => !usedLists.includes(elem.Key))
+        .map((elem) => ({
+          Key: elem.Key,
+        }));
+      console.log("Unused Lists:", unUsedLists);
 
+      //Delete from s3 bucket
+      if (unUsedLists.length) {
+        const deleteOptions = {
+          Bucket: process.env.S3_BUCKET,
+          Delete: {
+            Objects: unUsedLists,
+          },
+        };
+        let result = await s3.deleteObjects(deleteOptions).promise();
+        console.log(result);
+      }
       return res.status(500).json({ success: true });
     }
   } catch (e) {
