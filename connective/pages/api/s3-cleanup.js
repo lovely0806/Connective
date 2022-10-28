@@ -10,43 +10,44 @@ export async function handler(req, res) {
     }
 
     const connection = mysql.createConnection(process.env.DATABASE_URL);
-    const [results, fields, err] = await connection
+    let [lists, fields, err] = await connection
       .promise()
       .query(`SELECT url FROM Lists`);
+    const listsUsed = lists.map((elem) => {
+      return elem.url;
+    });
+    console.log(listsUsed);
+    if (req.method == "GET") {
+      const s3 = new AWS.S3({
+        accessKeyId: process.env.AWS_ID,
+        secretAccessKey: process.env.AWS_SECRET,
+        region: "us-east-1",
+        signatureVersion: "v4",
+      });
 
-    console.log(results);
-    // if (req.method == "GET") {
-    //   const s3 = new AWS.S3({
-    //     accessKeyId: process.env.AWS_ID,
-    //     secretAccessKey: process.env.AWS_SECRET,
-    //     region: "us-east-1",
-    //     signatureVersion: "v4",
-    //   });
+      const fileParams = {
+        Bucket: process.env.S3_BUCKET,
+        Prefix: "list_",
+      };
 
-    //   const fileParams = {
-    //     Bucket: process.env.S3_BUCKET,
-    //     Prefix: "list_",
-    //   };
+      //   const url = await s3.getSignedUrlPromise("putObject", fileParams);
+      //   let allKeys = [];
+      //   function listAllKeys(marker, cb)
+      //   {
+      //     s3.listObjects(fileParams, function(err, data){
+      //       allKeys.push(data.Contents);
 
-    //   const url = await s3.getSignedUrlPromise("putObject", fileParams);
-    //   let allKeys = [];
-    //   function listAllKeys(marker, cb)
-    //   {
-    //     s3.listObjects(fileParams, function(err, data){
-    //       allKeys.push(data.Contents);
-
-    //       if(data.IsTruncated)
-    //         listAllKeys(data.NextMarker, cb);
-    //       else
-    //         cb();
-    //     });
-    //   }
-    //   s3.listObjectsV2(fileParams, (result) => {
-    //     console.log(result);
-    //     //   res.status(200).json({ success: true, result });
-    //   });
-    // }
-    res.status(200).json({ success: true, results });
+      //       if(data.IsTruncated)
+      //         listAllKeys(data.NextMarker, cb);
+      //       else
+      //         cb();
+      //     });
+    }
+    s3.listObjectsV2(fileParams, (result) => {
+      console.log(result);
+      //   res.status(200).json({ success: true, result });
+      res.status(200).json({ success: true, lists });
+    });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ success: false, error: e });
