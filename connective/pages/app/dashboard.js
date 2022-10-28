@@ -41,13 +41,32 @@ const Divider = () => {
 }
 
 export default function Dashboard({user}) {
+    const [isVerified, setIsVerified] = useState(true)
+
+    const getVerified = async () => {
+        const {data} = await axios.get('/api/stripe/UserValidated');
+        setIsVerified(data.verified)
+    }
+
+    useEffect(() => {
+        getVerified()
+    }, [])
+
     const connectwithBankDetails = async () => {
-        const { data } = await axios.post(process.env.URL + '/api/stripe/connect-seller');
+        const { data } = await axios.post('/api/stripe/connect-seller');
+        console.log(data)
         // further actions here
     };
 
     return (
         <Layout title="Dashboard">
+            {!isVerified && (
+                <div className="mx-auto flex flex-row gap-5 bg-white p-5 mb-20 rounded-lg shadow-lg">
+                    <p className="my-auto">Enter your payment details to begin buying & selling lists:</p>
+                    <ButtonDark text="Connect" onClick={connectwithBankDetails}></ButtonDark>
+                </div>
+            )}
+            
             <DashboardRow title="Buying" buttonText="Explore Marketplace">
                 <DashboardItem title="List Views" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>

@@ -16,6 +16,7 @@ export async function handler(req, res) {
       var [result, fields, err] = await connection
         .promise()
         .query(`SELECT * FROM Users WHERE id='${user.id}';`);
+
       connection.close();
       if (result.length > 0) {
         // fetch stripeID from the db;
