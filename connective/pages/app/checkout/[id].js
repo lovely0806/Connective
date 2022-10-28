@@ -24,6 +24,9 @@ const Checkout = ({ client_secret }) => {
 };
 
 export const getServerSideProps = async (context) => {
+  
+  
+  
   const { id } = context.params;
   const origin = context.req.headers.origin
   console.log(id);
