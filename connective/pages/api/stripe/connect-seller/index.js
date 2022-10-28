@@ -8,6 +8,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 export async function handler(req, res) {
   try {
     const host = req.headers.host;
+    console.log(host);
     if (req.method === "POST") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       let user = req.session.get().user;
@@ -23,8 +24,8 @@ export async function handler(req, res) {
         // fetch stripeID from the db;
         const accountLink = await stripe.accountLinks.create({
           account: result[0].stripeID,
-          refresh_url: process.env.NODE_ENV === "production" ? 'https:' : 'http:' + host + process.env.refreshURL,
-          return_url: process.env.NODE_ENV === "production" ? 'https:' : 'http:' + host + process.env.returnURL,
+          refresh_url: process.env.NODE_ENV === "production" ? 'https:' : 'http:' + '//' + host + process.env.refreshURL,
+          return_url: process.env.NODE_ENV === "production" ? 'https:' : 'http:' + '//' + host + process.env.returnURL,
           type: "account_onboarding",
         });
         // also might update the db with userOnbarded to true
