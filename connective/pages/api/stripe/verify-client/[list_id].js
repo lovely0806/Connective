@@ -16,14 +16,15 @@ export async function handler(req, res) {
       connection.close();
       if (result.length > 0) {
         const listInformation = result[0];
+        console.log(listInformation)
         const paymentIntent = await stripe.paymentIntents.create({
-          amount: listInformation.price,
+          amount: listInformation.price * 100,
           currency: "usd",
           automatic_payment_methods: {
             enabled: true,
           },
           application_fee_amount:
-            process.env.feePercentage * listInformation.price,
+            Math.floor(process.env.feePercentage * listInformation.price * 100),
           transfer_data: {
             destination: listInformation.stripeID,
           },
