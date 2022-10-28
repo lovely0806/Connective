@@ -25,8 +25,9 @@ const Checkout = ({ client_secret }) => {
 
 export const getServerSideProps = async (context) => {
   const { id } = context.params;
+  const origin = context.req.headers.host
   console.log(id);
-  const clientData = await axios.get(`/api/stripe/verify-client/${id}`);
+  const clientData = await axios.get(origin + `/api/stripe/verify-client/${id}`);
   if (clientData.data.client_secret === null) {
     // handler if wrong input
   } else {
