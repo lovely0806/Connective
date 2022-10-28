@@ -12,6 +12,8 @@ const CheckoutForm = () => {
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+
   React.useEffect(() => {
     if (!stripe) {
       return;
@@ -57,7 +59,7 @@ const CheckoutForm = () => {
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
-        return_url: process.env.returnURL,
+        return_url: origin + process.env.returnURL,
       },
     });
 

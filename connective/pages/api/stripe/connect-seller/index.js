@@ -7,6 +7,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export async function handler(req, res) {
   try {
+    const host = req.headers.origin
     if (req.method === "POST") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       let user = req.session.get().user;
@@ -22,8 +23,8 @@ export async function handler(req, res) {
         // fetch stripeID from the db;
         const accountLink = await stripe.accountLinks.create({
           account: result[0].stripeID,
-          refresh_url: process.env.refreshURL,
-          return_url: process.env.returnURL,
+          refresh_url: host + process.env.refreshURL,
+          return_url: host + process.env.returnURL,
           type: "account_onboarding",
         });
         // also might update the db with userOnbarded to true
@@ -52,7 +53,8 @@ export async function handler(req, res) {
     } else {
       return res.json({ error: "Only POST request is valid", success: false });
     }
-  } catch {
+  } catch(e) {
+    console.log(e)
     return res.json({ error: "Server error", success: false });
   }
 }
