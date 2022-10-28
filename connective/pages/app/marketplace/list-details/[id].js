@@ -86,7 +86,9 @@ export default function Dashboard({user}) {
                         )
                     })}
                 </div>
-                <ButtonDark text="Buy Now" className="ml-auto mr-auto mt-0"></ButtonDark>
+                <ButtonDark text="Buy Now" className="ml-auto mr-auto mt-0" onClick={() => {
+                    router.push({pathname: `/app/checkout/${id}`})
+                }}></ButtonDark>
             </div>
         </Layout>
     )
