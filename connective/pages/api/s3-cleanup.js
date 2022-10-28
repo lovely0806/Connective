@@ -8,16 +8,14 @@ export async function handler(req, res) {
     if (typeof req.session.get().user == "undefined") {
       return res.status(500).json({ success: false, error: "Not signed in" });
     }
-
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
-    let [lists, fields, err] = await connection
-      .promise()
-      .query(`SELECT url FROM Lists`);
-    const listsUsed = lists.map((elem) => {
-      return elem.url;
-    });
-    console.log(listsUsed);
     if (req.method == "GET") {
+      const connection = mysql.createConnection(process.env.DATABASE_URL);
+      let [lists, fields, err] = await connection
+        .promise()
+        .query(`SELECT url FROM Lists`);
+      const listsUsed = lists.map((elem) => {
+        return elem.url;
+      });
       const s3 = new AWS.S3({
         accessKeyId: process.env.AWS_ID,
         secretAccessKey: process.env.AWS_SECRET,
@@ -42,12 +40,12 @@ export async function handler(req, res) {
       //       else
       //         cb();
       //     });
+    
+      s3.listObjectsV2(fileParams, (result) => {
+        console.log(result);
+        //   res.status(200).json({ success: true, result });
+      });
     }
-    s3.listObjectsV2(fileParams, (result) => {
-      console.log(result);
-      //   res.status(200).json({ success: true, result });
-      res.status(200).json({ success: true, lists });
-    });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ success: false, error: e });
