@@ -70,12 +70,14 @@ export default function NewList({user}) {
                 <p className="text-center mb-10">Step 4 of 4</p>
                 <p className="font-bold mb-10 text-xl">Preview:</p>
                 <div className="sm:w-[30vw] 2xl:w-[20vw] mx-auto">
-                    <ListCard preview={true} item={{
-                        cover_url: coverUrl,
-                        title,
-                        description,
-                        price: price
-                    }}></ListCard>
+                    {typeof(title) != "undefined" && (
+                        <ListCard preview={true} item={{
+                            cover_url: coverUrl,
+                            title,
+                            description,
+                            price: price
+                        }}></ListCard>
+                    )}
                 </div>
                 <div className="flex mx-auto pl-10">
                     <ButtonDark text="Create" className="mr-0 mt-20" onClick={submit}></ButtonDark>

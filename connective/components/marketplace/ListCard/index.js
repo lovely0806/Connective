@@ -8,6 +8,8 @@ const ListCard = ({item, preview}) => {
     const [truncatedTitle, setTruncatedTitle] = useState("")
     const [truncatedDesc, setTruncatedDesc] = useState("")
 
+    console.log(item)
+
     useEffect(() => {
         console.log(item)
         if(typeof(item.title) == "undefined") return
@@ -27,7 +29,7 @@ const ListCard = ({item, preview}) => {
 
     return (
         <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
-            <div className="rounded-xl object-cover h-[40%] relative overflow-hidden">
+            <div className="rounded-xl object-cover h-48 relative overflow-hidden">
                 <Image
                     layout='fill'
                     objectFit="cover"
@@ -35,18 +37,19 @@ const ListCard = ({item, preview}) => {
                 />
             </div>
             <p className="font-bold text-lg w-full h-10 mb-5">{truncatedTitle}</p>
-            <p className="text-[#8A8888] text-sm overflow-clip">{truncatedDesc}</p>
-            <div className="flex flex-row gap-10 mx-auto mt-auto">
-                {!preview && (
-                    <div className="bg-[#CCE0FE] text-black/70 font-bold text-sm p-[0.2vw] rounded-full w-32 text-center">
-                        {item.buyers} buyers
-                    </div>
-                )}
-                
-                <div className="bg-[#D3EBD5] text-black/70 font-bold text-sm p-[0.2vw] rounded-full w-32 text-center">
-                    ${item.price}
+            <p className="text-[#8A8888] text-sm overflow-clip h-36">{truncatedDesc}</p>
+
+            <div className="flex flex-row justify-between">
+                <div className="flex flex-row gap-2">
+                    <img src={item?.logo} className="rounded-full w-10 h-10 object-cover"/>
+                    <p className="my-auto text-black/50 text-sm">{item?.username}</p>
+                </div>
+                <div className="flex flex-col text-sm font-bold">
+                    <p>${parseInt(item.price).toFixed(2)}</p>
+                    <p>0 buyers</p>
                 </div>
             </div>
+            
             {!preview && (
                 <div className="mx-auto pl-10">
                     <ButtonDark onClick={()=>{router.push(`/app/marketplace/list-details/${item.id}`)}} text="Explore" className="ml-0 mr-0 mb-0 mt-0"></ButtonDark>
