@@ -3,7 +3,7 @@ import axios from "axios"
 
 const SidebarItem = ({text, route, icon, onClick}) => {
     const router = useRouter()
-    let selected = router.route == route
+    let selected = router.route.includes(route)
     if(typeof(onClick) == "undefined") {
         onClick = () => {
             router.push(route)

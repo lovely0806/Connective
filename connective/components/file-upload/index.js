@@ -1,9 +1,9 @@
 import {useEffect} from "react"
 
-const FileUpload = ({text, file, setFile, id}) => {
+const FileUpload = ({text, file, setFile, id, accept="*"}) => {
     return (
         <>
-            <input type="file" id={id} hidden onChange={(e)=>{setFile(e.target.files[0])}}/>
+            <input type="file" accept={accept} id={id} hidden onChange={(e)=>{setFile(e.target.files[0])}}/>
             <label htmlFor={id}>
                 <div className="cursor-pointer w-full flex flex-col bg-[#D9D9D9]/30 p-5 border border-black/40 border-dashed rounded-md transition-all hover:bg-[#D9D9D9]/10">
                     <img className="mx-auto mt-auto" src="/assets/cloud.svg"/>

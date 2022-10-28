@@ -136,4 +136,11 @@ button:disabled {
     width: 80vw;
     min-width: initial;
   }
+    font-family: 'Montserrat', sans-serif;
+}
+
+.faded {
+    background: -webkit-linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }

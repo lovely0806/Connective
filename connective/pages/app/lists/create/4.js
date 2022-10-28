@@ -13,6 +13,7 @@ import ListCard from "../../../../components/marketplace/ListCard";
 export default function NewList({user}) {
     const [price, setPrice] = useState("")
     const [title, setTitle] = useState()
+    const [category, setCategory] = useState()
     const [description, setDescription] = useState()
     const [geo, setGeo] = useState()
     const [obtain, setObtain] = useState()
@@ -33,6 +34,7 @@ export default function NewList({user}) {
 
         setPrice(newListPrice)
         setTitle(newListvalues.title)
+        setCategory(newListvalues.category)
         setDescription(newListvalues.description)
         setGeo(newListvalues.geo)
         setObtain(newListvalues.obtain)
@@ -47,6 +49,7 @@ export default function NewList({user}) {
         setProcessing(true)
         await axios.post("/api/lists", {
             title,
+            category,
             description,
             geo,
             obtain,
@@ -59,16 +62,16 @@ export default function NewList({user}) {
         setProcessing(false)
         router.push("/app/marketplace")
     }
-3
+
     return (
         <Layout title="Lists">
             <div className="mx-[20vw] p-10 flex flex-col">
                 <p className="text-center font-bold text-xl mb-5">Create a list</p>
                 <p className="text-center mb-10">Step 4 of 4</p>
                 <p className="font-bold mb-10 text-xl">Preview:</p>
-                <div className="w-[30vw] mx-auto">
+                <div className="sm:w-[30vw] 2xl:w-[20vw] mx-auto">
                     <ListCard preview={true} item={{
-                        img: coverUrl == "" ? "/assets/banners/leaves-min.jpeg" : coverUrl,
+                        cover_url: coverUrl,
                         title,
                         description,
                         price: price

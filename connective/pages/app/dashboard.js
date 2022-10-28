@@ -42,14 +42,27 @@ const Divider = () => {
 
 export default function Dashboard({user}) {
     const [isVerified, setIsVerified] = useState(true)
+    const [data, setData] = useState()
 
     const getVerified = async () => {
         const {data} = await axios.get('/api/stripe/UserValidated');
         setIsVerified(data.verified)
     }
+    
+    const getData = async () => {
+        let type = await Util.accountType(user.id)
+        if(type == "Business") {
+            let {data} = await axios.get("/api/dashboard/business")
+            setData(data)
+        } else {
+            let {data} = await axios.get("/api/dashboard/individual")
+            setData(data)
+        }
+    }
 
     useEffect(() => {
         getVerified()
+        getData()
     }, [])
 
     const connectwithBankDetails = async () => {
@@ -67,20 +80,20 @@ export default function Dashboard({user}) {
                 </div>
             )}
             
-            <DashboardRow title="Buying" buttonText="Explore Marketplace">
-                <DashboardItem title="List Views" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+            <DashboardRow title="As a Buyer" buttonText="Explore Marketplace">
+                <DashboardItem title="Lists Viewed" value={data?.listViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Lists Sold" value="50" icon="/assets/dashboard/listCheck.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Bought" value="50" icon="/assets/dashboard/listCheck.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Total Earnings" value="$150" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
+                <DashboardItem title="Total $ Spent" value="$150" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
             </DashboardRow>
 
-            <DashboardRow title="Selling" buttonText="Create a List">
-                <DashboardItem title="List Views" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+            <DashboardRow title="As a Seller" buttonText="Create a List">
+                <DashboardItem title="Lists Created" value={data?.profileViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="List Views" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="List Sold" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Total Spent" value="$500" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
+                <DashboardItem title="Total $ Earned" value="$500" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
             </DashboardRow>
         </Layout>
     )

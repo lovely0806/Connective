@@ -2,7 +2,7 @@ import axios from "axios"
 import {useState, useEffect} from "react"
 import {withIronSession} from "next-iron-session"
 import Layout from "../../../../components/layout";
-import Select from "react-select"
+import Util from "../../../../util"
 import {useRouter} from "next/router"
 import ButtonDark from "../../../../components/button-dark";
 
@@ -15,6 +15,14 @@ export default function Dashboard({user}) {
         let {data} = await axios.get(`/api/lists/${id}`)
         setData(data)
         console.log(data)
+
+        let type = await Util.accountType(user.id)
+        console.log(type)
+        if(type == "Business") {
+            await axios.post("/api/profiles/viewList", {id: user.id, type: "business"})
+        } else {
+            await axios.post("/api/profiles/viewList", {id: user.id, type: "individual"})
+        }
     }
 
     useEffect(() => {
@@ -52,7 +60,7 @@ export default function Dashboard({user}) {
                             </div>
                             <p className="text-lg font-bold mb-2">Listed By</p>
                             <div className="flex flex-row gap-3">
-                                <img className="h-8 rounded-full" src={typeof(data.logo) == "undefined" ? data.profile_picture : data.logo}/>
+                                <img className="h-8 w-8 rounded-full" src={typeof(data.logo) == "undefined" ? data.profile_picture : data.logo}/>
                                 <p className="text-[#8A8888] mb-7 my-auto">{typeof(data.name) == "undefined" ? data.company_name : data.name}</p>
                             </div>
                             <p className="text-lg font-bold mb-2">List Price</p>
@@ -65,33 +73,18 @@ export default function Dashboard({user}) {
                         <img src="/assets/fieldsdescription.svg"></img>
                         <p className="font-bold text-xl my-auto">Fields Description</p>
                     </div>
-                    
-                    <div className="flex flex-row w-full justify-between gap-5  ">
-                        <div className="w-full">
-                            <p>Fields</p>
-                            <div className="flex flex-col gap-5">
-                                {data?.fields?.fieldResults.map((item) => {
-                                    return (
-                                        <div className="bg-[#FBFAFA] border border-black/30 rounded-md w-full py-1 px-2">
-                                            <p>{item.name}</p>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                        <div className="w-full">
-                            <p>Description</p>
-                            <div className="flex flex-col gap-5">
-                                {data?.fields?.fieldResults.map((item) => {
-                                    return (
-                                        <div className="bg-[#FBFAFA] border border-black/30 rounded-md w-full py-1 px-2">
-                                            <p>{item.description}</p>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
+                    <div className="grid grid-cols-2 text-lg font-medium text-black/50 border-b border-black/20">
+                        <p>Field</p>
+                        <p>Description</p>
                     </div>
+                    {data?.fields?.fieldResults.map((item, index) => {
+                        return (
+                            <div className="grid grid-cols-2 border-b border-black/20 py-5 text-sm">
+                                <p>{item.name}</p>
+                                <p>{item.description}</p>
+                            </div>
+                        )
+                    })}
                 </div>
                 <ButtonDark text="Buy Now" className="ml-auto mr-auto mt-0" onClick={() => {
                     router.push({pathname: `/app/checkout/${id}`})

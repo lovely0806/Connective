@@ -57,7 +57,7 @@ export default function SignUp() {
             data: {username: name, email, password}
         })
         .then(() => {
-            router.push("/")
+            router.push("/auth/signin")
         })
         .catch(e => {
             if(e.response.data.error == "Email already exists") {

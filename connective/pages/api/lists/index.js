@@ -17,15 +17,14 @@ export async function handler(req, res) {
             res.status(200).json(results)
         }
         if(req.method == "POST") {
-            const {title, description, geo, obtain, price, uploadUrl, previewUrl, coverUrl, fields} = req.body
-            
-            const connection = mysql.createConnection(process.env.DATABASE_URL);
+            const {title, category, description, geo, obtain, price, uploadUrl, previewUrl, coverUrl, fields} = req.body
 
+            const connection = mysql.createConnection(process.env.DATABASE_URL)
             let [result, err, returnFields] = await connection.promise().execute(`
                 INSERT INTO Lists (
-                    creator, title, description, location, list_obtained, price, url, preview_url, cover_url, published
+                    creator, title, category, description, location, list_obtained, price, url, preview_url, cover_url, published
                 ) VALUES (
-                    '${user.id}', '${title}', '${description}', '${geo}', '${obtain}', '${price}', '${uploadUrl}', '${previewUrl}', '${coverUrl}', '1'
+                    '${user.id}', '${title}', '${category}', '${description}', '${geo}', '${obtain}', '${price}', '${uploadUrl}', '${previewUrl}', '${coverUrl}', '1'
                 );`)
             
             let fieldValues = []
@@ -33,8 +32,10 @@ export async function handler(req, res) {
                 fieldValues.push([result.insertId, field.name, field.description])
             })
 
-            let sql = "INSERT INTO Fields (list_id, name, description) VALUES ?"
-            await connection.promise().query(sql, [fieldValues])
+            if(fieldValues.length > 0) {
+                let sql = "INSERT INTO Fields (list_id, name, description) VALUES ?"
+                await connection.promise().query(sql, [fieldValues])
+            }
 
             connection.end()
             res.status(200).json({success: true})  

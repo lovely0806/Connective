@@ -1,4 +1,5 @@
 import axios from "axios"
+import Compress from "compress.js"
 const Util = {}
 
 Util.profileConfigured = async (id) => {
@@ -35,7 +36,17 @@ Util.accountType = async (id) => {
     return type
 }
 
-Util.uploadFile = async (name, file) => {
+Util.uploadFile = async (name, file, image=false) => {
+    if(image) {
+        const compress = new Compress()
+        let temp = await compress.compress([file], {
+            resize: true,
+            rotate: false
+        }, false)
+        console.log(temp)
+
+        file = Compress.convertBase64ToFile(temp[0].data, temp[0].ext)
+    } 
     let {data} = await axios.post(
         "/api/upload-file",
         {
@@ -55,6 +66,7 @@ Util.uploadFile = async (name, file) => {
     })
 
     return data.url.split("?")[0]
+
 }
 
 Util.verifyField = (value, setErrorText, errorTextValue) => {
