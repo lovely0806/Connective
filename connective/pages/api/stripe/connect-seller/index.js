@@ -4,7 +4,7 @@ const mysql = require("mysql2");
 const client = require("@sendgrid/mail");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+ 
 export async function handler(req, res) {
   try {
     const host = req.headers.host;
