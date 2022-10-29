@@ -10,6 +10,9 @@ export async function handler(req, res) {
         if(req.method == "GET") { //Returns callers account
             const connection = mysql.createConnection(process.env.DATABASE_URL)
             var [results, fields, err] = await connection.promise().query(`SELECT * FROM Individual WHERE user_id='${user.id}';`)
+            var [listResults, listFields, listErr] = await connection.promise().query(`SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${user.id};`)
+            console.log(results)
+            results[0].lists = listResults
             res.status(200).json(results[0])
         }
         if(req.method == "POST") {

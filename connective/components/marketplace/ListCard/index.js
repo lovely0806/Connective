@@ -25,7 +25,8 @@ const ListCard = ({item, preview, user}) => {
                     setUsername(res.data.name)
                 }
             })
-        } else {
+        } 
+        if(type == "Business") {
             await axios.get("/api/profiles/individual")
             .then(res => {
                 if(typeof(res.data) != "undefined") {
