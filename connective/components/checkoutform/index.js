@@ -54,6 +54,8 @@ const CheckoutForm = () => {
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
+
+
     const url = window.location.href;
     const return_path = url.slice(0, 26)
 
@@ -62,6 +64,7 @@ const CheckoutForm = () => {
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
+        
         return_url: return_path + 'marketplace',
       },
     });
