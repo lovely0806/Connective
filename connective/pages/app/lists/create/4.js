@@ -71,7 +71,7 @@ export default function NewList({user}) {
                 <p className="font-bold mb-10 text-xl">Preview:</p>
                 <div className="sm:w-[30vw] 2xl:w-[20vw] mx-auto">
                     {typeof(title) != "undefined" && (
-                        <ListCard preview={true} item={{
+                        <ListCard preview={true} user={user} item={{
                             cover_url: coverUrl,
                             title,
                             description,

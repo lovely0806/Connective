@@ -2,13 +2,41 @@ import ButtonDark from "../../button-dark"
 import {useRouter} from "next/router"
 import Image from "next/image"
 import {useEffect, useState} from "react"
+import Util from "../../../util"
+import axios from "axios"
 
-const ListCard = ({item, preview}) => {
+const ListCard = ({item, preview, user}) => {
     const router = useRouter()
     const [truncatedTitle, setTruncatedTitle] = useState("")
     const [truncatedDesc, setTruncatedDesc] = useState("")
+    const [profilePicture, setProfilePicture] = useState("")
+    const [username, setUsername] = useState("")
 
     console.log(item)
+
+    const getProfilePicture = async () => {
+        let type = Util.accountType()
+        if(type == "Individual") {
+            await axios.get("/api/profiles/business")
+            .then(res => {
+                if(typeof(res.data) != "undefined") {
+                    console.log(res.data)
+                    setProfilePicture(res.data.logo)
+                    setUsername(res.data.name)
+                }
+            })
+        } else {
+            await axios.get("/api/profiles/individual")
+            .then(res => {
+                if(typeof(res.data) != "undefined") {
+                    console.log(res.data)
+                    setProfilePicture(res.data.profile_picture)
+                    setUsername(res.data.name)
+                }
+            })
+        }
+        
+    }
 
     useEffect(() => {
         console.log(item)
@@ -25,6 +53,10 @@ const ListCard = ({item, preview}) => {
         temp = item.description.slice(0,descLen)
         if(isDescLong) temp += "..."
         setTruncatedDesc(temp)
+
+        if(preview) {
+            getProfilePicture()
+        }
     }, [item])
 
     return (
@@ -41,8 +73,12 @@ const ListCard = ({item, preview}) => {
 
             <div className="flex flex-row justify-between">
                 <div className="flex flex-row gap-2">
-                    <img src={item?.logo} className="rounded-full w-10 h-10 object-cover"/>
-                    <p className="my-auto text-black/50 text-sm">{item?.username}</p>
+                    {preview ? (
+                        <img src={profilePicture == "" ? `https://avatars.dicebear.com/api/micah/${user.id}.svg` : profilePicture} className="rounded-full w-10 h-10 object-cover"/>
+                    ) : (
+                        <img src={item?.logo} className="rounded-full w-10 h-10 object-cover"/>
+                    )}
+                    <p className="my-auto text-black/50 text-sm">{preview ? username : item?.username}</p>
                 </div>
                 <div className="flex flex-col text-sm font-bold">
                     <p>${parseInt(item.price).toFixed(2)}</p>
