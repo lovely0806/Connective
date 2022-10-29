@@ -22,10 +22,11 @@ export async function handler(req, res) {
       connection.close();
       if (result.length > 0) {
         // fetch stripeID from the db;
+        
         const accountLink = await stripe.accountLinks.create({
           account: result[0].stripeID,
-          refresh_url: process.env.NODE_ENV === "production" ? 'https:' : 'http:' + '//' + host + process.env.refreshURL,
-          return_url: process.env.NODE_ENV === "production" ? 'https:' : 'http:' + '//' + host + process.env.returnURL,
+          refresh_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.refreshURL,
+          return_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.returnURL,
           type: "account_onboarding",
         });
         // also might update the db with userOnbarded to true
