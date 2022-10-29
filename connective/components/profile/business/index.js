@@ -2,6 +2,7 @@ import axios from "axios"
 import {useState, useEffect} from "react"
 import {useRouter} from "next/router"
 import ButtonDark from "../../button-dark"
+import ListCard from "../../marketplace/ListCard"
 
 export default function BusinessProfile({user}) {
     const router = useRouter()
@@ -69,6 +70,16 @@ export default function BusinessProfile({user}) {
                 <div className="rounded-xl bg-white shadow w-[40vw] p-5">
                     <p>{data?.description}</p>
                 </div>
+                <p className="font-bold text-xl mt-20 mb-5">Lists for sale:</p>
+                {typeof(data.lists) != "undefined" && data.lists.length > 0 && (
+                    <div className="grid sm:grid-cols-3 2xl:grid-cols-4 auto-rows-[30vw] gap-10 pb-20">
+                        {data.lists.map((item, index) => {
+                            return (
+                                <ListCard item={item}></ListCard>
+                            )
+                        })}
+                    </div>
+                )}
             </div>
             </>
             )}

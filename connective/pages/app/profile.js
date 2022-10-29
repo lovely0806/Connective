@@ -17,13 +17,16 @@ export default function Profile({user}) {
     }, [])
 
     return (
-        <main className="flex flex-row min-h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
+        <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
             <Sidebar></Sidebar>
-            {accountType == "Business" ? (
-                <BusinessProfile user={user}></BusinessProfile>
-            ) : (
-                <IndividualProfile user={user}></IndividualProfile>
-            )}
+            <div className="h-screen w-screen overflow-y-scroll">
+                {accountType == "Business" && (
+                    <BusinessProfile user={user}></BusinessProfile>
+                )} 
+                {accountType == "Individual" && (
+                    <IndividualProfile user={user}></IndividualProfile>
+                )}
+            </div>
         </main>
     )
 }
