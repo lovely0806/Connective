@@ -76,7 +76,7 @@ const ListCard = ({item, preview, user}) => {
                     {preview ? (
                         <img src={profilePicture == "" ? `https://avatars.dicebear.com/api/micah/${user.id}.svg` : profilePicture} className="rounded-full w-10 h-10 object-cover"/>
                     ) : (
-                        <img src={item?.logo} className="rounded-full w-10 h-10 object-cover"/>
+                        <img src={item?.logo == "" ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg` : item.logo} className="rounded-full w-10 h-10 object-cover"/>
                     )}
                     <p className="my-auto text-black/50 text-sm">{preview ? username : item?.username}</p>
                 </div>
