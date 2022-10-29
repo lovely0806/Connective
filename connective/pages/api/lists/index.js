@@ -9,8 +9,9 @@ export async function handler(req, res) {
         }
         if(req.method == "GET") {
             const connection = mysql.createConnection(process.env.DATABASE_URL)
-            var [results, fields, err] = await connection.promise().query(`SELECT * FROM Lists;`)
+            var [results, fields, err] = await connection.promise().query(`SELECT Lists.*, Business.company_name AS username, Business.logo FROM Lists JOIN Business on Lists.creator = Business.user_id UNION ALL SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id;`)
             var [purchaseResults, fields, err] = await connection.promise().query(`select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`)
+
             results.forEach(list => {
                 list.buyers = purchaseResults.filter((i) => {if(i.list_id == list.id) return 1}).length
             })

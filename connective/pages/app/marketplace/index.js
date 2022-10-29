@@ -20,6 +20,7 @@ export default function Dashboard({user}) {
 
     const getLists = async () => {
         let {data} = await axios.get("/api/lists")
+        console.log(data)
         setLists(data)
         setFilteredLists(data)
         setLoading(false)
