@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "@stripe/react-stripe-js": "^1.13.0",
+    "@stripe/stripe-js": "^1.42.0",
     "aws-sdk": "^2.1233.0",
     "axios": "^1.1.2",
     "bcryptjs": "^2.4.3",
@@ -25,6 +28,8 @@
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
     "react-select": "^5.5.0",
+    "sparkpost": "^2.1.4",
+    "stripe": "^10.15.0",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
   },
