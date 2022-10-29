@@ -59,10 +59,10 @@ export default function NewList({user}) {
                 <InputField name="Price" placeholder="Enter a price for this list" price={true} updateValue={setPrice} errorText={priceError}></InputField>
                 
                 <p className="text-sm mb-2 mt-10">Upload a cover image (optional)</p>
-                <FileUpload text="Upload cover image" file={cover} setFile={setCover} id="cover upload"></FileUpload>
+                <FileUpload text="Upload cover image" file={cover} setFile={setCover} id="cover upload" accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"></FileUpload>
                 
                 <p className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
-                <FileUpload text="Upload Image" file={file} setFile={setFile} id="preview upload"></FileUpload>
+                <FileUpload text="Upload Image" file={file} setFile={setFile} id="preview upload" accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"></FileUpload>
                 <ButtonDark text="Next" className="mr-0 mt-10" onClick={submit}></ButtonDark>
             </div>
         </Layout>
