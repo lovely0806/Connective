@@ -65,7 +65,7 @@ export default function Dashboard({user}) {
                             </div>
                             <p className="text-lg font-bold mb-2">Listed By</p>
                             <div className="flex flex-row gap-3">
-                                <img className="h-8 w-8 rounded-full" src={typeof(data.logo) == "undefined" ? data.profile_picture : data.logo}/>
+                                <img className="h-8 w-8 rounded-full object-fit" src={(typeof(data.logo) == "undefined" || data.logo == "") && (typeof(data.profile_picture) == "undefined" || data.profile_picture == "") ? `https://avatars.dicebear.com/api/micah/${data.creator}.svg` : typeof(data.logo) == "undefined" ? data.profile_picture : data.logo}/>
                                 <p className="text-[#8A8888] mb-7 my-auto">{!loading ? typeof(data.name) == "undefined" ? data.company_name : data.name : "..."}</p>
                             </div>
                             <p className="text-lg font-bold mb-2">List Price</p>
@@ -73,6 +73,16 @@ export default function Dashboard({user}) {
                         </div>
                     </div>
                 </div>
+
+                <div className="mx-20 bg-white shadow-lg rounded-xl p-10">
+                    <div className="flex flex-row h-fit gap-5 mb-10">
+                        <img src="/assets/listdetails.svg"></img>
+                        <p className="font-bold text-xl my-auto">List Preview</p>
+                    </div>
+                    
+                    <img src={data.preview_url}/>
+                </div>
+
                 <div className="mx-20 bg-white shadow-lg rounded-xl p-10">
                     <div className="flex flex-row gap-5 mb-10">
                         <img src="/assets/fieldsdescription.svg"></img>
