@@ -27,7 +27,7 @@ export default function Dashboard({user}) {
     }
 
     const updateFilter = (e) => {
-        if(e.value == "all") {
+        if(e.label == "All") {
             setFilteredLists(lists)
             return
         } 

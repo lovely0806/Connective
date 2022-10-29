@@ -5,6 +5,7 @@ import {useState, useEffect} from "react"
 import {useRouter} from "next/router"
 import {withIronSession} from "next-iron-session"
 import OnboardingSidebar from "../../components/onboarding-sidebar";
+import Link from "next/link"
 
 export default function SignIn({user}) {
     const [email, setEmail] = useState("")
@@ -64,6 +65,7 @@ export default function SignIn({user}) {
                 <button onClick={submitAccount} className="w-full bg-[#0F172A] font-bold text-white py-4 mt-20 rounded-md shadow-md transition-all hover:scale-105 hover:shadow-lg">
                     Sign in
                 </button>
+                <p className="mt-2">Dont have an account? <Link href="/auth/signup"><span className="underline cursor-pointer text-blue-400">Sign up here</span></Link></p>
             </div>
         </main>
     )

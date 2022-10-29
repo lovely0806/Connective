@@ -6,6 +6,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 export async function handler(req, res) {
   try {
     const host = req.headers.host;
+    console.log(host);
     if (req.method === "POST") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       let user = req.session.get().user;
@@ -19,6 +20,7 @@ export async function handler(req, res) {
       connection.close();
       if (result.length > 0) {
         // fetch stripeID from the db;
+        
         const accountLink = await stripe.accountLinks.create({
           account: result[0].stripeID,
           refresh_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.refreshURL,

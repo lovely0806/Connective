@@ -4,6 +4,7 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
+import { useRouter } from "next/router";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -54,12 +55,17 @@ const CheckoutForm = () => {
       return;
     }
 
+
+    const url = window.location.href;
+    const return_path = url.slice(0, 26)
+
     setIsLoading(true);
     const { error } = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
-        return_url: origin + process.env.returnURL,
+        
+        return_url: return_path + 'marketplace',
       },
     });
 
