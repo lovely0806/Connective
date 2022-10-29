@@ -40,7 +40,7 @@ const Sidebar = () => {
             <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg" route="/app/purchasedlists"></SidebarItem>
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[1.8vh]">As a seller</p>
-            <SidebarItem text="Lists" icon="/assets/navbar/ListsIcon.svg" route="/app/lists/create/1"></SidebarItem>
+            <SidebarItem text="Lists" icon="/assets/navbar/ListsIcon.svg" route="/app/lists"></SidebarItem>
             <SidebarItem text="Earnings" icon="/assets/navbar/EarningsIcon.svg" route="/app/earnings"></SidebarItem>
             <SidebarItem text="Requests List" icon="/assets/navbar/RequestsListIcon.svg" route="/app/requests"></SidebarItem>
             
