@@ -13,6 +13,17 @@ export default function NewList({user}) {
     const [file, setFile] = useState()
     const router = useRouter()
 
+    useEffect(() => {
+        redirectIfNotVerified()
+    }, [])
+
+    const redirectIfNotVerified = async() => {
+        let verified = (await axios.get("/api/stripe/UserValidated")).data.verified
+        if(!verified) {
+            router.push("/app/dashboard")
+        }
+    }
+
     const submit = async () => {
         if(processing) return
         setProcessing(true)

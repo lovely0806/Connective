@@ -7,14 +7,17 @@ const stripe = require("stripe")(
 export async function handler(req, res) {
   try {
     if (req.method === "GET") {
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
       let user = req.session.get().user
+      let id = req.query.id
+      if(typeof(id) == "undefined") id = user.id
+
+      const connection = mysql.createConnection(process.env.DATABASE_URL);
       if(typeof(user) == "undefined") {
           return res.status(500).json({success: false, error: "Not signed in"})
       }
       var [result, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Users WHERE id='${user.id}';`);
+        .query(`SELECT * FROM Users WHERE id='${id}';`);
       connection.close();
       if (result.length > 0) {
         const acc = await stripe.accounts.retrieve({
