@@ -7,7 +7,7 @@ const InputField = ({name, placeholder, password, textarea, price, updateValue, 
                     <div className="absolute h-full ml-4 flex">
                         <p className="my-auto text-lg">$</p>
                     </div>
-                    <input onChange={(e) => {updateValue(e.target.value)}} type="number" min="0" step="1" oninput="validity.valid||(value='');" className="outline-none w-full px-5 pl-8 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300" placeholder={placeholder}></input>
+                    <input onChange={(e) => {updateValue(e.target.value)}} type="number" min="0" step="1" className="outline-none w-full px-5 pl-8 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300" placeholder={placeholder}></input>
                 </div>
             )}
 

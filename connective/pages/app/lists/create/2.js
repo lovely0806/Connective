@@ -54,7 +54,7 @@ export default function NewList({user}) {
                     <InputField name="Title" placeholder="Name your list" updateValue={setTitle} errorText={titleError}></InputField>
                     <div>
                         <p className="text-sm font-[Montserrat] mb-2">Category</p>
-                        <Select options={categoryOptions} onChange={(e)=>{setCategory(e.value)}}></Select>
+                        <Select options={categoryOptions} defaultValue={categoryOptions[0]} onChange={(e)=>{setCategory(e.value)}}></Select>
                     </div>
                     <InputField name="Description" textarea={true} placeholder="Enter a description" updateValue={setDescription} errorText={descriptionError}></InputField>
                     <InputField name="Geographical area of resources" placeholder="Where are the resources on your list located?" updateValue={setGeo} errorText={geoError}></InputField>

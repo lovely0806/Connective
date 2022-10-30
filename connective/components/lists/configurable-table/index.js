@@ -39,9 +39,6 @@ const Row = ({id, data, setData}) => {
 }
 
 const ConfigurableTable = ({data, setData, column1Name, column2Name, title}) => {
-    useEffect(() => {
-        console.log(data)
-    }, [data])
     return (
         <div>
             <p className="text-sm mb-2">{title}</p>
@@ -54,10 +51,9 @@ const ConfigurableTable = ({data, setData, column1Name, column2Name, title}) => 
                 })}
             </div>
             <div className="flex flex-row gap-5">
-                <button className="bg-[#0F172A] text-white rounded-full w-8 h-8 text-[20px]" onClick={()=>{setData([...data, {name: "", description: ""}])}}>+</button>
-                <button className="bg-[#0F172A] text-white rounded-full w-8 h-8 text-[20px]" onClick={()=>{let d = data; d.shift(); console.log(d); setData([...d])}}>-</button>
+                <div className="bg-[#0F172A] text-white rounded-full w-8 h-8 flex text-[20px]" onClick={()=>{setData([...data, {name: "", description: ""}])}}><p className="mx-auto my-auto">+</p></div>
+                <div className="bg-[#0F172A] text-white rounded-full w-8 h-8 flex text-[20px]" onClick={()=>{let d = data; d.shift(); console.log(d); setData([...d])}}><p className="mx-auto my-auto">-</p></div>
             </div>
-            
         </div>
     )
 }

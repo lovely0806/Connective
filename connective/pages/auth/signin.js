@@ -43,7 +43,7 @@ export default function SignIn({ user }) {
       .then((res) => {
         if (res.status == 201) {
           res.data
-            ? router.push("/app/profile")
+            ? router.push("/app/marketplace")
             : router.push("/onboarding/create-profile");
         }
       })
