@@ -53,9 +53,11 @@ export default function Dashboard({user}) {
         let type = await Util.accountType(user.id)
         if(type == "Business") {
             let {data} = await axios.get("/api/dashboard/business")
+            console.log(data)
             setData(data)
         } else {
             let {data} = await axios.get("/api/dashboard/individual")
+            console.log(data)
             setData(data)
         }
     }
@@ -81,19 +83,19 @@ export default function Dashboard({user}) {
             )}
             
             <DashboardRow title="As a Buyer" buttonText="Explore Marketplace">
-                <DashboardItem title="Lists Viewed" value={data?.listViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Viewed" value={data?.listsViewed} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Lists Bought" value="50" icon="/assets/dashboard/listCheck.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Bought" value={data?.purchasedLists} icon="/assets/dashboard/listCheck.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Total $ Spent" value="$150" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
+                <DashboardItem title="Total $ Spent" value={"$" + data?.totalSpent} icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
             </DashboardRow>
 
             <DashboardRow title="As a Seller" buttonText="Create a List">
-                <DashboardItem title="Lists Created" value={data?.profileViews} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="Lists Created" value={data?.listsCreated} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="List Sold" value="100" icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
+                <DashboardItem title="List Sold" value={data?.listsSold} icon="/assets/dashboard/list.svg" color="#CCE0FE"></DashboardItem>
                 <Divider></Divider>
-                <DashboardItem title="Total $ Earned" value="$500" icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
+                <DashboardItem title="Total $ Earned" value={"$" + data?.totalEarned} icon="/assets/dashboard/money.svg" color="#D3EBD5"></DashboardItem>
             </DashboardRow>
         </Layout>
     )
