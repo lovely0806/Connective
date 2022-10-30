@@ -83,7 +83,7 @@ const ListCard = ({item, preview, user}) => {
                 </div>
                 <div className="flex flex-col text-sm font-bold">
                     <p>${parseInt(item.price).toFixed(2)}</p>
-                    <p>{preview ? 0 : item.buyers} buyers</p>
+                    <p>{preview ? 0 : item.buyers} {item.buyers == 1 ? "buyer" : "buyers"}</p>
                 </div>
             </div>
             
