@@ -16,17 +16,16 @@ export default function Dashboard({user}) {
     const getData = async () => {
         let {data} = await axios.get(`/api/lists/${id}`)
         setData(data)
-        console.log(data)
 
         let type = await Util.accountType(user.id)
-        console.log(type)
         if(type == "Business") {
             await axios.post("/api/profiles/viewList", {id: user.id, type: "business"})
         } else {
             await axios.post("/api/profiles/viewList", {id: user.id, type: "individual"})
         }
 
-        setAccountVerified((await axios.get(`/api/stripe/UserValidated?id=${data.creator}`)).data.verified)
+        let verified = (await axios.get(`/api/stripe/UserValidated?id=${data.creator}`)).data.verified
+        setAccountVerified(verified)
         setLoading(false)
     }
 

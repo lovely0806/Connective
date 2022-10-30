@@ -22,7 +22,7 @@ const Sidebar = () => {
     const router = useRouter()
     const signout = async () => {
         await axios.get("/api/auth/signout")
-        router.push("/")
+        router.push("https://www.connective-app.xyz")
     }
 
     return (
@@ -37,7 +37,7 @@ const Sidebar = () => {
 
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[1.8vh]">As a buyer</p>
             <SidebarItem text="Marketplace" icon="/assets/navbar/MarketplaceIcon.svg" route="/app/marketplace"></SidebarItem>
-            <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg" route="/app/purchasedlists"></SidebarItem>
+            <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg" route="/app/lists/purchased"></SidebarItem>
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[1.8vh]">As a seller</p>
             <SidebarItem text="Lists" icon="/assets/navbar/ListsIcon.svg" route="/app/lists"></SidebarItem>
@@ -46,7 +46,7 @@ const Sidebar = () => {
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[1.8vh]">Support</p>
             <SidebarItem text="Feedback" icon="/assets/navbar/FeedbackIcon.svg" route="/app/feedback"></SidebarItem>
-            <SidebarItem text="Contact Us" icon="/assets/navbar/ContactUsIcon.svg" route="/app/contact"></SidebarItem>
+            <SidebarItem text="Contact Us" icon="/assets/navbar/ContactUsIcon.svg" route="https://join.slack.com/t/connective-app/shared_invite/zt-1j40vh5y8-CBdGdfI_8syA8TI81ZaAMQ"></SidebarItem>
             <SidebarItem text="Sign Out" icon="/assets/navbar/SignOutIcon.svg" onClick={signout}></SidebarItem>
         </div>
     )

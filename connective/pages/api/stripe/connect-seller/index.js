@@ -23,8 +23,8 @@ export async function handler(req, res) {
         
         const accountLink = await stripe.accountLinks.create({
           account: result[0].stripeID,
-          refresh_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.refreshURL,
-          return_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.returnURL,
+          refresh_url: process.env.NODE_ENV === "development" ? 'http:' : 'https:' + '//' + host + process.env.refreshURL,
+          return_url: process.env.NODE_ENV === "development" ? 'http:' : 'https:' + '//' + host + process.env.returnURL,
           type: "account_onboarding",
         });
          return res.status(200).json({success: true, accountLink: accountLink.url})

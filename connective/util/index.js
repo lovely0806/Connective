@@ -25,12 +25,10 @@ Util.accountType = async (id) => {
     let type = "none"
     await axios.get(`/api/profiles/business/${id}`)
         .then(res => {
-            console.log(res.data)
             if(res.data != "") type = "Business"
         })
     await axios.get(`/api/profiles/individual/${id}`)
         .then(res => {
-            console.log(res.data)
             if(res.data != "") type = "Individual"
         })
     return type
@@ -43,8 +41,6 @@ Util.uploadFile = async (name, file, image=false) => {
             resize: true,
             rotate: false
         }, false)
-        console.log(temp)
-
         file = Compress.convertBase64ToFile(temp[0].data, temp[0].ext)
     } 
     let {data} = await axios.post(
