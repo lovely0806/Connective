@@ -5,29 +5,29 @@ import {
   PaymentElement,
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/router";
-​
+ 
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-​
+ 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-​
+
   const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
-​
+
   React.useEffect(() => {
     if (!stripe) {
       return;
     }
-​
+
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
-​
+
     if (!clientSecret) {
       return;
     }
-​
+
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       switch (paymentIntent.status) {
         case "succeeded":
@@ -46,7 +46,7 @@ const CheckoutForm = () => {
       }
     });
   }, [stripe]);
-​
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!stripe || !elements) {
@@ -54,11 +54,10 @@ const CheckoutForm = () => {
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
-​
-​
+
     const url = window.location.href.split("/");
     const return_path = url[0] + "//" + url[2] + '/' + url[3] + '/' ;
-​
+
     setIsLoading(true);
     const { error } = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
@@ -67,7 +66,7 @@ const CheckoutForm = () => {
         return_url: return_path + 'marketplace',
       },
     });
-​
+
     if (error) {
       // This point will only be reached if there is an immediate error when
       // confirming the payment. Show error to your customer (for example, payment
@@ -84,7 +83,7 @@ const CheckoutForm = () => {
     }
     setIsLoading(false);
   };
-​
+
   return (
     <main id="main-checkout-container">
       <form id="payment-form" onSubmit={handleSubmit}>
@@ -104,5 +103,5 @@ const CheckoutForm = () => {
     </main>
   );
 };
-​
+
 export default CheckoutForm;
