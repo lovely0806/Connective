@@ -17,6 +17,7 @@ export default function Dashboard({user}) {
         let {data} = await axios.get(`/api/lists/${id}`)
         setData(data)
 
+        //Increment list viewed for user
         let type = await Util.accountType(user.id)
         if(type == "Business") {
             await axios.post("/api/profiles/viewList", {id: user.id, type: "business"})
@@ -100,7 +101,7 @@ export default function Dashboard({user}) {
                         )
                     })}
                 </div>
-                {accountVerified && (
+                {accountVerified && !data.purchased && (
                     <ButtonDark text="Buy Now" className="ml-auto mr-auto mt-0" onClick={() => {
                         router.push({pathname: `/app/checkout/${id}`})
                     }}></ButtonDark>
