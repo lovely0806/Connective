@@ -24,8 +24,9 @@ export async function handler(req, res) {
                 join Business on Business.user_id = creator
                 WHERE Lists.id=${id};`)
             }
-            var [purchaseResults] = await connection.promise().query(`select * from Lists join purchased_lists on list_id = Lists.id where buyer_id = ${user.id};`)
+            var [purchaseResults] = await connection.promise().query(`select * from Lists join purchased_lists on list_id = Lists.id where buyer_id = ${user.id} AND list_id = ${id};`)
             var alreadyPurchased = purchaseResults.length > 0
+
             let list = listResults[0]
             var [fieldResults, fields, err] = await connection.promise().query(`SELECT name, description FROM Fields WHERE list_id=${id};`)
             list.fields = {fieldResults}
