@@ -15,7 +15,7 @@ const DashboardItem = ({title, value, icon, color}) => {
                 </div>
                 <p className="my-auto text-[#8A8888]">{title}</p>
             </div>
-            <p className="text-center font-bold text-4xl">{value}</p>
+            <p className="text-center font-bold text-4xl">{value == "$undefined" ? "" : value}</p>
         </div>
     )
 }
