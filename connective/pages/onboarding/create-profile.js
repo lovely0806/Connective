@@ -163,7 +163,7 @@ export default function CreateProfile({ user }) {
       .then((res) => {
         if (res.status == 200) {
           console.log("success");
-          router.push("/app/profile");
+          router.push("/app/marketplace");
         }
       })
       .catch((e) => {

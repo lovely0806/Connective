@@ -66,7 +66,7 @@ const ListCard = ({item, preview, user}) => {
                 <Image
                     layout='fill'
                     objectFit="cover"
-                    src={!item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}
+                    src={item.cover_url == "undefined" || !item.cover_url || item.cover_url == "" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}
                 />
             </div>
             <p className="font-bold text-lg w-full h-10 mb-5">{truncatedTitle}</p>

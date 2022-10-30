@@ -14,6 +14,7 @@ export default function NewList({user}) {
     const [priceError, setPriceError] = useState("")
     const [file, setFile] = useState()
     const [cover, setCover] = useState()
+    const [fileError, setFileError] = useState("")
 
     const router = useRouter()
 
@@ -37,9 +38,18 @@ export default function NewList({user}) {
             setPriceError("Price cannot be more than $1000")
             return
         }
+        if(file == null) {
+            setFileError("Please upload a screenshot of a few rows of your list.")
+            return
+        }
 
-        let uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file, true)
-        let coverUrl = await Util.uploadFile("cover_" + uuidv4(), cover, true)
+        setFileError("")
+
+        let uploadUrl, coverUrl
+        if(cover != null) {
+            coverUrl = await Util.uploadFile("cover_" + uuidv4(), cover, true)
+        }
+        uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file, true)
         console.log(coverUrl)
         
         localStorage.setItem("previewUrl", "")
@@ -63,6 +73,7 @@ export default function NewList({user}) {
                 
                 <p className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
                 <FileUpload text="Upload Image" file={file} setFile={setFile} id="preview upload" accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"></FileUpload>
+                <p className="text-red-500 font-bold text-[12px]">{fileError}</p>
                 <ButtonDark text="Next" className="mr-0 mt-10" onClick={submit}></ButtonDark>
             </div>
         </Layout>
