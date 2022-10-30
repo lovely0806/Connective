@@ -37,7 +37,7 @@ const Sidebar = () => {
 
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[1.8vh]">As a buyer</p>
             <SidebarItem text="Marketplace" icon="/assets/navbar/MarketplaceIcon.svg" route="/app/marketplace"></SidebarItem>
-            <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg" route="/app/purchasedlists"></SidebarItem>
+            <SidebarItem text="Purchased Lists" icon="/assets/navbar/PurchasedListsIcon.svg" route="/app/lists/purchased"></SidebarItem>
             
             <p className="mt-[5vh] mb-5 ml-3 font-bold text-[1.8vh]">As a seller</p>
             <SidebarItem text="Lists" icon="/assets/navbar/ListsIcon.svg" route="/app/lists"></SidebarItem>

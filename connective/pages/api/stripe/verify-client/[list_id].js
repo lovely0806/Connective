@@ -5,6 +5,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 export async function handler(req, res) {
   try {
     if (req.method == "GET") {
+      let user = req.session.get().user
       const listID = req.query.list_id;
       // fetch connected account ID from the database
       const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -28,7 +29,11 @@ export async function handler(req, res) {
           transfer_data: {
             destination: listInformation.stripeID,
           },
-        });
+          metadata: {
+            buyer: user.id,
+            list: listID
+          }
+        })
 
         return res
           .status(200)
@@ -42,8 +47,8 @@ export async function handler(req, res) {
         .json({ client_secret: null, error: "Only GET method allowed" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Server Error" });
+    //console.log(error);
+    res.status(500).json({ error: error });
   }
 }
 
