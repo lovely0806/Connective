@@ -40,13 +40,23 @@ export async function handler(req, res) {
       //Implement
     }
     if (req.method == "PUT") {
-      const { name, pfp, location, description, industry, size, url } =
-        req.body;
+      const {
+        name,
+        pfp,
+        location,
+        description,
+        industry,
+        size,
+        url,
+        pfpChanged,
+      } = req.body;
       console.log(name);
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       await connection.promise().execute(`
                   UPDATE Business
-                  SET company_name = '${name}', logo = '${pfp}', description = '${description}', location = '${location}', industry = '${industry}', size = '${size}', website = '${url}'
+                  SET company_name = '${name}', ${
+        pfpChanged ? "logo =" + `'${pfp}',` : ""
+      } description = '${description}', location = '${location}', industry = '${industry}', size = '${size}', website = '${url}'
                   WHERE user_id = '${user.id}';`);
       connection.end();
       res.status(200).json({ success: true });

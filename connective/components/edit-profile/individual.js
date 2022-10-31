@@ -3,8 +3,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import FileUpload from "../../components/file-upload";
+import Util from "../../util";
 
-export default function EditProfile() {
+export default function EditProfile({ user }) {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
@@ -13,7 +14,7 @@ export default function EditProfile() {
   const [src, setSrc] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [processing, setProcessing] = useState(false);
-
+  const [pfpChanged, setPfpChanged] = useState(false);
   useEffect(() => {
     setLoaded(false);
     getProfile();
@@ -23,6 +24,7 @@ export default function EditProfile() {
     await axios.get("/api/profiles/individual").then((res) => {
       if (typeof res.data != "undefined") {
         console.log(res.data);
+        setSrc(res.data.profile_picture);
         setName(res.data.name);
         setDescription(res.data.bio);
         setLocation(res.data.location);
@@ -34,9 +36,8 @@ export default function EditProfile() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(pfp);
     if (pfp == "" || typeof pfp == "undefined") return;
-
+    setPfpChanged(true);
     setSrc(URL.createObjectURL(pfp));
   }, [pfp]);
 
@@ -51,22 +52,22 @@ export default function EditProfile() {
 
     setNameError("");
 
-    //   let hasPfp = false;
-    //   if (pfp != "" && typeof pfp != "undefined") {
-    //     hasPfp = true;
-    //   }
+    let hasPfp = false;
+    if (pfp != "" && typeof pfp != "undefined") {
+      hasPfp = true;
+    }
 
-    //   let uploadUrl;
-    //   if (hasPfp) {
-    //     uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp);
-    //     setSrc("");
-    //     setPfp("");
-    //   }
+    let uploadUrl;
+    if (hasPfp) {
+      uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp);
+      // setSrc("");
+      // setPfp("");
+    }
 
     await axios
       .put("/api/profiles/individual", {
-        // pfp: hasPfp ? uploadUrl : "",
-        pfp: "",
+        pfp: hasPfp ? uploadUrl : "",
+        pfpChanged,
         name,
         bio: description,
         location,
@@ -117,6 +118,7 @@ export default function EditProfile() {
               file={pfp}
               setFile={setPfp}
               id={"Individual pfp upload"}
+              src={src}
             ></FileUpload>
           </div>
           <InputField

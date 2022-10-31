@@ -1,16 +1,12 @@
 import InputField from "../../components/input-field";
-import Logo from "../../components/logo";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { withIronSession } from "next-iron-session";
-import OnboardingSidebar from "../../components/onboarding-sidebar";
-import ProfileTypeSelector from "../../components/onboarding/profile-type-selector";
 import FileUpload from "../../components/file-upload";
 import Select from "react-select";
 import Util from "../../util";
 
-export default function EditProfile() {
+export default function EditProfile({ user }) {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
@@ -18,13 +14,13 @@ export default function EditProfile() {
   const [location, setLocation] = useState("");
   const [pfp, setPfp] = useState("");
   const [src, setSrc] = useState("");
-  const [type, setType] = useState("business");
   const [industry, setIndustry] = useState("");
   const [industryError, setIndustryError] = useState("");
   const [size, setSize] = useState("");
   const [sizeError, setSizeError] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [pfpChanged, setPfpChanged] = useState(false);
 
   useEffect(() => {
     setLoaded(false);
@@ -41,7 +37,7 @@ export default function EditProfile() {
         setUrl(res.data.website);
         setIndustry(res.data.industry);
         setSize(res.data.size);
-        console.log(industry);
+        setSrc(res.data.logo);
         setLoaded(true);
       }
     });
@@ -67,7 +63,7 @@ export default function EditProfile() {
   useEffect(() => {
     console.log(pfp);
     if (pfp == "" || typeof pfp == "undefined") return;
-
+    setPfpChanged(true);
     setSrc(URL.createObjectURL(pfp));
   }, [pfp]);
 
@@ -105,22 +101,22 @@ export default function EditProfile() {
     setSizeError("");
     setIndustryError("");
 
-    // let hasPfp = false;
-    // if (pfp != "" && typeof pfp != "undefined") {
-    //   hasPfp = true;
-    // }
+    let hasPfp = false;
+    if (pfp != "" && typeof pfp != "undefined") {
+      hasPfp = true;
+    }
 
-    // let uploadUrl;
-    // if (hasPfp) {
-    //   uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp);
-    //   setSrc("");
-    //   setPfp("");
-    // }
+    let uploadUrl;
+    if (hasPfp) {
+      uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp);
+      //   setSrc("");
+      //   setPfp("");
+    }
 
     await axios
       .put("/api/profiles/business", {
-        // pfp: hasPfp ? uploadUrl : "",
-        pfp: "",
+        pfp: hasPfp ? uploadUrl : "",
+        pfpChanged,
         name,
         description,
         location,
@@ -152,7 +148,7 @@ export default function EditProfile() {
           <p className="text-3xl font-bold">Edit Profile</p>
         </div>
 
-        <div className="flex flex-col gap-5 mt-10">
+        <div className="flex flex-col gap-5 mt-0">
           <InputField
             name={"Name*"}
             placeholder={"Enter company name"}
@@ -174,6 +170,7 @@ export default function EditProfile() {
               file={pfp}
               setFile={setPfp}
               id={"Company pfp upload"}
+              src={src}
             ></FileUpload>
           </div>
           <InputField
