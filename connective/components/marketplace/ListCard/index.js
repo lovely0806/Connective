@@ -12,7 +12,7 @@ const ListCard = ({item, preview, user}) => {
     const [profilePicture, setProfilePicture] = useState("")
     const [username, setUsername] = useState("")
 
-    console.log(item)
+    //console.log(item)
 
     const getProfilePicture = async () => {
         let type = Util.accountType()
@@ -40,7 +40,7 @@ const ListCard = ({item, preview, user}) => {
     }
 
     useEffect(() => {
-        console.log(item)
+        //console.log(item)
         if(typeof(item.title) == "undefined") return
         
         let titleLen = 60
