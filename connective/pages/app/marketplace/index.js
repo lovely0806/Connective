@@ -10,6 +10,9 @@ export default function Dashboard({user}) {
     const [lists, setLists] = useState([])
     const [loading, setLoading] = useState(true)
     const [filteredLists, setFilteredLists] = useState([])
+    const [sort, setSort] = useState("")
+    const [filter, setFilter] = useState(0)
+    const [search, setSearch] = useState("")
 
     const sortOptions = [
         {value: "Buyers", label: "Buyers"},
@@ -22,42 +25,66 @@ export default function Dashboard({user}) {
         let {data} = await axios.get("/api/lists")
         console.log(data)
         setLists(data)
-        setFilteredLists(data)
         setLoading(false)
     }
 
     const updateFilter = (e) => {
-        if(e.label == "All") {
-            setFilteredLists(lists)
-            return
-        } 
-        let temp = []
-        lists.forEach(list => {
-            if(list.category == e.value) {
-                temp.push(list)
-            }
-        })
-        setFilteredLists(temp)
+        setFilter(e.value)
+    }
+
+    const updateSort = (e) => {
+        setSort(e.label)
     }
 
     useEffect(() => {
         getLists()
     }, [])
 
+    useEffect(() => {
+        let tempFiltered = []
+        if(filter == 0) {
+            tempFiltered = lists
+        } else {
+            let temp = []
+            lists.forEach(list => {
+                if(list.category == filter) {
+                    temp.push(list)
+                }
+            })
+            tempFiltered = temp
+        }
+
+        tempFiltered = tempFiltered.filter(i => {return i.title.toLowerCase().includes(search.toLowerCase()) || i.description.toLowerCase().includes(search.toLowerCase()) || i.username.toLowerCase().includes(search.toLowerCase())})
+
+        if(sort == "Buyers") {
+            tempFiltered = tempFiltered.sort((a,b) => {
+                return b.buyers - a.buyers
+            })
+        }
+
+        if(sort == "Price") {
+            tempFiltered = tempFiltered.sort((a,b) => {
+                return b.price - a.price
+            })
+        }
+
+        setFilteredLists([...tempFiltered])
+    }, [filter, sort, lists, search])
+
     return (
         <Layout title="Marketplace">
             <div className="mx-20 h-screen">
                 <div className="flex flex-row w-full mb-20 gap-10">
-                    <input placeholder="Search for lists here" style={{background: "white url(/assets/search.svg) no-repeat 5px 5px"}} className="h-fit w-full mr-32 outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
+                    <input onChange={(e)=>{setSearch(e.target.value)}} placeholder="Search for lists here" style={{background: "white url(/assets/search.svg) no-repeat 5px 5px"}} className="h-fit w-full mr-32 outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
                     <Select options={categoryOptions} defaultValue={categoryOptions[0]} onChange={updateFilter} isMulti={false} placeholder="Categories" className="w-96"></Select>
-                    <Select options={sortOptions} placeholder="Sort" className="w-96"></Select>
+                    <Select options={sortOptions} onChange={updateSort} placeholder="Sort" className="w-96"></Select>
                 </div>
 
                 {filteredLists.length > 0 ? (
                     <div className="grid sm:grid-cols-3 2xl:grid-cols-4 auto-rows-[30vw] gap-10 pb-20">
                         {filteredLists.map((item, index) => {
                             return (
-                                <ListCard item={item}></ListCard>
+                                <ListCard item={item} key={index}></ListCard>
                             )
                         })}
                     </div>
