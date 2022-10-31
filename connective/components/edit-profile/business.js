@@ -10,7 +10,7 @@ import FileUpload from "../../components/file-upload";
 import Select from "react-select";
 import Util from "../../util";
 
-export default function EditProfile({ user }) {
+export default function EditProfile() {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
@@ -32,31 +32,35 @@ export default function EditProfile({ user }) {
   }, []);
 
   const getProfile = async () => {
-    await axios.get("/api/profiles/individual").then((res) => {
+    await axios.get("/api/profiles/business").then((res) => {
       if (typeof res.data != "undefined") {
         console.log(res.data);
-        setName(res.data.name);
-        setDescription(res.data.bio);
+        setName(res.data.company_name);
+        setDescription(res.data.description);
         setLocation(res.data.location);
+        setUrl(res.data.website);
+        setIndustry(res.data.industry);
+        setSize(res.data.size);
+        console.log(industry);
         setLoaded(true);
       }
     });
   };
 
-  //   const industryOptions = [
-  //     { value: "Web3", label: "Web3" },
-  //     { value: "Software Development", label: "Software Development" },
-  //     { value: "Event Planning", label: "Event Planning" },
-  //   ];
+  const industryOptions = [
+    { value: "Web3", label: "Web3" },
+    { value: "Software Development", label: "Software Development" },
+    { value: "Event Planning", label: "Event Planning" },
+  ];
 
-  //   const sizeOptions = [
-  //     { value: "1-10", label: "1-10" },
-  //     { value: "10-50", label: "10-50" },
-  //     { value: "50-100", label: "50-100" },
-  //     { value: "100-200", label: "100-200" },
-  //     { value: "200-1000", label: "200-1000" },
-  //     { value: "1000+", label: "1000+" },
-  //   ];
+  const sizeOptions = [
+    { value: "1-10", label: "1-10" },
+    { value: "10-50", label: "10-50" },
+    { value: "50-100", label: "50-100" },
+    { value: "100-200", label: "100-200" },
+    { value: "200-1000", label: "200-1000" },
+    { value: "1000+", label: "1000+" },
+  ];
 
   const router = useRouter();
 
@@ -80,30 +84,49 @@ export default function EditProfile({ user }) {
 
     if (name == "") {
       setNameError("You must enter a name.");
+      setIndustryError("");
+      setSizeError("");
+      return;
+    }
+    if (size == "") {
+      setSizeError("You must select your company size.");
+      setIndustryError("");
+      setNameError("");
+      return;
+    }
+    if (industry == "") {
+      setIndustryError("You must select your company size.");
+      setSizeError("");
+      setNameError("");
       return;
     }
 
     setNameError("");
+    setSizeError("");
+    setIndustryError("");
 
-    //   let hasPfp = false;
-    //   if (pfp != "" && typeof pfp != "undefined") {
-    //     hasPfp = true;
-    //   }
+    // let hasPfp = false;
+    // if (pfp != "" && typeof pfp != "undefined") {
+    //   hasPfp = true;
+    // }
 
-    //   let uploadUrl;
-    //   if (hasPfp) {
-    //     uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp);
-    //     setSrc("");
-    //     setPfp("");
-    //   }
+    // let uploadUrl;
+    // if (hasPfp) {
+    //   uploadUrl = await Util.uploadFile(user.id + "-pfp", pfp);
+    //   setSrc("");
+    //   setPfp("");
+    // }
 
     await axios
-      .put("/api/profiles/individual", {
+      .put("/api/profiles/business", {
         // pfp: hasPfp ? uploadUrl : "",
         pfp: "",
         name,
-        bio: description,
+        description,
         location,
+        url,
+        industry,
+        size,
       })
       .then((res) => {
         if (res.status == 200) {
@@ -135,12 +158,14 @@ export default function EditProfile({ user }) {
             placeholder={"Enter company name"}
             updateValue={setName}
             errorText={nameError}
+            value={name}
           ></InputField>
           <InputField
             name={"Description"}
             placeholder={"Enter company description"}
             updateValue={setDescription}
             textarea={true}
+            value={description}
           ></InputField>
           <div>
             <p className="text-sm mb-2">Logo</p>
@@ -155,11 +180,13 @@ export default function EditProfile({ user }) {
             name={"Website"}
             placeholder={"Enter company website URL"}
             updateValue={setUrl}
+            value={url}
           ></InputField>
           <InputField
             name={"Location"}
             placeholder={"Enter where your company is located"}
             updateValue={setLocation}
+            value={location}
           ></InputField>
           <div className="flex flex-row justify-between gap-10">
             <div className="w-full">
@@ -171,6 +198,7 @@ export default function EditProfile({ user }) {
                 }}
                 options={industryOptions}
                 placeholder="Choose your industry"
+                value={{ value: industry, label: industry }}
               ></Select>
               <p className="text-red-500 font-bold text-[12px]">
                 {industryError}
@@ -185,6 +213,7 @@ export default function EditProfile({ user }) {
                 }}
                 options={sizeOptions}
                 placeholder="Choose your company size"
+                value={{ value: size, label: size }}
               ></Select>
               <p className="text-red-500 font-bold text-[12px]">{sizeError}</p>
             </div>

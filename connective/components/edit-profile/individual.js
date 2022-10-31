@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import FileUpload from "../../components/file-upload";
 
-export default function EditProfile({ user }) {
+export default function EditProfile() {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
