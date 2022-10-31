@@ -218,6 +218,7 @@ export default function CreateProfile({ user }) {
                 file={pfp}
                 setFile={setPfp}
                 id={"Company pfp upload"}
+                src={src}
               ></FileUpload>
             </div>
             <InputField
@@ -282,6 +283,7 @@ export default function CreateProfile({ user }) {
                 file={pfp}
                 setFile={setPfp}
                 id={"Individual pfp upload"}
+                src={src}
               ></FileUpload>
             </div>
             <InputField

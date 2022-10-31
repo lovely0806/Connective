@@ -42,6 +42,7 @@ export default function SignIn({ user }) {
     })
       .then((res) => {
         if (res.status == 201) {
+          console.log(res.data);
           res.data
             ? router.push("/app/marketplace")
             : router.push("/onboarding/create-profile");
