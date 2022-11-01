@@ -82,7 +82,7 @@ export default function SignUp() {
                 </div>
                 <div className="flex flex-row gap-3 mt-5">
                     <input type="checkbox" id="checkbox"></input>
-                    <p className="my-auto">I accept the <span className="underline cursor-pointer">Terns & Conditions</span> and I have read the <span className="underline cursor-pointer">Privacy Policy</span></p>
+                    <p className="my-auto">I accept the <span className="underline cursor-pointer">Terms & Conditions</span> and I have read the <span className="underline cursor-pointer">Privacy Policy</span></p>
                 </div>
                 <p className="text-red-500 font-bold text-[12px]">{tacError}</p>
                 <button onClick={submitAccount} className="w-full bg-[#0F172A] font-bold text-white py-4 mt-20 rounded-md shadow-md transition-all hover:scale-105 hover:shadow-lg">
