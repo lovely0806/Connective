@@ -1,8 +1,23 @@
 import ButtonDark from "../../button-dark"
 import ButtonLight from "../../button-light"
 import Image from "next/image"
+import axios from "axios"
+import {useState} from "react"
 
 const ListRow = ({item}) => {
+    const [published, setPublished] = useState(item.published)
+
+    const togglePublish = async () => {
+        if(published) {
+            axios.post(`/api/lists/unpublish/${item.id}`)
+            setPublished(false)
+        } else {
+            axios.post(`/api/lists/publish/${item.id}`)
+            setPublished(true)
+        }
+        
+    }
+
     return (
         <div className="bg-white rounded-xl shadow-lg flex flex-row gap-5 p-5">
             <div className="rounded-xl object-cover h-48 w-80 relative overflow-hidden">
@@ -21,7 +36,7 @@ const ListRow = ({item}) => {
             </div>
             <div className="flex flex-col gap-5 ml-auto">
                 <ButtonDark text="Edit" className="w-full mt-auto"></ButtonDark>
-                <ButtonLight text="Unpublish" className="w-full mb-auto"></ButtonLight>
+                <ButtonLight text={published ? "Unpublish" : "Publish"} className="w-full mb-auto" onClick={togglePublish}></ButtonLight>
             </div>
         </div>
     )
