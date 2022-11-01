@@ -18,6 +18,12 @@ export async function handler(req, res) {
         .query(
           `SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${user.id};`
         );
+      var [purchaseResults, fields, err] = await connection.promise().query(`select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`)
+
+      listResults.forEach(list => {
+          list.buyers = purchaseResults.filter((i) => {if(i.list_id == list.id) return 1}).length
+      })
+
       results[0].lists = listResults;
       res.status(200).json(results[0]);
     }
