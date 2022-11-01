@@ -18,7 +18,6 @@ export async function handler(req, res) {
         .query(
           `SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${user.id};`
         );
-      console.log(results);
       results[0].lists = listResults;
       res.status(200).json(results[0]);
     }
