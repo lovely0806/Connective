@@ -14,7 +14,7 @@ export default function NewList({user}) {
     const [title, setTitle] = useState("")
     const [titleError, setTitleError] = useState("")
 
-    const [category, setCategory] = useState()
+    const [category, setCategory] = useState(0)
 
     const [description, setDescription] = useState("")
     const [descriptionError, setDescriptionError] = useState("")

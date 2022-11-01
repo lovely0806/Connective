@@ -15,23 +15,23 @@ const ListCard = ({item, preview, user}) => {
     //console.log(item)
 
     const getProfilePicture = async () => {
-        let type = Util.accountType()
+        let type = await Util.accountType(user.id)
         if(type == "Individual") {
-            await axios.get("/api/profiles/business")
-            .then(res => {
-                if(typeof(res.data) != "undefined") {
-                    console.log(res.data)
-                    setProfilePicture(res.data.logo)
-                    setUsername(res.data.name)
-                }
-            })
-        } 
-        if(type == "Business") {
             await axios.get("/api/profiles/individual")
             .then(res => {
                 if(typeof(res.data) != "undefined") {
                     console.log(res.data)
                     setProfilePicture(res.data.profile_picture)
+                    setUsername(res.data.name)
+                }
+            })
+        } 
+        if(type == "Business") {
+            await axios.get("/api/profiles/business")
+            .then(res => {
+                if(typeof(res.data) != "undefined") {
+                    console.log(res.data)
+                    setProfilePicture(res.data.logo)
                     setUsername(res.data.name)
                 }
             })
