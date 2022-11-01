@@ -74,6 +74,12 @@ export default function Dashboard({user}) {
             })
         }
 
+        if(sort == "Old") {
+            tempFiltered = tempFiltered.sort((a,b) => {
+                return (new Date(a.created_at)) - (new Date(b.created_at))
+            })
+        }
+
         setFilteredLists([...tempFiltered])
     }, [filter, sort, lists, search])
 
