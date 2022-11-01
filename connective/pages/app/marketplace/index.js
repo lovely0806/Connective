@@ -10,7 +10,7 @@ export default function Dashboard({user}) {
     const [lists, setLists] = useState([])
     const [loading, setLoading] = useState(true)
     const [filteredLists, setFilteredLists] = useState([])
-    const [sort, setSort] = useState("")
+    const [sort, setSort] = useState("New")
     const [filter, setFilter] = useState(0)
     const [search, setSearch] = useState("")
 
