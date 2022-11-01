@@ -40,7 +40,7 @@ export default function Lists({user}) {
             <div className="mx-20 flex flex-col gap-10">
                 {lists.map((item, index) => {
                     return (
-                        <ListRow item={item}></ListRow>
+                        <ListRow item={item} key={index}></ListRow>
                     )
                 })}
             </div>
