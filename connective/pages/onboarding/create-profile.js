@@ -14,6 +14,7 @@ export default function CreateProfile({ user }) {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptionError, setDescriptionError] = useState("")
   const [url, setUrl] = useState("");
   const [location, setLocation] = useState("");
   const [pfp, setPfp] = useState("");
@@ -72,24 +73,50 @@ export default function CreateProfile({ user }) {
       setNameError("You must enter a name.");
       setIndustryError("");
       setSizeError("");
+      setDescriptionError("")
+      setProcessing(false)
       return;
     }
     if (size == "") {
       setSizeError("You must select your company size.");
       setIndustryError("");
       setNameError("");
+      setDescriptionError("")
+      setProcessing(false)
       return;
     }
     if (industry == "") {
       setIndustryError("You must select your company size.");
       setSizeError("");
       setNameError("");
+      setDescriptionError("")
+      setProcessing(false)
       return;
+    }
+    if(description.length > 500) {
+      setDescriptionError("Description must be less than 300 characters")
+      setIndustryError("");
+      setSizeError("");
+      setNameError("");
+      setProcessing(false)
+      return
+    }
+    if(description == "") {
+      setDescriptionError("You must enter a description.")
+      setIndustryError("");
+      setSizeError("");
+      setNameError("");
+      setProcessing(false)
+      return
     }
 
     setNameError("");
     setSizeError("");
     setIndustryError("");
+    setDescriptionError("")
+    setIndustryError("");
+    setSizeError("");
+    setNameError("");
 
     let hasPfp = false;
     if (pfp != "" && typeof pfp != "undefined") {
@@ -136,10 +163,26 @@ export default function CreateProfile({ user }) {
 
     if (name == "") {
       setNameError("You must enter a name.");
+      setDescriptionError("")
+      setProcessing(false)
       return;
     }
 
+    if(description.length > 500) {
+      setDescriptionError("Bio must be less than 300 characters")
+      setNameError("");
+      setProcessing(false)
+      return
+    }
+    if(description == "") {
+      setDescriptionError("You must enter a bio.")
+      setNameError("");
+      setProcessing(false)
+      return
+    }
+
     setNameError("");
+    setDescriptionError("")
 
     let hasPfp = false;
     if (pfp != "" && typeof pfp != "undefined") {
@@ -209,6 +252,7 @@ export default function CreateProfile({ user }) {
               name={"Description"}
               placeholder={"Enter company description"}
               updateValue={setDescription}
+              errorText={descriptionError}
               textarea={true}
             ></InputField>
             <div>
@@ -274,6 +318,7 @@ export default function CreateProfile({ user }) {
               name={"Bio"}
               placeholder={"Enter your bio"}
               updateValue={setDescription}
+              errorText={descriptionError}
               textarea={true}
             ></InputField>
             <div>
