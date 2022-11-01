@@ -144,3 +144,24 @@ button:disabled {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+::-webkit-scrollbar {
+  width: 1vh;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 100vh;
+  background: #e5e5e5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0F172A;
+  border-radius: 100vh;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #17274d;
+  border-radius: 100vh;
+  cursor: pointer;
+}
