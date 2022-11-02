@@ -7,6 +7,7 @@ const InputField = ({
   updateValue,
   errorText,
   value,
+  disabled,
 }) => {
   return (
     <div className="flex flex-col">
@@ -17,6 +18,7 @@ const InputField = ({
             <p className="my-auto text-lg">$</p>
           </div>
           <input
+            disabled={disabled}
             onChange={(e) => {
               updateValue(e.target.value);
             }}
@@ -24,6 +26,7 @@ const InputField = ({
             min="0"
             step="1"
             className="outline-none w-full px-5 pl-8 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+            value={value}
             placeholder={placeholder}
           ></input>
         </div>
