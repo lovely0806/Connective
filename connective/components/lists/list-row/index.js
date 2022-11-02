@@ -7,6 +7,7 @@ import Link from "next/link";
 
 const ListRow = ({ item }) => {
   const [published, setPublished] = useState(item.published);
+  console.log(item)
 
   const togglePublish = async () => {
     if (published) {
@@ -25,7 +26,7 @@ const ListRow = ({ item }) => {
           layout="fill"
           objectFit="cover"
           src={
-            !item.cover_url ? "/assets/banners/leaves-min.jpeg" : item.cover_url
+            !item.cover_url || item.cover_url == "null" ? "/assets/banners/leaves-min.jpeg" : item.cover_url
           }
         />
       </div>

@@ -53,15 +53,16 @@ export default function NewList({ user }) {
 
     let uploadUrl = fileSrc,
       coverUrl = coverSrc;
-    if (coverChanged) {
+    if (coverChanged && cover) {
       if (cover != null) {
         coverUrl = await Util.uploadFile("cover_" + uuidv4(), cover, true);
       }
     }
     if (fileChanged) {
-      uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file, true);
+      if (file != null) {
+        uploadUrl = await Util.uploadFile("preview_" + uuidv4(), file, true);
+      }
     }
-    console.log(coverUrl);
 
     localStorage.setItem("previewUrl", uploadUrl);
     localStorage.setItem("fileChanged", fileChanged);
