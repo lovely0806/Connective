@@ -35,6 +35,16 @@ export default function NewList({user}) {
         setGeoError("")
         setObtainError("")
 
+        if(description.length > 500) {
+            setDescriptionError("Description must be less than 500 characters.")
+            return
+        }
+
+        if(obtain.length > 500) {
+            setObtainError("Must be less than 500 characters.")
+            return
+        }
+
         if(!Util.verifyField(title, setTitleError, "Please enter a title.") || 
            !Util.verifyField(description, setDescriptionError, "Please enter a description.") || 
            !Util.verifyField(geo, setGeoError, "Please enter a value.") || 
