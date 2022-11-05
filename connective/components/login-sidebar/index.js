@@ -3,7 +3,7 @@ import bgImg from "../../public/assets/Right.png";
 
 const LoginSidebar = () => {
   return (
-    <div className="my-[32px] mr-[32px] 2bp:min-w-[520px]">
+    <div className="min-w-[620px] my-[32px] mr-[32px] 2bp:min-w-[520px]">
       <div>
         <Image
           className="w-fit h-fit rounded-[16px]"
