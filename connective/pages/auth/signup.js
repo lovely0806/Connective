@@ -16,6 +16,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [tacError, setTacError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const submitAccount = async () => {
@@ -71,6 +72,10 @@ export default function SignUp() {
       });
   };
 
+  const showPasswordHandler = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   return (
     <main className="flex flex-row min-h-screen min-w-screen gap-[90px] justify-center 2bp:gap-[50px]">
       <OnboardingSidebar></OnboardingSidebar>
@@ -119,19 +124,44 @@ export default function SignUp() {
             updateValue={setName}
             errorText={nameError}
           ></InputField>
+
           <InputField
             name={"Email"}
             placeholder={"Enter your email"}
             updateValue={setEmail}
             errorText={emailError}
           ></InputField>
-          <InputField
-            name={"Password"}
-            placeholder={"Enter password"}
-            password={true}
-            updateValue={setPassword}
-            errorText={passwordError}
-          ></InputField>
+
+          <div className="relative flex flex-row items-center justify-center">
+            <InputField
+              name={"Password"}
+              placeholder={"Enter password"}
+              password={!showPassword ? true : false}
+              updateValue={setPassword}
+              errorText={passwordError}
+            ></InputField>
+            <div
+              className="absolute right-[14px] bottom-[5px] cursor-pointer"
+              onClick={showPasswordHandler}
+            >
+              {!showPassword && (
+                <Image
+                  src="/assets/eye-slash.svg"
+                  alt="eye slash"
+                  width="24px"
+                  height="24px"
+                />
+              )}
+              {showPassword && (
+                <Image
+                  src="/assets/eye.svg"
+                  alt="eye"
+                  width="24px"
+                  height="24px"
+                />
+              )}
+            </div>
+          </div>
         </div>
         <div className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
           <input

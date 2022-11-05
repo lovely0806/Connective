@@ -1,16 +1,14 @@
 import Image from "next/image";
-import bgImg from "../../public/assets/Right.svg";
+import bgImg from "../../public/assets/Right.png";
 
 const LoginSidebar = () => {
   return (
-    <div className="min-w-[620px] h-fill my-[32px] mr-[32px] 2bp:min-w-[520px]">
+    <div className="my-[32px] mr-[32px] 2bp:min-w-[520px]">
       <div>
         <Image
-          className="rounded-[16px]"
+          className="w-fit h-fit rounded-[16px]"
           src={bgImg}
           alt="bg"
-          width="620px"
-          height="837px"
           priority
         />
       </div>

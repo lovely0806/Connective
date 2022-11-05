@@ -62,7 +62,7 @@ export default function SignIn({ user }) {
   };
 
   return (
-    <main className="flex flex-row-reverse min-h-screen min-w-screen gap-[80px] justify-center 2bp:gap-[40px]">
+    <main className="flex flex-row-reverse min-h-screen min-w-screen gap-[80px] 2bp:gap-[40px] justify-center">
       <LoginSidebar></LoginSidebar>
 
       <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px] ml-[64px]">
@@ -121,13 +121,24 @@ export default function SignIn({ user }) {
             updateValue={setEmail}
             errorText={emailError}
           ></InputField>
-          <InputField
-            name={"Password"}
-            placeholder={"Enter password"}
-            password={true}
-            updateValue={setPassword}
-            errorText={passwordError}
-          ></InputField>
+
+          <div className="relative flex flex-row items-center justify-center">
+            <InputField
+              name={"Password"}
+              placeholder={"Enter password"}
+              password={true}
+              updateValue={setPassword}
+              errorText={passwordError}
+            ></InputField>
+            <div className="absolute right-[14px] bottom-[5px] cursor-pointer">
+              <Image
+                src="/assets/eye-slash.svg"
+                alt="eye slash"
+                width="24px"
+                height="24px"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-row justify-between items-center">
