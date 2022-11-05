@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 const FileUpload = ({ text, profilePicture=false, file, setFile, id, accept = "*", src }) => {
+
   return (
     <>
       <input
@@ -17,12 +18,12 @@ const FileUpload = ({ text, profilePicture=false, file, setFile, id, accept = "*
           {profilePicture ? (
             <img
               className="mx-auto mt-auto w-40 rounded-full"
-              src={src || "/assets/cloud.svg"}
+              src={src != "null" ? src : "/assets/cloud.svg"}
             />
           ) : (
             <img
               className="mx-auto mt-auto"
-              src={src || "/assets/cloud.svg"}
+              src={src != "null" ? src : "/assets/cloud.svg"}
             />
           )}
           
