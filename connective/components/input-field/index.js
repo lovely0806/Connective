@@ -10,8 +10,10 @@ const InputField = ({
   disabled,
 }) => {
   return (
-    <div className="flex flex-col">
-      <p className="text-sm font-[Montserrat] mb-2">{name}</p>
+    <div className="flex flex-col w-[100%]">
+      <p className="text-[12px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+        {name}
+      </p>
       {price && (
         <div className="relative">
           <div className="absolute h-full ml-4 flex">
@@ -25,7 +27,7 @@ const InputField = ({
             type="number"
             min="0"
             step="1"
-            className="outline-none w-full px-5 pl-8 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+            className="outline-none w-full px-[8px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
             value={value}
             placeholder={placeholder}
           ></input>
@@ -37,7 +39,7 @@ const InputField = ({
           onChange={(e) => {
             updateValue(e.target.value);
           }}
-          className="outline-none w-full h-36 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+          className="outline-none w-full px-[8px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
           type={password ? "password" : ""}
           placeholder={placeholder}
           value={value}
@@ -49,7 +51,7 @@ const InputField = ({
           onChange={(e) => {
             updateValue(e.target.value);
           }}
-          className="outline-none w-full px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+          className="outline-none w-full px-[8px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
           type={password ? "password" : ""}
           placeholder={placeholder}
           value={value}
