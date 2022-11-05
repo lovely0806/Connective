@@ -16,6 +16,7 @@ export default function SignIn({ user }) {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -59,6 +60,10 @@ export default function SignIn({ user }) {
         )
           setPasswordError("Incorrect email or password");
       });
+  };
+
+  const showPasswordHandler = () => {
+    setShowPassword((prevState) => !prevState);
   };
 
   return (
@@ -114,7 +119,7 @@ export default function SignIn({ user }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 mt-10">
+        <div className="relative flex flex-col gap-5 mt-10 items-center">
           <InputField
             name={"E-mail"}
             placeholder={"Enter your email"}
@@ -122,22 +127,33 @@ export default function SignIn({ user }) {
             errorText={emailError}
           ></InputField>
 
-          <div className="relative flex flex-row items-center justify-center">
-            <InputField
-              name={"Password"}
-              placeholder={"Enter password"}
-              password={true}
-              updateValue={setPassword}
-              errorText={passwordError}
-            ></InputField>
-            <div className="absolute right-[14px] bottom-[5px] cursor-pointer">
+          <InputField
+            name={"Password"}
+            placeholder={"Enter password"}
+            password={!showPassword ? true : false}
+            updateValue={setPassword}
+            errorText={passwordError}
+          ></InputField>
+          <div
+            className="absolute right-[14px] bottom-[5px] cursor-pointer"
+            onClick={showPasswordHandler}
+          >
+            {!showPassword && (
               <Image
                 src="/assets/eye-slash.svg"
                 alt="eye slash"
                 width="24px"
                 height="24px"
               />
-            </div>
+            )}
+            {showPassword && (
+              <Image
+                src="/assets/eye.svg"
+                alt="eye"
+                width="24px"
+                height="24px"
+              />
+            )}
           </div>
         </div>
 
