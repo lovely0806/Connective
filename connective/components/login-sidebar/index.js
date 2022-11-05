@@ -3,17 +3,15 @@ import bgImg from "../../public/assets/Right.png";
 
 const LoginSidebar = () => {
   return (
-    <div className="min-w-[620px] my-[32px] mr-[32px] 2bp:min-w-[520px]">
-      <div>
-        <Image
-          className="w-fit h-fit rounded-[16px]"
-          src={bgImg}
-          alt="bg"
-          priority
-        />
-      </div>
+    <div className="relative min-w-[620px] my-[32px] mr-[32px] 2bp:min-w-[520px]">
+      <Image
+        className="w-fit rounded-[16px] min-h-0 min-w-0 max-h-0 max-w-0 z-[-5]"
+        src={bgImg}
+        alt="bg"
+        priority
+      />
 
-      {/* <div className="absolute bottom-0 z-[10] px-[60px] mb-[208px]">
+      {/* <div className="absolute bottom-0 px-[60px] mb-[208px] z-[20] top-0">
         <h1 className="max-w-[403px] font-[Montserrat] text-[#F2F4F5] font-bold text-[40px] leading-[49px] mb-[24px] 1bp:text-[54px] 1bp:leading-[59px]">
           Curated B2B Assets Monetized
         </h1>
