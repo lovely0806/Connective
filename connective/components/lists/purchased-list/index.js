@@ -25,8 +25,8 @@ const ListRow = ({item}) => {
             </div>
             <div className="flex flex-col ml-auto my-auto gap-5">
                 <ButtonGreen text="Download File" className="mt-0 mb-0 w-full" onClick={()=>{router.push(item.url)}}></ButtonGreen>
-                <ButtonDark text="Edit" className="w-full mt-0 mb-0"></ButtonDark>
-                <ButtonLight text="Unpublish" className="w-full mt-0 mb-0"></ButtonLight>
+                <ButtonDark text="Leave Review" className="w-full mt-0 mb-0"></ButtonDark>
+                <ButtonLight text="Explore More" className="w-full mt-0 mb-0"></ButtonLight>
             </div>
         </div>
     )
