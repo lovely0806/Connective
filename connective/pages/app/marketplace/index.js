@@ -99,7 +99,7 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout title="Marketplace">
-      <div className="1bp:w-[1840px] ml-[100px] mr-20 h-screen">
+      <div className="1bp:w-[1840px] ml-[64px] mr-20 h-screen">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
           <div className="w-[500px] relative">
             <div className="absolute z-[10] p-[10px]">

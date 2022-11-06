@@ -23,7 +23,7 @@ const DashboardItem = ({ title, value, icon, color }) => {
 
 const DashboardRow = ({ title, buttonText, children }) => {
   return (
-    <div className="ml-[100px]">
+    <div className="ml-[64px]">
       <p className="text-2xl font-bold">{title}</p>
       <div className="w-fit">
         <div className="flex flex-row justify-between py-6 w-fit gap-6 rounded-xl">
@@ -79,7 +79,7 @@ export default function Dashboard({ user, buttonOnClick }) {
   return (
     <Layout title="Dashboard" className="relative items-center">
       {!isVerified && (
-        <div className="ml-[100px] flex flex-row gap-5 bg-white p-5 pl-0">
+        <div className="ml-[64px] flex flex-row gap-5 bg-[#FCFCFC] p-5 pl-0">
           <p className="my-auto text-[16px]">
             Enter your payment details to begin buying & selling lists:
           </p>
@@ -92,7 +92,7 @@ export default function Dashboard({ user, buttonOnClick }) {
       )}
 
       {/* Buttons top right*/}
-      <div className="absolute flex flex-row right-0 ml-[100px] gap-1 mt-[55px] mr-[100px]">
+      <div className="absolute flex flex-row right-0 ml-[64px] gap-1 mt-[55px] mr-[100px]">
         <div className="w-[180px] border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
           <ButtonDark
             onClick={buttonOnClick}
@@ -108,7 +108,7 @@ export default function Dashboard({ user, buttonOnClick }) {
       </div>
 
       {/* Stats */}
-      <div className="flex flex-row ml-[100px] gap-1 mb-20 mt-20">
+      <div className="flex flex-row ml-[64px] gap-1 mb-20 mt-20">
         <DashboardItem
           className="border-0"
           title="EARNINGS"
