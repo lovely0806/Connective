@@ -68,7 +68,7 @@ export default function SignIn({ user }) {
   };
 
   return (
-    <main className="flex flex-row-reverse min-h-[100vh] gap-[80px] 2bp:gap-[40px] justify-center">
+    <main className="flex flex-row-reverse gap-[80px] 2bp:gap-[40px] justify-center">
       <LoginSidebar />
 
       <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px] ml-[64px]">

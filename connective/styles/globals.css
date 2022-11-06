@@ -9,6 +9,13 @@
   input::placeholder {
     @apply font-[Poppins] font-normal text-[12px] leading-[18px] 1bp:text-[16px];
   }
+  textarea::placeholder {
+    @apply font-[Poppins] font-normal text-[12px] leading-[18px] 1bp:text-[16px];
+  }
+  textarea {
+    @apply min-h-[110px] py-[12px];
+  }
+  
 }
 
 .text-subheading {

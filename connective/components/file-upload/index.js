@@ -14,7 +14,7 @@ const FileUpload = ({ text, profilePicture=false, file, setFile, id, accept = "*
         }}
       />
       <label htmlFor={id}>
-        <div className="cursor-pointer w-full flex flex-col bg-[#D9D9D9]/30 p-5 border border-black/40 border-dashed rounded-md transition-all hover:bg-[#D9D9D9]/10">
+        <div className="cursor-pointer w-full min-h-[106px] flex flex-col bg-[#D9D9D9]/30 p-5 border border-black/40 border-dashed rounded-md transition-all hover:bg-[#D9D9D9]/10">
           {profilePicture ? (
             <img
               className="mx-auto mt-auto w-40 rounded-full"
