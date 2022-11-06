@@ -8,6 +8,7 @@ module.exports = {
     screens: {
       "1bp": { min: "2074px" },
       "2bp": { max: "1241px" },
+      "3bp": { min: "2300px" },
     },
     extend: {},
   },

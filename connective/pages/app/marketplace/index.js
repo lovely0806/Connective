@@ -101,7 +101,7 @@ export default function Dashboard({ user }) {
     <Layout title="Marketplace">
       <div className="ml-[100px] mr-20 h-screen">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
-          <div className="w-[600px] relative">
+          <div className="w-[500px] relative">
             <div className="absolute z-[10] p-[10px]">
               <Image
                 src={searchIcon}
@@ -115,7 +115,7 @@ export default function Dashboard({ user }) {
                 setSearch(e.target.value);
               }}
               placeholder="Search for lists"
-              className="w-[600px] z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
+              className="w-[500px] z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
             ></input>
           </div>
           <Select
@@ -136,7 +136,7 @@ export default function Dashboard({ user }) {
         </div>
 
         {filteredLists.length > 0 ? (
-          <div className="flex flex-row flex-wrap gap-[32px] mb-[65px]">
+          <div className="grid sm:grid-cols-3 2xl:grid-cols-4 gap-10 pb-20">
             {filteredLists.map((item, index) => {
               return <ListCard item={item} key={index}></ListCard>;
             })}
@@ -163,7 +163,7 @@ export default function Dashboard({ user }) {
                 )}
                 {cardDisplayed && (
                   <div className="w-[100%] mx-auto">
-                    <RequestCard onClick={displayCardHandler}/>
+                    <RequestCard onClick={displayCardHandler} />
                   </div>
                 )}
               </div>

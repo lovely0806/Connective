@@ -77,7 +77,7 @@ const ListCard = ({ item, preview, user }) => {
         <p className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">
           {truncatedTitle}
         </p>
-        <p className="font-normal text-[14.5px] leading-[15px] text–[rgba(13_16_17_0.7)] mb-[15px]">
+        <p className="font-normal text-[12px] leading-[18px] text–[rgba(13_16_17_0.7)] mb-[15px] text-[#0d1011b3]">
           {truncatedDesc}
         </p>
       </div>
