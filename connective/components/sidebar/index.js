@@ -33,7 +33,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="z-10 h-fill min-w-[280px] bg-[#0F172A] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
+    <div className="z-10 h-fill min-w-[280px] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
       <Link href="https://www.connective-app.xyz">
         <div className="flex flex-row cursor-pointer items-center gap-[12px] mb-[36px]">
           <Image

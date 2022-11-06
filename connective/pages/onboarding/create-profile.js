@@ -224,7 +224,7 @@ export default function CreateProfile({ user }) {
   };
 
   return (
-    <main className="flex flex-row min-h-screen min-w-screen">
+    <main className="flex flex-row min-h-screen min-w-screen gap-5">
       <OnBoardingProfile />
 
       <div className="flex flex-col min-w-[740px] mx-auto font-[Montserrat] rounded-xl my-[40px]">

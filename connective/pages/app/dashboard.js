@@ -8,7 +8,7 @@ import ButtonDark from "../../components/button-dark";
 
 const DashboardItem = ({ title, value, icon, color }) => {
   return (
-    <div className="flex flex-col px-4 py-6 border-[1px] border-[#0D1011]/[.15] w-[270px] rounded-[10px] gap-1">
+    <div className="flex flex-col pr-4 py-7 w-[260px] gap-2">
       <div className="flex flex-row gap-5 mr-20">
         <p className="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#8A8888]">
           {title}
@@ -21,29 +21,29 @@ const DashboardItem = ({ title, value, icon, color }) => {
   );
 };
 
-const DashboardRow = ({ title, buttonText, buttonOnClick, children }) => {
+const DashboardRow = ({ title, buttonText, children }) => {
   return (
-    <div className="ml-[64px]">
+    <div className="ml-[100px]">
       <p className="text-2xl font-bold">{title}</p>
       <div className="w-fit">
         <div className="flex flex-row justify-between py-6 w-fit gap-6 rounded-xl">
           {children}
         </div>
-        <ButtonDark
+        {/* <ButtonDark
           onClick={buttonOnClick}
           text={buttonText}
           className="w-[270px]"
-        ></ButtonDark>
+        ></ButtonDark> */}
       </div>
     </div>
   );
 };
 
 const Divider = () => {
-  return <div className="w-[1px] h-fill bg-black/10 my-3"></div>;
+  return <div className="w-[1px] h-fill bg-black/10 my-3 mr-[40px]"></div>;
 };
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, buttonOnClick }) {
   const [isVerified, setIsVerified] = useState(true);
   const [data, setData] = useState();
 
@@ -77,21 +77,38 @@ export default function Dashboard({ user }) {
   };
 
   return (
-    <Layout title="Dashboard">
+    <Layout title="Dashboard" className="relative items-center">
       {!isVerified && (
-        <div className="ml-[64px] flex flex-row gap-5 bg-white p-5 pl-0">
+        <div className="ml-[100px] flex flex-row gap-5 bg-white p-5 pl-0">
           <p className="my-auto text-[16px]">
             Enter your payment details to begin buying & selling lists:
           </p>
           <ButtonDark
             text="Connect"
             onClick={connectwithBankDetails}
-            className="w-fit"
+            className="w-fit bg-[#0F172A]"
           ></ButtonDark>
         </div>
       )}
 
-      <div className="flex flex-row ml-[64px] gap-4 mb-20 mt-20">
+      {/* Buttons top right*/}
+      <div className="absolute flex flex-row right-0 ml-[100px] gap-1 mt-[55px] mr-[100px]">
+        <div className="w-[180px] border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
+          <ButtonDark
+            onClick={buttonOnClick}
+            text="Explore Marketplace"
+            className="bg-white text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
+          ></ButtonDark>
+        </div>
+        <ButtonDark
+          onClick={buttonOnClick}
+          text="Create a List"
+          className="w-[120px] mr-10 bg-[#0F172A] text-white"
+        ></ButtonDark>
+      </div>
+
+      {/* Stats */}
+      <div className="flex flex-row ml-[100px] gap-1 mb-20 mt-20">
         <DashboardItem
           className="border-0"
           title="EARNINGS"
@@ -99,6 +116,8 @@ export default function Dashboard({ user }) {
           icon="/assets/dashboard/money.svg"
           color="#D3EBD5"
         ></DashboardItem>
+
+        <Divider />
         <DashboardItem
           title="TOTAL SPENT"
           value={"$" + data?.totalSpent}
@@ -107,35 +126,52 @@ export default function Dashboard({ user }) {
         ></DashboardItem>
       </div>
 
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-row gap-6">
         <DashboardRow title="Buyer" buttonText="Explore Marketplace">
-          <DashboardItem
-            title="List Viewed"
-            value={data?.listsViewed}
-            icon="/assets/dashboard/list.svg"
-            color="#CCE0FE"
-          ></DashboardItem>
-          <DashboardItem
-            title="Lists Bought"
-            value={data?.purchasedLists}
-            icon="/assets/dashboard/listCheck.svg"
-            color="#CCE0FE"
-          ></DashboardItem>
+          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div className="pl-4">
+              <DashboardItem
+                title="List Viewed"
+                value={data?.listsViewed}
+                icon="/assets/dashboard/list.svg"
+                color="#CCE0FE"
+              ></DashboardItem>
+            </div>
+          </div>
+          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div className="pl-4">
+              <DashboardItem
+                title="Lists Bought"
+                value={data?.purchasedLists}
+                icon="/assets/dashboard/listCheck.svg"
+                color="#CCE0FE"
+                className="border-[1px] border-[#0D1011]/[.10]"
+              ></DashboardItem>
+            </div>
+          </div>
         </DashboardRow>
 
         <DashboardRow title="Seller" buttonText="Create a List">
-          <DashboardItem
-            title="List Created"
-            value={data?.listsCreated}
-            icon="/assets/dashboard/list.svg"
-            color="#CCE0FE"
-          ></DashboardItem>
-          <DashboardItem
-            title="Lists Sold"
-            value={data?.listsSold}
-            icon="/assets/dashboard/list.svg"
-            color="#CCE0FE"
-          ></DashboardItem>
+          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div className="pl-4">
+              <DashboardItem
+                title="List Created"
+                value={data?.listsCreated}
+                icon="/assets/dashboard/list.svg"
+                color="#CCE0FE"
+              ></DashboardItem>
+            </div>
+          </div>
+          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div className="pl-4">
+              <DashboardItem
+                title="Lists Sold"
+                value={data?.listsSold}
+                icon="/assets/dashboard/list.svg"
+                color="#CCE0FE"
+              ></DashboardItem>
+            </div>
+          </div>
         </DashboardRow>
       </div>
     </Layout>

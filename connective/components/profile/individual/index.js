@@ -32,57 +32,82 @@ export default function IndividualProfile({ user }) {
   };
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-[100%] h-full p-[64px]">
       {loaded ? (
         <>
           <img
-            className="h-[18vh] w-full object-cover relative shadow-md"
+            className="h-[18vh] w-[100%] object-cover relative shadow-md rounded-[12px]"
             src="/assets/banners/waves-min.jpeg"
-          ></img>
-          {data.profile_picture == "" ? (
-            <img
-              className="rounded-full w-32 h-32 -mt-16 z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md"
-              src={`https://avatars.dicebear.com/api/micah/${user.id}.svg`}
-            ></img>
-          ) : (
-            <img
-              className="rounded-full w-32 h-32 -mt-16 z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md"
-              src={data.profile_picture}
-            ></img>
-          )}
-          <div className="mt-10 ml-16 text-black">
-            <div className="flex flex-row">
-              <p className="font-bold text-3xl 2xl:text-4xl mb-5">
-                {data?.name}
-              </p>
-              <ButtonDark
-                text="Edit Profile"
-                className="hover:scale-105 hover:shadow-lg"
-                onClick={() => router.push("/app/profile/edit-profile")}
-              ></ButtonDark>
-            </div>
-            <div className="flex flex-row gap-10 text-lg 2xl:text-xl mr-16 pb-5 border-b border-black/20">
-              <div className="flex flex-row gap-2">
-                <img className="h-6 w-6" src="/assets/location-pin.png" />
-                <p>{data?.location}</p>
+          />
+
+          <div className="w-[100%] flex flex-row justify-between items-center mt-[-70px]">
+            <div className="mb-[64px] flex flex-row items-center gap-[40px] pl-[50px]">
+              {data.profile_picture == "" ? (
+                <img
+                  className="rounded-full w-[200px] h-[200px] z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md"
+                  src={`https://avatars.dicebear.com/api/micah/${user.id}.svg`}
+                ></img>
+              ) : (
+                <img
+                  className="rounded-full w-[200px] h-[200px] z-10 backdrop-blur-sm bg-white/20 shadow-md"
+                  src={data.profile_picture}
+                ></img>
+              )}
+
+              <div className="flex flex-col mt-[80px]">
+                <div className="flex flex-row">
+                  <p className="font-bold text-2xl 2xl:text-4xl mb-1 text-[#0D1011]">
+                    {data?.name}
+                  </p>
+                </div>
+
+                <div className="flex flex-row gap-10 text-[14px] 2xl:text-xl mr-16 pb-5 font-[Poppins]">
+                  <div className="flex flex-row gap-2  items-center">
+                    <img
+                      className="h-[14px] w-[14px]"
+                      src="/assets/location-pin.png"
+                    />
+                    <p>{data?.location}</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <p className="font-bold text-xl mt-20 mb-5">Bio:</p>
-            <div className="rounded-xl bg-white shadow w-[40vw] p-5">
+
+            <ButtonDark
+              text="Edit Profile"
+              className="w-[172px] hover:scale-105 hover:shadow-lg bg-[#061A40]"
+              onClick={() => router.push("/app/profile/edit-profile")}
+            ></ButtonDark>
+          </div>
+
+          <div className="mb-[60px]">
+            <p className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
+              About
+            </p>
+            <div className="max-w-[540px] font-[Poppins] font-normal text-[16px] leading-[24px] text-[#0D1011]">
               <p>{data?.bio}</p>
             </div>
-            <p className="font-bold text-xl mt-20 mb-5">Lists for sale:</p>
-            {typeof data.lists != "undefined" && data.lists.length > 0 && (
-              <div className="grid sm:grid-cols-3 2xl:grid-cols-4 auto-rows-[30vw] gap-10 pb-20">
-                {data.lists.map((item, index) => {
-                  return <ListCard item={item}></ListCard>;
-                })}
-              </div>
-            )}
+
+            <div></div>
+          </div>
+
+          <div>
+            <p className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
+              Lists for Sale
+            </p>
+            <div className="flex flex-row flex-wrap gap-[32px] mb-[65px]">
+              {typeof data.lists != "undefined" && data.lists.length > 0 && (
+                <>
+                  {data.lists.map((item, index) => {
+                    return <ListCard item={item}></ListCard>;
+                  })}
+                </>
+              )}
+            </div>
           </div>
         </>
       ) : (
-        "Loading"
+        <div><p className="text-center">"Loading..."</p></div>
       )}
     </div>
   );
