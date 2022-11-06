@@ -7,7 +7,7 @@ import ListCard from "../../../components/marketplace/ListCard";
 import { categoryOptions } from "../../../common/selectOptions";
 import Image from "next/image";
 import searchIcon from "../../../public/assets/search-2.svg";
-import RequestCard from "components/request-card";
+import Modal from "components/modal";
 
 export default function Dashboard({ user }) {
   const [lists, setLists] = useState([]);
@@ -99,7 +99,7 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout title="Marketplace">
-      <div className="1bp:w-[1840px] ml-[64px] mr-20 h-screen">
+      <div className="1bp:w-[1840px] ml-[64px] mr-20 h-screen bg-opacity-30">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
           <div className="w-[500px] relative">
             <div className="absolute z-[10] p-[10px]">
@@ -163,7 +163,7 @@ export default function Dashboard({ user }) {
                 )}
                 {cardDisplayed && (
                   <div className="w-[100%] mx-auto">
-                    <RequestCard onClick={displayCardHandler} />
+                    <Modal onClick={displayCardHandler} />
                   </div>
                 )}
               </div>

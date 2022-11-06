@@ -1,6 +1,9 @@
 import Sidebar from "../sidebar";
 
+
 const Layout = ({ title, children }) => {
+  
+
   return (
     <main className="flex flex-row min-h-screen min-w-screen font-[Montserrat]">
       <Sidebar></Sidebar>
