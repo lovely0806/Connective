@@ -5,6 +5,9 @@ import Layout from "../../../components/layout";
 import Select from "react-select";
 import ListCard from "../../../components/marketplace/ListCard";
 import { categoryOptions } from "../../../common/selectOptions";
+import Image from "next/image";
+import searchIcon from "../../../public/assets/search-2.svg";
+import RequestCard from "components/request-card";
 
 export default function Dashboard({ user }) {
   const [lists, setLists] = useState([]);
@@ -13,6 +16,7 @@ export default function Dashboard({ user }) {
   const [sort, setSort] = useState("New");
   const [filter, setFilter] = useState(0);
   const [search, setSearch] = useState("");
+  const [cardDisplayed, setCardDisplayed] = useState(false);
 
   const sortOptions = [
     { value: "Buyers", label: "Buyers" },
@@ -89,51 +93,80 @@ export default function Dashboard({ user }) {
     setFilteredLists([...tempFiltered]);
   }, [filter, sort, lists, search]);
 
+  const displayCardHandler = () => {
+    setCardDisplayed((prevState) => !prevState);
+  };
+
   return (
     <Layout title="Marketplace">
       <div className="ml-[100px] mr-20 h-screen">
-        <div className="flex flex-row w-full mb-20 gap-10">
-          <input
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-            placeholder="Search for lists"
-            style={{
-              background: "white url(/assets/search.svg) no-repeat 5px 5px",
-            }}
-            className="h-fit w-full mr-32 outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
-          ></input>
+        <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
+          <div className="w-[600px] relative">
+            <div className="absolute z-[10] p-[10px]">
+              <Image
+                src={searchIcon}
+                alt="Search icon"
+                width="16px"
+                height="16px"
+              />
+            </div>
+            <input
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              placeholder="Search for lists"
+              className="w-[600px] z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
+            ></input>
+          </div>
           <Select
+            placeholder="Categories"
             options={categoryOptions}
             defaultValue={categoryOptions[0]}
             onChange={updateFilter}
             isMulti={false}
-            placeholder="Categories"
-            className="w-96"
+            className="w-[250px] text-[12px]"
           ></Select>
           <Select
+            placeholder="Sort"
             options={sortOptions}
             defaultValue={sortOptions[2]}
             onChange={updateSort}
-            placeholder="Sort"
-            className="w-96"
+            className="w-[250px] text-[12px]"
           ></Select>
         </div>
 
         {filteredLists.length > 0 ? (
-          <div className="flex flex-row flex-wrap gap-[7px] mb-[65px]">
+          <div className="flex flex-row flex-wrap gap-[32px] mb-[65px]">
             {filteredLists.map((item, index) => {
               return <ListCard item={item} key={index}></ListCard>;
             })}
           </div>
         ) : (
-          <div className="w-full h-full flex">
+          <div className="w-full h-full flex flex-col items-center">
             {loading ? (
               <p className="mx-auto mt-20 text-2xl">Loading...</p>
             ) : (
-              <p className="mx-auto mt-20 text-2xl">
-                No lists exist for this category yet :(
-              </p>
+              <div className="flex flex-col items-center">
+                {!cardDisplayed && (
+                  <div className="w-[100%] flex flex-col items-center mt-[170px]">
+                    <p className="w-[710px] font-[Poppins] font-normal text-[24px] leading-[30px] text-[#0D1011] text-center mb-[32px]">
+                      Sorry, we could not find the list you re looking for.
+                      Submit request so we can get to you the list!
+                    </p>
+                    <button
+                      className="w-[241px] h-[39px] text-center bg-[#061A40] text-white font-[Poppins] font-medium text-[14px] leading-[17px]"
+                      onClick={displayCardHandler}
+                    >
+                      Submit Request
+                    </button>
+                  </div>
+                )}
+                {cardDisplayed && (
+                  <div className="w-[100%] mx-auto">
+                    <RequestCard onClick={displayCardHandler}/>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}

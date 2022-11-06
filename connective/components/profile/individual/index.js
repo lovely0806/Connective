@@ -107,7 +107,7 @@ export default function IndividualProfile({ user }) {
           </div>
         </>
       ) : (
-        <div><p className="text-center">"Loading..."</p></div>
+        <div><p className="text-center">Loading...</p></div>
       )}
     </div>
   );

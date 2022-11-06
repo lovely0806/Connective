@@ -58,7 +58,7 @@ const ListCard = ({ item, preview, user }) => {
   }, [item]);
 
   return (
-    <div className="w-[350px] h-fill bg-white rounded-[8px] p-[12px] flex flex-col justify-between font-[Montserrat]">
+    <div className="w-[350px] h-fill bg-white rounded-[8px] p-[12px] flex flex-col justify-between font-[Montserrat] drop-shadow-lg border-[0.5px] border-[#E0E0E0]">
       <div>
         <div>
           <img
