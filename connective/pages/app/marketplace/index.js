@@ -99,7 +99,7 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout title="Marketplace">
-      <div className="ml-[100px] mr-20 h-screen">
+      <div className="1bp:w-[1840px] ml-[100px] mr-20 h-screen">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
           <div className="w-[500px] relative">
             <div className="absolute z-[10] p-[10px]">
@@ -136,7 +136,7 @@ export default function Dashboard({ user }) {
         </div>
 
         {filteredLists.length > 0 ? (
-          <div className="grid sm:grid-cols-3 2xl:grid-cols-4 gap-10 pb-20">
+          <div className="grid grid-cols-4 4bp:grid-cols-3 1bp:grid-cols-4 gap-10 pb-20">
             {filteredLists.map((item, index) => {
               return <ListCard item={item} key={index}></ListCard>;
             })}
