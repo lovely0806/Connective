@@ -269,8 +269,8 @@ export default function CreateProfile({ user }) {
               errorText={descriptionError}
               textarea={true}
             ></InputField>
-            <div>
-              <p className="text-[12px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+            <div className="relative">
+              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                 Logo
               </p>
               <FileUpload
@@ -297,11 +297,11 @@ export default function CreateProfile({ user }) {
 
             <div className="flex flex-row justify-between gap-[24px]">
               <div className="w-full">
-                <p className="text-[12px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Industry
                 </p>
                 <Select
-                  className="w-full text-[12px]"
+                  className="w-full text-[14px] font-[Poppins]"
                   onChange={(e) => {
                     setIndustry(e.value);
                   }}
@@ -312,12 +312,12 @@ export default function CreateProfile({ user }) {
                   {industryError}
                 </p>
               </div>
-              <div className="w-full text-[12px]">
-                <p className="text-[12px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+              <div className="w-full customSelect">
+                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Size
                 </p>
                 <Select
-                  className="w-full"
+                  className="w-full text-[14px] font-[Poppins]"
                   onChange={(e) => {
                     setSize(e.value);
                   }}
@@ -333,7 +333,7 @@ export default function CreateProfile({ user }) {
         ) : (
           <div className="flex flex-col gap-5 mt-10">
             <InputField
-              name={"Name*"}
+              name={"Name"}
               placeholder={"Enter your name"}
               updateValue={setName}
               errorText={nameError}
@@ -345,8 +345,10 @@ export default function CreateProfile({ user }) {
               errorText={descriptionError}
               textarea={true}
             ></InputField>
-            <div>
-              <p className="text-sm mb-2">Profile picture</p>
+            <div className="relative">
+              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-[10px] 1bp:text-[16.5px]">
+                Profile picture
+              </p>
               <FileUpload
                 text="Upload profile picture"
                 file={pfp}

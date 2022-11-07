@@ -89,13 +89,15 @@ export default function NewList({ user }) {
 
         <div className="relative">
           <p className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
-          <FileUpload
+          <div className=" mt-[40px]">
+            <FileUpload
             text="Upload Image"
             file={file}
             setFile={setFile}
             id="preview upload"
             accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"
-          ></FileUpload>
+            ></FileUpload>
+          </div>
         </div>
 
         <p className="text-red-500 font-bold text-[12px]">{fileError}</p>

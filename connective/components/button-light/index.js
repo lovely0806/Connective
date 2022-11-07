@@ -1,6 +1,6 @@
 const ButtonLight = ({text, onClick, className}) => {
     return (
-        <div onClick={onClick} className={`ml-auto cursor-pointer mr-10 font-bold bg-white border border-[#0F172A] h-fit text-black flex flex-row gap-5 px-10 py-2 w-fit rounded-lg transition-all hover:bg-black/5 ${className}`}>
+        <div onClick={onClick} className={`text-[10px] cursor-pointer font-bold bg-white h-fit text-[#061A40] flex flex-row py-[8px] w-fit border-[1px] border-[#061A40] rounded-lg transition-all ${className}`}>
             <p className="mx-auto">
                 {text}
             </p>

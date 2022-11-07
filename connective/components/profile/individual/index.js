@@ -48,10 +48,10 @@ export default function IndividualProfile({ user }) {
                   src={`https://avatars.dicebear.com/api/micah/${user.id}.svg`}
                 ></img>
               ) : (
-                <img
-                  className="rounded-full w-[200px] h-[200px] z-10 backdrop-blur-sm bg-white/20 shadow-md"
+                <div className="w-[200px] h-[200px]"><img
+                  className="rounded-full w-[100%] h-[100%] z-10 backdrop-blur-sm bg-white/20 shadow-md"
                   src={data.profile_picture}
-                ></img>
+                ></img></div>
               )}
 
               <div className="flex flex-col mt-[80px]">

@@ -46,7 +46,7 @@ export default function Dashboard({ user }) {
   return (
     <Layout title="">
       <div>
-        <h1 className="w-[100%] ml-[64px] font-[Montserrat] font-bold text-[26px] text-[#0D1011] mb-[40px]">
+        <h1 className="ml-[64px] font-[Montserrat] font-bold text-[26px] text-[#0D1011] mb-[40px]">
           {!loading ? data?.title : "..."}
         </h1>
       </div>
@@ -83,34 +83,37 @@ export default function Dashboard({ user }) {
             <img src={data.preview_url} />
           </div>
 
-          <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
+          <div className="mx-10 ml-[64px] rounded-lg mb-[40px]">
             <div className="mb-[12px]">
               <p className="font-bold text-xl my-auto">Fields Description</p>
             </div>
 
-            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg">
-              <div className="flex flex-row uppercase font-bold text-[14px] text-black/50 mb-[16px]">
-                <p className="min-w-[280px]">Field</p>
-                <p className="">Description</p>
-              </div>
-              <div>
-                {data?.fields?.fieldResults.map((item, index) => {
-                  return (
-                    <div className="flex flex-row mb-[16px] items-center">
-                      <p className="min-w-[280px] text-[#0D1011] font-bold">
-                        {item.name}
-                      </p>
-                      <p className="text-[#0d101180] font-[Poppins]">
-                        {item.description}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <table className="w-[100%] border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg mb-[40px]">
+              <tr>
+                <th className="uppercase font-bold text-[14px] text-black/50 mb-[16px] rounded-lg">
+                  Field
+                </th>
+                <th className="uppercase font-bold text-[14px] text-black/50 mb-[16px] rounded-lg">
+                  Description
+                </th>
+              </tr>
+              {data?.fields?.fieldResults.map((item, index) => {
+                return (
+                  <tr>
+                    <td className="w-[200px] font-[Montserrat] font-bold text-[16px] text-[#0D1011]">
+                      {item.name}
+                    </td>
+                    <td className="text-[#0d101180] font-[Poppins]">
+                      {item.description}
+                    </td>
+                  </tr>
+                );
+              })}
+            </table>
           </div>
 
-          {/* Authors */}
+          {/* ---------Authors--------- */}
+
           {/* <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
             <div className="mb-[12px]">
               <p className="font-bold text-xl my-auto">Authors</p>

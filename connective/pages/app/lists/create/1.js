@@ -47,7 +47,7 @@ export default function NewList({ user }) {
         <p className="text-center font-bold text-xl mb-5">Upload your CSV</p>
 
         <div className="relative">
-          <div className="w-[700px] mx-auto">
+          <div className="mt-[40px] w-[700px] mx-auto">
             <FileUpload
               text="Upload CSV"
               file={file}

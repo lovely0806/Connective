@@ -59,7 +59,7 @@ const ListMarketplace = ({ item, preview, user }) => {
     <div className="w-[350px] h-fill bg-white rounded-[8px] p-[12px] flex flex-col justify-between font-[Montserrat] drop-shadow-lg border-[0.5px] border-[#E0E0E0]">
       <div>
         <div>
-          <img
+          <Image
             className="object-cover w-[350px] h-[153px] mb-[12px] rounded-[8px]"
             src={
               item.cover_url == "undefined" ||
@@ -70,6 +70,8 @@ const ListMarketplace = ({ item, preview, user }) => {
                 : item.cover_url
             }
             alt="List image"
+            width="350px"
+            height="153px"
           />
         </div>
         <p className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">

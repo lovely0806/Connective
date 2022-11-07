@@ -26,13 +26,13 @@ table {
 td {
   /* border: 1px solid #dddddd; */
   text-align: left;
-  padding: 16px 4px 16px 4px;
+  padding: 16px;
 }
 
 th {
   /* border: 1px solid #dddddd; */
   text-align: left;
-  padding: 0px;
+  padding: 16px;
 }
 
 /* tr:nth-child(even) {
