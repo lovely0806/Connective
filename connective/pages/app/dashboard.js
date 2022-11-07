@@ -79,7 +79,7 @@ export default function Dashboard({ user, buttonOnClick }) {
   return (
     <Layout title="Dashboard" className="relative items-center">
       {!isVerified && (
-        <div className="ml-[64px] flex flex-row gap-5 bg-[#FCFCFC] p-5 pl-0">
+        <div className="ml-[64px] flex flex-row gap-5 bg-[#FCFCFC] p-5 pl-0 mt-[40px]">
           <p className="my-auto text-[16px]">
             Enter your payment details to begin buying & selling lists:
           </p>
@@ -87,7 +87,7 @@ export default function Dashboard({ user, buttonOnClick }) {
             text="Connect"
             onClick={connectwithBankDetails}
             className="w-fit bg-[#0F172A]"
-          ></ButtonDark>
+          />
         </div>
       )}
 
@@ -98,13 +98,13 @@ export default function Dashboard({ user, buttonOnClick }) {
             onClick={buttonOnClick}
             text="Explore Marketplace"
             className="bg-white text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
-          ></ButtonDark>
+          />
         </div>
         <ButtonDark
           onClick={buttonOnClick}
           text="Create a List"
           className="w-[120px] mr-10 bg-[#0F172A] text-white"
-        ></ButtonDark>
+        />
       </div>
 
       {/* Stats */}

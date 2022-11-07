@@ -44,61 +44,121 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout title="">
-      <div className="flex flex-col mb-20">
-        <div className="mx-20 bg-white shadow-lg rounded-xl p-10 mb-10">
-          <div className="flex flex-row h-fit gap-5 mb-10">
-            <img src="/assets/listdetails.svg"></img>
-            <p className="font-bold text-xl my-auto">List Details</p>
-          </div>
+      <div>
+        <h1 className="w-[100%] ml-[64px] font-[Montserrat] font-bold text-[26px] text-[#0D1011] mb-[40px]">
+          {!loading ? data?.title : "..."}
+        </h1>
+      </div>
 
-          <div className="flex flex-row justify-between gap-20">
-            <div>
-              <p className="text-lg font-bold mb-2">List Name</p>
-              <p className="text-[#8A8888] mb-7">
-                {!loading ? data?.title : "..."}
-              </p>
-              <p className="text-lg font-bold mb-2">Description</p>
-              <p className="text-[#8A8888] mb-7">
-                {!loading ? data?.description : "..."}
-              </p>
+      <div className="flex flex-row">
+        {/* Left side */}
+        <div className="flex flex-col mb-20">
+          <div className="mx-10 ml-[64px] rounded-xl pt-0 mb-[40px]">
+            <div className="flex flex-row justify-between gap-20 pt-[40px]">
+              <div>
+                <p className="text-lg font-bold mb-2 text-[#0D1011]">About</p>
+                <p className="font-[Poppins] text-[#0D1011] mb-7">
+                  {!loading ? data?.description : "..."}
+                </p>
 
-              <div className="flex flex-row mb-2 gap-3">
-                <img src="/assets/question.svg"></img>
-                <p className="text-lg font-bold">
-                  How did the seller obtain this list?
+                <div className="flex flex-row mb-2 gap-3">
+                  <p className="text-lg font-bold">
+                    How did the seller obtain this list?
+                  </p>
+                </div>
+
+                <p className="font-[Poppins] text-[#0D1011] mb-7">
+                  {!loading ? data?.list_obtained : "..."}
                 </p>
               </div>
-
-              <p className="text-[#8A8888] mb-7">
-                {!loading ? data?.list_obtained : "..."}
-              </p>
             </div>
-            <div className="w-[30rem]">
-              <p className="text-lg font-bold mb-2">Location</p>
-              <div className="flex flex-row mb-7 gap-3">
-                <img
-                  className="h-5 my-auto"
-                  src="/assets/location-pin.png"
-                ></img>
-                <p className="text-[#8A8888]">
+          </div>
+
+          <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
+            <div className="mb-1">
+              <p className="font-bold text-xl my-auto">List Preview</p>
+            </div>
+
+            <img src={data.preview_url} />
+          </div>
+
+          <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
+            <div className="mb-[12px]">
+              <p className="font-bold text-xl my-auto">Fields Description</p>
+            </div>
+
+            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg">
+              <div className="flex flex-row uppercase font-bold text-[14px] text-black/50 mb-[16px]">
+                <p className="min-w-[280px]">Field</p>
+                <p className="">Description</p>
+              </div>
+              <div>
+                {data?.fields?.fieldResults.map((item, index) => {
+                  return (
+                    <div className="flex flex-row mb-[16px] items-center">
+                      <p className="min-w-[280px] text-[#0D1011] font-bold">
+                        {item.name}
+                      </p>
+                      <p className="text-[#0d101180] font-[Poppins]">
+                        {item.description}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
+            <div className="mb-[12px]">
+              <p className="font-bold text-xl my-auto">Authors</p>
+            </div>
+
+            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg">
+              {/* IN PROGRESS */}
+              <table>
+                <tr>
+                  <th>Company</th>
+                  <th>Contact</th>
+                  <th>Country</th>
+                </tr>
+                <tr>
+                  <td>Alfreds Futterkiste</td>
+                  <td>Maria Anders</td>
+                  <td>Germany</td>
+                </tr>
+                <tr>
+                  <td>Centro comercial Moctezuma</td>
+                  <td>Francisco Chang</td>
+                  <td>Mexico</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Rigth side (Details...) */}
+        <div className="min-w-[380px] h-fit border-[1px] border-[#0D1011]/[.10] p-[20px] rounded-lg mr-[64px]">
+          <p className="text-lg font-bold mb-[16px] text-[#0D1011]">Details</p>
+          <div className="flex flex-row gap-5 items-start mb-4">
+            <div className="flex flex-row items-center gap-[12px]">
+              <img className="w-5 h-5" src="/assets/location-pin.png" />
+              <div className="max-w-[110px] flex flex-col">
+                <p className="text-md font-bold">Location</p>
+                <p className="font-[Poppins] text-[#0D1011] text-[12px]">
                   {!loading ? data?.location : "..."}
                 </p>
               </div>
-              <p className="text-lg font-bold mb-2">Listed By</p>
-              <div className="flex flex-row gap-3">
-                <img
-                  className="h-8 w-8 rounded-full object-fit"
-                  src={
-                    (typeof data.logo == "undefined" || data.logo == "") &&
-                    (typeof data.profile_picture == "undefined" ||
-                      data.profile_picture == "")
-                      ? `https://avatars.dicebear.com/api/micah/${data.creator}.svg`
-                      : typeof data.logo == "undefined"
-                      ? data.profile_picture
-                      : data.logo
-                  }
-                />
-                <p className="text-[#8A8888] mb-7 my-auto">
+            </div>
+
+            <div className="flex flex-row items-center gap-[12px]">
+              <img
+                className="h-[15px] w-[20px]"
+                src="/assets/navbar/dark-lists.svg"
+              />
+              <div className="flex flex-col">
+                <p className="text-md font-bold">Listed by</p>
+                <p className="font-[Poppins] text-[#0D1011] text-[12px]">
                   {!loading
                     ? typeof data.name == "undefined"
                       ? data.company_name
@@ -106,50 +166,33 @@ export default function Dashboard({ user }) {
                     : "..."}
                 </p>
               </div>
-              <p className="text-lg font-bold mb-2">List Price</p>
-              <p className="text-[#8A8888] mb-7">
-                ${!loading ? data?.price.toFixed(2) : "..."}
-              </p>
             </div>
           </div>
-        </div>
-
-        <div className="mx-20 bg-white shadow-lg rounded-xl p-10 mb-10">
-          <div className="flex flex-row h-fit gap-5 mb-10">
-            <img src="/assets/listdetails.svg"></img>
-            <p className="font-bold text-xl my-auto">List Preview</p>
+          <div className="flex flex-row justify-between items-center mb-[20px]">
+            <div className="flex flex-row gap-[12px] items-center">
+              <img
+                className="w-[21px] h-[21px]"
+                src="/assets/dashboard/dollar-dark.svg"
+              />
+              <p className="text-md font-bold">List Price</p>
+            </div>
+            <p className="font-[Poppins] text-[#0D1011] font-bold text-[24px]">
+              ${!loading ? data?.price.toFixed(2) : "..."}
+            </p>
           </div>
 
-          <img src={data.preview_url} />
-        </div>
-
-        <div className="mx-20 bg-white shadow-lg rounded-xl p-10 mb-5">
-          <div className="flex flex-row gap-5 mb-10">
-            <img src="/assets/fieldsdescription.svg"></img>
-            <p className="font-bold text-xl my-auto">Fields Description</p>
+          <div>
+            {accountVerified && !data.purchased && (
+              <ButtonDark
+                text="Buy Now"
+                className="w-[100%] bg-[#061A40]"
+                onClick={() => {
+                  router.push({ pathname: `/app/checkout/${id}` });
+                }}
+              ></ButtonDark>
+            )}
           </div>
-          <div className="grid grid-cols-2 text-lg font-medium text-black/50 border-b border-black/20">
-            <p>Field</p>
-            <p>Description</p>
-          </div>
-          {data?.fields?.fieldResults.map((item, index) => {
-            return (
-              <div className="grid grid-cols-2 border-b border-black/20 py-5 text-sm">
-                <p>{item.name}</p>
-                <p>{item.description}</p>
-              </div>
-            );
-          })}
         </div>
-        {accountVerified && !data.purchased && (
-          <ButtonDark
-            text="Buy Now"
-            className="w-auto mx-20 mt-0 bg-[#061A40]"
-            onClick={() => {
-              router.push({ pathname: `/app/checkout/${id}` });
-            }}
-          ></ButtonDark>
-        )}
       </div>
     </Layout>
   );

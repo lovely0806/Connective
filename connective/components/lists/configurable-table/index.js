@@ -2,12 +2,12 @@ import { useEffect } from "react";
 
 const HeaderRow = ({ col1, col2 }) => {
   return (
-    <div className="flex flex-row rounded-t-xl border border-black/30">
-      <div className="w-full text-center rounded-tl-xl border-r border-black/30 py-2">
-        <p className="font-bold">{col1}</p>
+    <div className="flex flex-row rounded-tl-lg rounded-tr-lg border-[1px] border-black/30">
+      <div className="w-full text-center border-r border-black/30 py-2">
+        <p className="font-bold text-[14px]">{col1}</p>
       </div>
-      <div className="w-full text-center rounded-tr-xl py-2">
-        <p className="font-bold">{col2}</p>
+      <div className="w-full text-center py-2">
+        <p className="font-bold text-[14px]">{col2}</p>
       </div>
     </div>
   );
@@ -60,26 +60,33 @@ const ConfigurableTable = ({
   // console.log(data);
   return (
     <div>
-      <p className="text-sm mb-2">{title}</p>
-      <div className="rounded-xl mb-2">
-        <HeaderRow col1={column1Name} col2={column2Name}></HeaderRow>
+      <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+        {title}
+      </p>
+
+      <div className="rounded-xl mb-[12px]">
+        <HeaderRow col1={column1Name} col2={column2Name} />
         {data.map((item, index) => {
-          return (
-            <Row key={index} id={index} data={data} setData={setData}></Row>
-          );
+          return <Row key={index} id={index} data={data} setData={setData} />;
         })}
       </div>
+
       <div className="flex flex-row gap-5">
         <div
-          className="bg-[#0F172A] text-white rounded-full w-8 h-8 flex text-[20px]"
+          className="bg-[#061A40] text-white rounded-lg w-[69px] h-[28px] flex flex-row items-center justify-center"
           onClick={() => {
             setData([...data, { name: "", description: "" }]);
           }}
         >
-          <p className="mx-auto my-auto">+</p>
+          <div className="flex flex-row items-center justify-center gap-[10px] cursor-pointer">
+            <p className="">+</p>
+            <p className="text-white text-[12px] font-[Poppins] font-semibold">
+              Add
+            </p>
+          </div>
         </div>
         <div
-          className="bg-[#0F172A] text-white rounded-full w-8 h-8 flex text-[20px]"
+          className="bg-white text-[#061A40] rounded-lg w-[94px] h-[28px] flex flex-row items-center justify-center border-[1px] border-[#061A40]"
           onClick={() => {
             let d = data;
             d.shift();
@@ -87,7 +94,12 @@ const ConfigurableTable = ({
             setData([...d]);
           }}
         >
-          <p className="mx-auto my-auto">-</p>
+          <div className="flex flex-row items-center justify-center gap-[10px] cursor-pointer">
+            <p className="">-</p>
+            <p className="text-[#061A40] text-[12px] font-[Poppins] font-semibold">
+              Remove
+            </p>
+          </div>
         </div>
       </div>
     </div>

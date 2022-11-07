@@ -7,6 +7,7 @@ import ButtonDark from "../../../../components/button-dark";
 import FileUpload from "../../../../components/file-upload";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
+import Steps from "components/list-steps";
 
 export default function NewList({ user }) {
   const [processing, setProcessing] = useState(false);
@@ -39,21 +40,30 @@ export default function NewList({ user }) {
   };
 
   return (
-    <Layout title="Lists">
-      <div className="bg-white rounded-xl shadow-lg mx-20 p-10">
-        <p className="text-center font-bold text-xl mb-5">Create a list</p>
-        <p className="text-center mb-10">Step 1 of 4</p>
-        <FileUpload
-          text="Upload Excel File"
-          file={file}
-          setFile={setFile}
-          id="CSV Upload"
-          accept=".csv,.xls,.xlsx"
-        ></FileUpload>
-        <p className="text-red-500 font-bold text-[12px]">{fileError}</p>
+    <Layout title="Create New List">
+      <Steps />
+      
+      <div className="mx-20 ml-[64px] p-10 mt-[60px]">
+        <p className="text-center font-bold text-xl mb-5">Upload your CSV</p>
+
+        <div className="relative">
+          <div className="w-[700px] mx-auto">
+            <FileUpload
+              text="Upload CSV"
+              file={file}
+              setFile={setFile}
+              id="CSV Upload"
+              accept=".csv,.xls,.xlsx"
+            />
+          </div>
+          <p className="text-red-500 text-center mt-[4px] font-bold text-[12px]">
+            {fileError}
+          </p>
+        </div>
+
         <ButtonDark
           text="Next"
-          className="mr-0 mt-10"
+          className="mx-auto w-[162px] mt-10 font-[Poppins] bg-[#061A40] text-white"
           onClick={submit}
         ></ButtonDark>
       </div>

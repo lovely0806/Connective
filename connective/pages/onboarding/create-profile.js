@@ -301,7 +301,7 @@ export default function CreateProfile({ user }) {
                   Industry
                 </p>
                 <Select
-                  className="w-full"
+                  className="w-full text-[12px]"
                   onChange={(e) => {
                     setIndustry(e.value);
                   }}
@@ -312,7 +312,7 @@ export default function CreateProfile({ user }) {
                   {industryError}
                 </p>
               </div>
-              <div className="w-full">
+              <div className="w-full text-[12px]">
                 <p className="text-[12px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Size
                 </p>

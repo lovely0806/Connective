@@ -8,6 +8,7 @@ import { categoryOptions } from "../../../common/selectOptions";
 import Image from "next/image";
 import searchIcon from "../../../public/assets/search-2.svg";
 import Modal from "components/modal";
+import ListMarketplace from "components/marketplace/ListMarketplace";
 
 export default function Dashboard({ user }) {
   const [lists, setLists] = useState([]);
@@ -99,7 +100,7 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout title="Marketplace">
-      <div className="1bp:w-[1840px] ml-[64px] mr-20 h-screen bg-opacity-30">
+      <div className="1bp:w-[1840px] ml-[64px] mr-20 h-screen bg-opacity-30 mt-[40px]">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
           <div className="w-[500px] relative">
             <div className="absolute z-[10] p-[10px]">
@@ -138,7 +139,7 @@ export default function Dashboard({ user }) {
         {filteredLists.length > 0 ? (
           <div className="grid grid-cols-4 4bp:grid-cols-3 1bp:grid-cols-4 gap-10 pb-20">
             {filteredLists.map((item, index) => {
-              return <ListCard item={item} key={index}></ListCard>;
+              return <ListMarketplace item={item} key={index} />;
             })}
           </div>
         ) : (

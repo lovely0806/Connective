@@ -73,11 +73,15 @@ export default function IndividualProfile({ user }) {
               </div>
             </div>
 
-            <ButtonDark
-              text="Edit Profile"
-              className="w-[172px] hover:scale-105 hover:shadow-lg bg-[#061A40]"
+            <div
+              className="flex flex-row gap-[12px] cursor-pointer text-white rounded-lg bg-[#061A40] items-center py-[18px] px-[40px]"
               onClick={() => router.push("/app/profile/edit-profile")}
-            ></ButtonDark>
+            >
+              <img className="w-[20px] h-[20px]" src="/assets/edit.svg" />
+              <p className="hover:scale-105 hover:shadow-lg font-[Poppins] text-center text-[14px]">
+                Edit Profile
+              </p>
+            </div>
           </div>
 
           <div className="mb-[60px]">
@@ -107,7 +111,9 @@ export default function IndividualProfile({ user }) {
           </div>
         </>
       ) : (
-        <div><p className="text-center">Loading...</p></div>
+        <div>
+          <p className="text-center">Loading...</p>
+        </div>
       )}
     </div>
   );
