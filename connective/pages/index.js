@@ -5,13 +5,8 @@ import Logo from "../components/logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-
-
 export default function Home() {
-  
   const router = useRouter();
-
-  
 
   return (
     <div>
@@ -59,8 +54,6 @@ export default function Home() {
           ></img>
         </div>
       </main>
-
-      
     </div>
   );
 }

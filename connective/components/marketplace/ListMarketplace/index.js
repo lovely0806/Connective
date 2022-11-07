@@ -102,7 +102,7 @@ const ListMarketplace = ({ item, preview, user }) => {
                 className="rounded-full w-10 h-10 object-cover"
               />
             )}
-            <p className="my-auto text-black/50 text-sm font-[Poppins] font-normal text-[#0d1011cc]">
+            <p className="my-auto text-sm font-[Poppins] font-normal text-[#0d1011cc]">
               {preview ? username : item?.username}
             </p>
           </div>

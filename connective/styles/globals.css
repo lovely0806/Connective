@@ -18,20 +18,26 @@
 }
 
 table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+  border-color: white;
+  /* border-collapse: collapse; */
+  /* width: 100%; */
 }
 
-td, th {
-  border: 1px solid #dddddd;
+td {
+  /* border: 1px solid #dddddd; */
   text-align: left;
-  padding: 8px;
+  padding: 16px 4px 16px 4px;
 }
 
-tr:nth-child(even) {
-  background-color: #dddddd;
+th {
+  /* border: 1px solid #dddddd; */
+  text-align: left;
+  padding: 0px;
 }
+
+/* tr:nth-child(even) {
+  background-color: #dddddd;
+} */
 
 .text-subheading {
   font-family: "Montserrat", sans-serif;

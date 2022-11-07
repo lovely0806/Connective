@@ -5,6 +5,7 @@ import Layout from "../../../../components/layout";
 import Util from "../../../../util";
 import { useRouter } from "next/router";
 import ButtonDark from "../../../../components/button-dark";
+import Authors from "components/authors";
 
 export default function Dashboard({ user }) {
   const [loading, setLoading] = useState(true);
@@ -109,35 +110,20 @@ export default function Dashboard({ user }) {
             </div>
           </div>
 
-          <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
+          {/* Authors */}
+          {/* <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
             <div className="mb-[12px]">
               <p className="font-bold text-xl my-auto">Authors</p>
             </div>
 
-            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg">
-              {/* IN PROGRESS */}
-              <table>
-                <tr>
-                  <th>Company</th>
-                  <th>Contact</th>
-                  <th>Country</th>
-                </tr>
-                <tr>
-                  <td>Alfreds Futterkiste</td>
-                  <td>Maria Anders</td>
-                  <td>Germany</td>
-                </tr>
-                <tr>
-                  <td>Centro comercial Moctezuma</td>
-                  <td>Francisco Chang</td>
-                  <td>Mexico</td>
-                </tr>
-              </table>
+            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg flex flex-col">
+              // .map() authors here
+              <Authors />
             </div>
-          </div>
+          </div> */}
         </div>
 
-        {/* Rigth side (Details...) */}
+        {/* Right side (Details...) */}
         <div className="min-w-[380px] h-fit border-[1px] border-[#0D1011]/[.10] p-[20px] rounded-lg mr-[64px]">
           <p className="text-lg font-bold mb-[16px] text-[#0D1011]">Details</p>
           <div className="flex flex-row gap-5 items-start mb-4">
