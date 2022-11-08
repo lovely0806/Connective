@@ -101,12 +101,14 @@ const ListMarketplace = ({ item, preview, user }) => {
               height="40px"
             />
           )}
-          <p className="font-[Poppins] my-auto text-[#0d101180] text-sm">
+          <p className="font-[Poppins] my-auto text-[#0d101180] text-sm mr-2">
             {preview ? username : item?.username}
           </p>
         </div>
         <div className="flex flex-col text-right">
-          <p className="text-[19px] font-bold">${parseInt(item.price).toFixed(2)}</p>
+          <p className="text-[19px] font-bold">
+            ${parseInt(item.price).toFixed(2)}
+          </p>
           <p className="text-[#0D1011] text-[12px]">
             {preview ? 0 : item.buyers} {item.buyers == 1 ? "buyer" : "buyers"}
           </p>
