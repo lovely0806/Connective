@@ -33,18 +33,18 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="z-10 h-fill min-w-[280px] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
+    <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
       <Link href="https://www.connective-app.xyz">
-        <div className="flex flex-row cursor-pointer items-center gap-[12px] mb-[36px]">
+        <div className="flex flex-row cursor-pointer items-center gap-2 mb-9">
           <Image
-            className="w-[45px] h-[47.69px]"
+            className="w-[2vh] h-[4vh]"
             src="/assets/logo-1.svg"
             width="70px"
             height="75px"
             priority
           />
           <Image
-            className="w-[148px] h-[27px]"
+            className="w-[5vh] h-[1.5vh]"
             src="/assets/logo-2.svg"
             width="196px"
             height="36px"
@@ -53,8 +53,8 @@ const Sidebar = () => {
         </div>
       </Link>
 
-      <div className="mb-[32px]">
-        <p className="font-[Montserrat font-bold text-[16px] leading-[20px] text-[#BFBFBF] mb-[21px]">
+      <div className="mb-5">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
         <SidebarItem
@@ -69,8 +69,8 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-[32px]">
-        <p className="font-[Montserrat font-bold text-[16px] leading-[20px] text-[#BFBFBF] mb-[21px]">
+      <div className="mb-5">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
         </p>
         <SidebarItem
@@ -85,8 +85,8 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-[32px]">
-        <p className="font-[Montserrat font-bold text-[16px] leading-[20px] text-[#BFBFBF] mb-[21px]">
+      <div className="mb-5">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a seller
         </p>
         <SidebarItem
@@ -106,8 +106,8 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-[46px]">
-        <p className="font-[Montserrat font-bold text-[16px] leading-[20px] text-[#BFBFBF] mb-[21px]">
+      <div className="mb-5">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
         <SidebarItem

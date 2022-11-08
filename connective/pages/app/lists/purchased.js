@@ -38,7 +38,7 @@ export default function PurchasedLists({ user }) {
         {lists.length > 0 ? (
           <div className="flex flex-col gap-[16px]">
             {lists.map((item, index) => {
-              return <ListRow item={item} onClick={displayReviewCard} />;
+              return <ListRow item={item} showModal={displayReviewCard} />;
             })}
           </div>
         ) : (

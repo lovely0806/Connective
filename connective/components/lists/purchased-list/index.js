@@ -4,7 +4,7 @@ import ButtonGreen from "../../button-green";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
-const ListRow = ({ item, onClick }) => {
+const ListRow = ({ item, showModal }) => {
   const router = useRouter();
 
   return (
@@ -33,7 +33,7 @@ const ListRow = ({ item, onClick }) => {
               router.push(item.url);
             }}
           />
-          <ButtonDark text="Leave Review" className="w-full mt-0 mb-0 bg-[#061A40]" onClick={onClick}/>
+          <ButtonDark text="Leave Review" className="w-full mt-0 mb-0 bg-[#061A40]" onClick={showModal}/>
           <ButtonLight text="Explore More" className="w-full mt-0 mb-0" />
         </div>
       </div>

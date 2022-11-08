@@ -5,7 +5,6 @@ import Layout from "../../../../components/layout";
 import Util from "../../../../util";
 import { useRouter } from "next/router";
 import ButtonDark from "../../../../components/button-dark";
-import Authors from "components/authors";
 
 export default function Dashboard({ user }) {
   const [loading, setLoading] = useState(true);
@@ -115,16 +114,16 @@ export default function Dashboard({ user }) {
           </div>
 
           {/* ---------Authors--------- */}
-          <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
+          {/* <div className="mx-10 ml-[64px] rounded-xl mb-[40px]">
             <div className="mb-[12px]">
               <p className="font-bold text-xl my-auto">Authors</p>
             </div>
 
             <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-xl flex flex-col">
-              {/* .map() authors here */}
+              // .map() authors here 
               <Authors />
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right side (Details...) */}
