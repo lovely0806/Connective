@@ -56,7 +56,7 @@ const ListMarketplace = ({ item, preview, user }) => {
   }, [item]);
 
   return (
-    <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
+    <div className="bg-white flex flex-col gap-5 p-3 rounded-xl shadow-lg h-full">
       <div className="rounded-xl object-cover h-48 relative overflow-hidden">
         <Image
           layout="fill"
@@ -77,33 +77,37 @@ const ListMarketplace = ({ item, preview, user }) => {
       </p>
 
       <div className="flex flex-row justify-between">
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-1">
           {preview ? (
-            <img
+            <Image
               src={
                 profilePicture == ""
                   ? `https://avatars.dicebear.com/api/micah/${user.id}.svg`
                   : profilePicture
               }
               className="rounded-full w-10 h-10 object-cover"
+              width="40px"
+              height="40px"
             />
           ) : (
-            <img
+            <Image
               src={
                 item?.logo == ""
                   ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg`
                   : item.logo
               }
               className="rounded-full w-10 h-10 object-cover"
+              width="40px"
+              height="40px"
             />
           )}
-          <p className="my-auto text-black/50 text-sm">
+          <p className="font-[Poppins] my-auto text-[#0d101180] text-sm">
             {preview ? username : item?.username}
           </p>
         </div>
-        <div className="flex flex-col text-right text-sm font-bold">
-          <p>${parseInt(item.price).toFixed(2)}</p>
-          <p>
+        <div className="flex flex-col text-right">
+          <p className="text-[19px] font-bold">${parseInt(item.price).toFixed(2)}</p>
+          <p className="text-[#0D1011] text-[12px]">
             {preview ? 0 : item.buyers} {item.buyers == 1 ? "buyer" : "buyers"}
           </p>
         </div>
@@ -115,7 +119,7 @@ const ListMarketplace = ({ item, preview, user }) => {
             onClick={() => {
               router.push(`/app/marketplace/list-details/${item.id}`);
             }}
-            text="Explore"
+            text="More Details"
             className="w-[100%] bg-[#061A40] text-sm"
           ></ButtonDark>
         </div>

@@ -19,7 +19,7 @@ const SidebarItem = ({ text, route, icon, onClick }) => {
         selected ? "bg-[#051533]" : ""
       } ${text == "Sign Out" ? "mt-auto" : ""}`}
     >
-      <img className="w-[16px] h-[16px] my-auto" src={icon} />
+      <img className="w-[2vh] h-[2vh] my-auto" src={icon} />
       <p>{text}</p>
     </div>
   );

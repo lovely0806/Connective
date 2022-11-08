@@ -10,12 +10,12 @@ import ButtonDark from "components/button-dark";
 import ButtonLight from "components/button-light";
 import Image from "next/image";
 import ReviewModal from "components/modal/review-modal";
+import Link from "next/link";
 
 export default function PurchasedLists({ user }) {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reviewCardDisplayed, setReviewCardDisplayed] = useState(false);
-
 
   const getLists = async () => {
     let { data } = await axios.get("/api/lists/purchased");
@@ -38,7 +38,7 @@ export default function PurchasedLists({ user }) {
         {lists.length > 0 ? (
           <div className="flex flex-col gap-[16px]">
             {lists.map((item, index) => {
-              return <ListRow item={item} />;
+              return <ListRow item={item} onClick={displayReviewCard} />;
             })}
           </div>
         ) : (
@@ -47,10 +47,10 @@ export default function PurchasedLists({ user }) {
           </div>
         )}
         {reviewCardDisplayed && (
-                  <div className="w-[100%] mx-auto" onClick={displayReviewCard}>
-                    <ReviewModal onClick={displayReviewCard} />
-                  </div>
-                )}
+          <div className="w-[100%] mx-auto" onClick={displayReviewCard}>
+            <ReviewModal onClick={displayReviewCard} />
+          </div>
+        )}
       </div>
     </Layout>
   );

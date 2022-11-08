@@ -10,17 +10,14 @@ const ListRow = ({ item, onClick }) => {
   return (
     <div className="mx-20 ml-[64px] h-screen mb-[100px] mt-[64px]">
       <div className="bg-white rounded-xl shadow-lg flex flex-row gap-5 p-5">
-        <div className="rounded-xl object-cover h-48 w-[650px] relative overflow-hidden">
-          <Image
-            layout="fill"
-            objectFit="cover"
-            src={
-              !item.cover_url
-                ? "/assets/banners/leaves-min.jpeg"
-                : item.cover_url
-            }
-          />
-        </div>
+      <div className="rounded-xl h-48 w-[200px] relative overflow-hidden">
+              <Image
+                objectFit="cover"
+                src="/assets/banners/leaves-min.jpeg"
+                width="200px"
+                height="200px"
+              />
+            </div>
         <div className="flex flex-col">
           <p className="text-xl font-bold">{item.title}</p>
           <p className="text-black/50">{item.description}</p>

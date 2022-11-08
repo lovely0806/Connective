@@ -88,28 +88,30 @@ export default function Dashboard({ user }) {
               <p className="font-bold text-xl my-auto">Fields Description</p>
             </div>
 
-            <table className="w-[100%] border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg mb-[40px]">
-              <tr>
-                <th className="uppercase font-bold text-[14px] text-black/50 mb-[16px] rounded-lg">
-                  Field
-                </th>
-                <th className="uppercase font-bold text-[14px] text-black/50 mb-[16px] rounded-lg">
-                  Description
-                </th>
-              </tr>
-              {data?.fields?.fieldResults.map((item, index) => {
-                return (
-                  <tr>
-                    <td className="w-[200px] font-[Montserrat] font-bold text-[16px] text-[#0D1011]">
-                      {item.name}
-                    </td>
-                    <td className="text-[#0d101180] font-[Poppins]">
-                      {item.description}
-                    </td>
-                  </tr>
-                );
-              })}
-            </table>
+            <div className="border-[1px] border-[#0D1011]/[.10] rounded-xl">
+              <table className="w-[100%] p-[12px] mb-[40px]">
+                <tr>
+                  <th className="uppercase font-bold text-[14px] text-black/50 mb-[16px] rounded-lg">
+                    Field
+                  </th>
+                  <th className="uppercase font-bold text-[14px] text-black/50 mb-[16px] rounded-lg">
+                    Description
+                  </th>
+                </tr>
+                {data?.fields?.fieldResults.map((item, index) => {
+                  return (
+                    <tr>
+                      <td className="w-[200px] font-[Montserrat] font-bold text-[16px] text-[#0D1011]">
+                        {item.name}
+                      </td>
+                      <td className="text-[#0d101180] font-[Poppins]">
+                        {item.description}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </table>
+            </div>
           </div>
 
           {/* ---------Authors--------- */}
@@ -118,7 +120,7 @@ export default function Dashboard({ user }) {
               <p className="font-bold text-xl my-auto">Authors</p>
             </div>
 
-            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-lg flex flex-col">
+            <div className="border-[1px] border-[#0D1011]/[.10] p-[12px] rounded-xl flex flex-col">
               {/* .map() authors here */}
               <Authors />
             </div>
@@ -126,8 +128,8 @@ export default function Dashboard({ user }) {
         </div>
 
         {/* Right side (Details...) */}
-        <div className="flex flex-col">
-          <div className="w-[380px] h-fit border-[1px] border-[#0D1011]/[.10] p-[20px] rounded-lg mr-[64px] mb-5">
+        <div className="flex flex-col ml-auto">
+          <div className="w-[380px] h-fit border-[1px] border-[#0D1011]/[.10] p-[20px] rounded-xl mr-[64px] mb-5">
             <p className="text-lg font-bold mb-[16px] text-[#0D1011]">
               Details
             </p>
@@ -185,27 +187,34 @@ export default function Dashboard({ user }) {
             </div>
           </div>
 
-          <div className="w-[380px] h-fit border-[1px] border-[#0D1011]/[.10] p-[20px] rounded-lg mr-[64px]">
+          <div className="w-[380px] h-fit border-[1px] border-[#0D1011]/[.10] p-[20px] rounded-xl mr-[64px]">
             <p className="text-lg font-bold mb-[16px] text-[#0D1011]">
               Reviews
             </p>
             <div className="flex flex-col gap-4">
               {/* Review 1 */}
               <div className="pb-[16px] border-b-[1px] border-b-[#0D1011]/[.10]">
-                  <p className="font-[Poppins] font-normal text-sm text-[#0D1011] mb-2">“Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.”</p>
-                  <div className="text-[#0D1011] font-bold">
-                    <div className="flex flex-row gap-2">
-                      <img className="rounded-full w-10 h-10 object-cover" src="https://avatars.dicebear.com/api/micah/micah.svg"/>
+                <p className="font-[Poppins] font-normal text-sm text-[#0D1011] mb-2">
+                  “Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam.”
+                </p>
+                <div className="text-[#0D1011] font-bold">
+                  <div className="flex flex-row gap-2">
+                    <img
+                      className="rounded-full w-10 h-10 object-cover"
+                      src="https://avatars.dicebear.com/api/micah/micah.svg"
+                    />
                     <div className="flex flex-col">
                       <p className="font-[Montserrat] font-bold text-[16px] text-[#0D1011]">
                         John Micheal
                       </p>
                       <p className="font-[Poppins] font-normal text-[12px]">
-                      Cheif Marketing Officer
+                        Cheif Marketing Officer
                       </p>
                     </div>
-                    </div>
                   </div>
+                </div>
               </div>
               {/* Review 2 */}
               {/* Review 3 */}
@@ -213,8 +222,6 @@ export default function Dashboard({ user }) {
             </div>
           </div>
         </div>
-        
-          
       </div>
     </Layout>
   );
