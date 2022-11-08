@@ -25,12 +25,12 @@ const FileUpload = ({
         <div className="cursor-pointer min-h-[131px] mx-auto flex flex-col bg-transparent p-5 border border-black/40 border-dashed rounded-md transition-all hover:bg-[#D9D9D9]/10 pt-[86px]">
           {profilePicture ? (
             <img
-              className="mx-auto mt-auto w-40 rounded-full"
+              className="mx-auto mt-auto h-40 w-40 rounded-full object-cover"
               src={src != "null" ? src : "/assets/cloud.svg"}
             />
           ) : (
             <img
-              className="mx-auto mt-auto"
+              className="mx-auto mt-auto h-32"
               src={src != "null" ? src : "/assets/cloud.svg"}
             />
           )}

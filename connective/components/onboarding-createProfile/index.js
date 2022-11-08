@@ -2,11 +2,12 @@ import Image from "next/image";
 
 const OnBoardingProfile = () => {
   return (
-    <div className="min-w-[550px] h-fill bg-gradient-to-b from-[#061A40] to-[#0C3A65] flex flex-col m-[32px] mr-0 rounded-[16px] gap-[90px] relative z-[5]">
+    <div className="min-w-[550px] h-[100vh] bg-gradient-to-b from-[#061A40] to-[#0C3A65] flex flex-col m-[32px] mr-0 rounded-[16px] gap-[90px] relative z-[5]">
       <Image
         className="w-fit h-fit rounded-[16px]"
         src="/assets/left.png"
         layout="fill"
+        objectFit="cover"
         priority
       />
 
