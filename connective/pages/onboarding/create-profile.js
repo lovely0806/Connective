@@ -301,7 +301,7 @@ export default function CreateProfile({ user }) {
                   Industry
                 </p>
                 <Select
-                  className="w-full text-[14px] font-[Poppins]"
+                  className="w-full text-[12px] font-[Poppins]"
                   onChange={(e) => {
                     setIndustry(e.value);
                   }}
@@ -317,7 +317,7 @@ export default function CreateProfile({ user }) {
                   Size
                 </p>
                 <Select
-                  className="w-full text-[14px] font-[Poppins]"
+                  className="w-full text-[12px] font-[Poppins]"
                   onChange={(e) => {
                     setSize(e.value);
                   }}
@@ -401,3 +401,5 @@ export const getServerSideProps = withIronSession(
     password: process.env.APPLICATION_SECRET,
   }
 );
+
+// #061A40

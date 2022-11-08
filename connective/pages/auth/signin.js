@@ -90,11 +90,11 @@ export default function SignIn({ user }) {
               Sign in
             </p>
 
-            <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px]">
+            <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-20">
               Welcome back! Please enter your details
             </p>
 
-            <div
+            {/* <div
               className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
               onClick=""
             >
@@ -117,7 +117,7 @@ export default function SignIn({ user }) {
                 </p>
               </div>
               <div className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-            </div>
+            </div> */}
           </div>
 
           <div className="relative flex flex-col gap-5 mt-10 items-center">

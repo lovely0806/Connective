@@ -85,13 +85,13 @@ export default function SignUp() {
           <p className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
             Sign up
           </p>
-          <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins]  1bp:text-[18px]">
+          <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins]  1bp:text-[18px] mb-[40px]">
             Have an account?{" "}
             <Link href="./signin">
               <span className="font-bold cursor-pointer">Log In</span>
             </Link>
           </p>
-          <div
+          {/* <div
             className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
             onClick=""
           >
@@ -114,7 +114,7 @@ export default function SignUp() {
               </p>
             </div>
             <div className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-5 mt-[28px]">
