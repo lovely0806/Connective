@@ -62,22 +62,26 @@ export default function NewList({ user }) {
   };
 
   return (
-      <Layout title="Create New List"> 
-          <Steps />
+    <Layout title="Create New List">
+      <Steps />
 
       <div className="bg-white w-[637px] mx-auto rounded-xl shadow-lg px-[80px] py-10 mt-[64px] mb-[172px]">
-        <p className="text-center font-bold text-xl mb-[32px]">Price</p>
-
-        <InputField
-          name="Price"
-          placeholder="Enter a price for this list"
-          price={true}
-          updateValue={setPrice}
-          errorText={priceError}
-        ></InputField>
+        <div>
+          <p className="text-center font-bold text-xl mb-[32px]">Price</p>
+          <InputField
+            name="Price"
+            placeholder="Enter a price for this list"
+            price={true}
+            updateValue={setPrice}
+            errorText={priceError}
+            className="pl-[24px]"
+          ></InputField>
+        </div>
 
         <div className="relative">
-          <p className="text-sm mb-2 mt-10">Upload a cover image (optional)</p>
+          <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px] mt-10">
+            Upload a cover image (optional)
+          </p>
           <FileUpload
             text="Upload cover image"
             file={cover}
@@ -88,14 +92,16 @@ export default function NewList({ user }) {
         </div>
 
         <div className="relative">
-          <p className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
-          <div className=" mt-[40px]">
+          <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px] mt-10">
+            Upload your CSV preview image
+          </p>
+          <div>
             <FileUpload
-            text="Upload Image"
-            file={file}
-            setFile={setFile}
-            id="preview upload"
-            accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"
+              text="Upload Image"
+              file={file}
+              setFile={setFile}
+              id="preview upload"
+              accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"
             ></FileUpload>
           </div>
         </div>

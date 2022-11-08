@@ -1,3 +1,6 @@
+import Image from "next/image";
+import dollarIcon from "../../public/assets/dollar.svg";
+
 const InputField = ({
   name,
   placeholder,
@@ -15,10 +18,18 @@ const InputField = ({
         {name}
       </p>
       {price && (
-        <div className="relative">
+        <div className="relative flex items-center">
           {/* <div className="absolute h-full ml-4 flex">
             <p className="my-auto text-lg">$</p>
           </div> */}
+          <div className="absolute z-[10] pl-[12px] my-auto flex items-center">
+            <Image
+              src={dollarIcon}
+              alt="Search icon"
+              width="17.5px"
+              height="17.5px"
+            />
+          </div>
           <input
             disabled={disabled}
             onChange={(e) => {
@@ -27,7 +38,7 @@ const InputField = ({
             type="number"
             min="0"
             step="1"
-            className="outline-none w-full px-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+            className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
             value={value}
             placeholder={placeholder}
           ></input>
