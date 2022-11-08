@@ -99,7 +99,7 @@ export default function NewList({ user }) {
             <p className="font-bold mb-[12px] text-xl text-center text-[#0D1011]">
               Your List
             </p>
-            <img src={previewUrl} className="object-fit w-[217px] h-[120px]" />
+            <img src={previewUrl} className="object-cover w-[217px] h-[120px]" />
           </div>
         </div>
 

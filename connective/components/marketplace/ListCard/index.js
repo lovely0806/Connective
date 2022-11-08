@@ -62,7 +62,7 @@ const ListCard = ({ item, preview, user }) => {
       <div>
         <div>
           <img
-            className="object-cover w-[350px] h-[153px] mb-[12px] rounded-[8px]"
+            className="object-cover w-full h-[153px] mb-[12px] rounded-[8px]"
             src={
               item.cover_url == "undefined" ||
               !item.cover_url ||
@@ -98,7 +98,7 @@ const ListCard = ({ item, preview, user }) => {
                 router.push(`/app/marketplace/list-details/${item.id}`);
               }}
               text="More Details"
-              className="bg-[#061A40]"
+              className="bg-[#061A40] text-sm"
             ></ButtonDark>
           </div>
         )}
@@ -108,38 +108,3 @@ const ListCard = ({ item, preview, user }) => {
 };
 
 export default ListCard;
-
-{
-  /* <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
-<div className="rounded-xl object-cover h-48 relative overflow-hidden">
-    <Image
-        layout='fill'
-        objectFit="cover"
-        src={item.cover_url == "undefined" || !item.cover_url || item.cover_url == "" || item.cover_url == "null" ? "/assets/banners/leaves-min.jpeg" : item.cover_url}
-    />
-</div>
-<p className="font-bold text-lg w-full h-10 mb-5">{truncatedTitle}</p>
-<p className="text-[#8A8888] text-sm overflow-clip h-36">{truncatedDesc}</p>
-
-<div className="flex flex-row justify-between">
-    <div className="flex flex-row gap-2">
-        {preview ? (
-            <img src={profilePicture == "" ? `https://avatars.dicebear.com/api/micah/${user.id}.svg` : profilePicture} className="rounded-full w-10 h-10 object-cover"/>
-        ) : (
-            <img src={item?.logo == "" ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg` : item.logo} className="rounded-full w-10 h-10 object-cover"/>
-        )}
-        <p className="my-auto text-black/50 text-sm">{preview ? username : item?.username}</p>
-    </div>
-    <div className="flex flex-col text-sm font-bold">
-        <p>${parseInt(item.price).toFixed(2)}</p>
-        <p>{preview ? 0 : item.buyers} {item.buyers == 1 ? "Buyer" : "Buyers"}</p>
-    </div>
-</div>
-
-{!preview && (
-    <div className="mx-auto pl-10">
-        <ButtonDark onClick={()=>{router.push(`/app/marketplace/list-details/${item.id}`)}} text="Explore" className="ml-0 mr-0 mb-0 mt-0"></ButtonDark>
-    </div>
-)}
-</div> */
-}

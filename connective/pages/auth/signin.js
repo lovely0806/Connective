@@ -10,7 +10,6 @@ import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
 import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
-import bgImg from "../../public/assets/Kevin.jpg";
 
 export default function SignIn({ user }) {
   const [email, setEmail] = useState("");

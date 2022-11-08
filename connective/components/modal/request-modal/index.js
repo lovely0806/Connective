@@ -1,7 +1,7 @@
 import Image from "next/image";
-import closeIcon from "../../public/assets/close.svg";
+import closeIcon from "../../../public/assets/close.svg";
 
-const Modal = ({ onClick }) => {
+const RequestModal = ({ onClick }) => {
   return (
     <div className="overlay fixed left-0 top-0 bg-black/[.50] w-[100%] h-[100%] z-[30] flex justify-center items-center">
       <div className="w-[480px] h-[389px] p-[32px] rounded-lg bg-white">
@@ -38,4 +38,4 @@ const Modal = ({ onClick }) => {
   );
 };
 
-export default Modal;
+export default RequestModal;

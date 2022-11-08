@@ -20,6 +20,7 @@ const ListRow = ({ item }) => {
   };
 
   return (
+    
     <div className="w-[292px] min-h-[385px] bg-white rounded-xl shadow-lg flex flex-col justify-between p-[12px] border-[0.5px] border-[#E0E0E0]">
       <div>
         <div className="rounded-xl min-h-[153px] object-cover relative overflow-hidden mb-[12px]">

@@ -86,24 +86,24 @@ export default function Dashboard({ user, buttonOnClick }) {
           <ButtonDark
             text="Connect"
             onClick={connectwithBankDetails}
-            className="w-fit bg-[#0F172A]"
+            className="w-fit text-sm bg-[#0F172A]"
           />
         </div>
       )}
 
       {/* Buttons top right*/}
       <div className="absolute flex flex-row right-0 ml-[64px] gap-1 mt-[55px] mr-[100px]">
-        <div className="w-[180px] border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
+        <div className="border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
           <ButtonDark
             onClick={buttonOnClick}
             text="Explore Marketplace"
-            className="bg-white text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
+            className="w-[180px] bg-white text-sm text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
           />
         </div>
         <ButtonDark
           onClick={buttonOnClick}
           text="Create a List"
-          className="w-[120px] mr-10 bg-[#0F172A] text-white"
+          className="text-sm mr-10 bg-[#0F172A] text-white"
         />
       </div>
 

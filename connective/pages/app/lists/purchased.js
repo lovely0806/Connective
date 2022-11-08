@@ -5,10 +5,17 @@ import Layout from "../../../components/layout";
 import Select from "react-select";
 import { categoryOptions } from "../../../common/selectOptions";
 import ListRow from "../../../components/lists/purchased-list";
+import ButtonGreen from "components/button-green";
+import ButtonDark from "components/button-dark";
+import ButtonLight from "components/button-light";
+import Image from "next/image";
+import ReviewModal from "components/modal/review-modal";
 
 export default function PurchasedLists({ user }) {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reviewCardDisplayed, setReviewCardDisplayed] = useState(false);
+
 
   const getLists = async () => {
     let { data } = await axios.get("/api/lists/purchased");
@@ -21,9 +28,13 @@ export default function PurchasedLists({ user }) {
     getLists();
   }, []);
 
+  const displayReviewCard = () => {
+    setReviewCardDisplayed((prevState) => !prevState);
+  };
+
   return (
     <Layout title="Purchased Lists">
-      <div className="mx-20 ml-[64px] h-screen mb-[100px] mt-[64px]">
+      <div>
         {lists.length > 0 ? (
           <div className="flex flex-col gap-[16px]">
             {lists.map((item, index) => {
@@ -35,6 +46,11 @@ export default function PurchasedLists({ user }) {
             <p className="mx-auto mt-20 text-2xl">Loading...</p>
           </div>
         )}
+        {reviewCardDisplayed && (
+                  <div className="w-[100%] mx-auto" onClick={displayReviewCard}>
+                    <ReviewModal onClick={displayReviewCard} />
+                  </div>
+                )}
       </div>
     </Layout>
   );

@@ -1,50 +1,47 @@
-import ButtonDark from "../../button-dark"
-import ButtonLight from "../../button-light"
-import ButtonGreen from "../../button-green"
-import { useRouter } from "next/router"
-import Image from "next/image"
+import ButtonDark from "../../button-dark";
+import ButtonLight from "../../button-light";
+import ButtonGreen from "../../button-green";
+import { useRouter } from "next/router";
+import Image from "next/image";
 
-const ListRow = ({item}) => {
-    const router = useRouter()
+const ListRow = ({ item, onClick }) => {
+  const router = useRouter();
 
-    return (
-        <div className="bg-white w-[1032px] min-h-[145px] rounded-xl shadow-lg flex flex-row items-center gap-5 p-[12px] mx-auto ml-[64px] border-[0.5px] border-[#E0E0E0]">
-        <div className="min-w-[200px] h-[117px]">
+  return (
+    <div className="mx-20 ml-[64px] h-screen mb-[100px] mt-[64px]">
+      <div className="bg-white rounded-xl shadow-lg flex flex-row gap-5 p-5">
+        <div className="rounded-xl object-cover h-48 w-[650px] relative overflow-hidden">
           <Image
-            className="object-cover w-fit h-fit rounded-lg"
-            src={!item.cover_url ? "/assets/banners/leaves-min.jpeg" : item.cover_url}
-            width="200px"
-            height="117px"
+            layout="fill"
+            objectFit="cover"
+            src={
+              !item.cover_url
+                ? "/assets/banners/leaves-min.jpeg"
+                : item.cover_url
+            }
           />
         </div>
         <div className="flex flex-col">
-          <p className="text-xl font-bold font-[Montserrat] text-[#0D1011] mb-[8px]">
-          {item.title}
-          </p>
-          <p className="text-black/50 font-[Poppins] font-normal text-[14px] mb-[8px]">
-          {item.description}
-          </p>
-          <p className="font-[Montserrat] font-bold text-[24px] text-[#0D1011]">
-            $45
-          </p>
+          <p className="text-xl font-bold">{item.title}</p>
+          <p className="text-black/50">{item.description}</p>
+          <div className="font-[Montserrat] font-bold text-[24px] text-[#0D1011] mt-auto">
+            <p>${item.price.toFixed(2)}</p>
+          </div>
         </div>
-        <div className="flex flex-col ml-auto my-auto gap-[8px]">
+        <div className="flex flex-col ml-auto my-auto gap-5">
           <ButtonGreen
-            text="Download File"
-            className="w-[160px]"
+            text="Download CSV"
+            className="mt-0 mb-0 w-full"
             onClick={() => {
               router.push(item.url);
             }}
           />
-          <ButtonDark
-            text="Edit"
-            className="w-[160px] h-[35px] text-[10px] font-bold bg-[#061A40]"
-          />
-          <ButtonLight text="Unpublish" className="w-[160px]" />
+          <ButtonDark text="Leave Review" className="w-full mt-0 mb-0 bg-[#061A40]" onClick={onClick}/>
+          <ButtonLight text="Explore More" className="w-full mt-0 mb-0" />
         </div>
-          </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default ListRow
-
+export default ListRow;

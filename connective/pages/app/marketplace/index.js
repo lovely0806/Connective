@@ -7,7 +7,7 @@ import ListCard from "../../../components/marketplace/ListCard";
 import { categoryOptions } from "../../../common/selectOptions";
 import Image from "next/image";
 import searchIcon from "../../../public/assets/search-2.svg";
-import Modal from "components/modal";
+import RequestModal from "components/modal/request-modal";
 import ListMarketplace from "components/marketplace/ListMarketplace";
 
 export default function Dashboard({ user }) {
@@ -100,9 +100,9 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout title="Marketplace">
-      <div className="1bp:w-[1840px] ml-[64px] mr-20 h-screen bg-opacity-30 mt-[40px]">
-        <div className="flex flex-row w-[100%] mb-20 gap-10 items-center">
-          <div className="w-[500px] relative">
+      <div className="ml-[64px] mr-20 h-screen">
+        <div className="flex flex-row w-[100%] mb-20 gap-10 items-center mt-20">
+          <div className="w-full relative">
             <div className="absolute z-[10] p-[10px]">
               <Image
                 src={searchIcon}
@@ -116,7 +116,7 @@ export default function Dashboard({ user }) {
                 setSearch(e.target.value);
               }}
               placeholder="Search for lists"
-              className="w-[500px] z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
+              className="w-full z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
             ></input>
           </div>
           <Select
@@ -137,7 +137,7 @@ export default function Dashboard({ user }) {
         </div>
 
         {filteredLists.length > 0 ? (
-          <div className="grid grid-cols-4 4bp:grid-cols-3 1bp:grid-cols-4 gap-10 pb-20">
+          <div className="grid grid-cols-3 5bp:grid-cols-4 gap-10 pb-20">
             {filteredLists.map((item, index) => {
               return <ListMarketplace item={item} key={index} />;
             })}
@@ -163,8 +163,11 @@ export default function Dashboard({ user }) {
                   </div>
                 )}
                 {cardDisplayed && (
-                  <div className="w-[100%] mx-auto">
-                    <Modal onClick={displayCardHandler} />
+                  <div
+                    className="w-[100%] mx-auto"
+                    onClick={displayCardHandler}
+                  >
+                    <RequestModal onClick={displayCardHandler} />
                   </div>
                 )}
               </div>

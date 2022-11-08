@@ -15,8 +15,8 @@ const SidebarItem = ({ text, route, icon, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`flex flex-row gap-5 cursor-pointer text-[14px] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] rounded-r-full w-full transition-all hover:bg-[#777777]/10 ${
-        selected ? "bg-white/10" : ""
+      className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/10 ${
+        selected ? "bg-[#051533]" : ""
       } ${text == "Sign Out" ? "mt-auto" : ""}`}
     >
       <img className="w-[16px] h-[16px] my-auto" src={icon} />

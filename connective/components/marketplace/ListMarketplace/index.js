@@ -56,82 +56,70 @@ const ListMarketplace = ({ item, preview, user }) => {
   }, [item]);
 
   return (
-    <div className="w-[350px] h-fill bg-white rounded-[8px] p-[12px] flex flex-col justify-between font-[Montserrat] drop-shadow-lg border-[0.5px] border-[#E0E0E0]">
-      <div>
+    <div className="bg-white flex flex-col gap-5 p-5 rounded-xl shadow-lg h-full">
+      <div className="rounded-xl object-cover h-48 relative overflow-hidden">
+        <Image
+          layout="fill"
+          objectFit="cover"
+          src={
+            item.cover_url == "undefined" ||
+            !item.cover_url ||
+            item.cover_url == "" ||
+            item.cover_url == "null"
+              ? "/assets/banners/leaves-min.jpeg"
+              : item.cover_url
+          }
+        />
+      </div>
+      <p className="font-bold text-lg w-full h-10 mb-5">{truncatedTitle}</p>
+      <p className="text-[#8A8888] text-sm overflow-clip h-36">
+        {truncatedDesc}
+      </p>
+
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-row gap-2">
+          {preview ? (
+            <img
+              src={
+                profilePicture == ""
+                  ? `https://avatars.dicebear.com/api/micah/${user.id}.svg`
+                  : profilePicture
+              }
+              className="rounded-full w-10 h-10 object-cover"
+            />
+          ) : (
+            <img
+              src={
+                item?.logo == ""
+                  ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg`
+                  : item.logo
+              }
+              className="rounded-full w-10 h-10 object-cover"
+            />
+          )}
+          <p className="my-auto text-black/50 text-sm">
+            {preview ? username : item?.username}
+          </p>
+        </div>
+        <div className="flex flex-col text-right text-sm font-bold">
+          <p>${parseInt(item.price).toFixed(2)}</p>
+          <p>
+            {preview ? 0 : item.buyers} {item.buyers == 1 ? "buyer" : "buyers"}
+          </p>
+        </div>
+      </div>
+
+      {!preview && (
         <div>
-          <Image
-            className="object-cover w-[350px] h-[153px] mb-[12px] rounded-[8px]"
-            src={
-              item.cover_url == "undefined" ||
-              !item.cover_url ||
-              item.cover_url == "" ||
-              item.cover_url == "null"
-                ? "/assets/banners/leaves-min.jpeg"
-                : item.cover_url
-            }
-            alt="List image"
-            width="350px"
-            height="153px"
-          />
+          <ButtonDark
+            onClick={() => {
+              router.push(`/app/marketplace/list-details/${item.id}`);
+            }}
+            text="Explore"
+            className="w-[100%] bg-[#061A40] text-sm"
+          ></ButtonDark>
         </div>
-        <p className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">
-          {truncatedTitle}
-        </p>
-        <p className="font-normal text-[12px] leading-[18px] text–[rgba(13_16_17_0.7)] mb-[15px] text-[#0d1011b3]">
-          {truncatedDesc}
-        </p>
-      </div>
-
-      <div className="flex flex-col justify-between">
-        <div className="flex flex-row justify-between items-center mb-[12px]">
-          <div className="flex flex-row gap-2">
-            {preview ? (
-              <img
-                src={
-                  profilePicture == ""
-                    ? `https://avatars.dicebear.com/api/micah/${user.id}.svg`
-                    : profilePicture
-                }
-                className="rounded-full w-10 h-10 object-cover"
-              />
-            ) : (
-              <img
-                src={
-                  item?.logo == ""
-                    ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg`
-                    : item.logo
-                }
-                className="rounded-full w-10 h-10 object-cover"
-              />
-            )}
-            <p className="my-auto text-sm font-[Poppins] font-normal text-[#0d1011cc]">
-              {preview ? username : item?.username}
-            </p>
-          </div>
-
-          <div className="flex flex-col items-end text-sm font-bold">
-            <p className="font-bold text-[18px] leading-[20px] text-[#0D1011]">
-              ${parseInt(item.price).toFixed(2)}
-            </p>
-            <p className="text-[#0D1011] font-[Poppins] font-normal text-[12px]">
-              {preview ? 0 : item.buyers}{" "}
-              {item.buyers == 1 ? "Buyer" : "Buyers"}
-            </p>
-          </div>
-        </div>
-
-        {!preview && (
-          <div className="w-[100%]">
-            <ButtonDark
-              onClick={() => {
-                router.push(`/app/marketplace/list-details/${item.id}`);
-              }}
-              text="More Details"
-              className="bg-[#061A40]"
-            ></ButtonDark>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
