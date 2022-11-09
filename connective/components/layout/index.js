@@ -1,15 +1,20 @@
-import Sidebar from "../sidebar"
+import Sidebar from "../sidebar";
 
-const Layout = ({title, children}) => {
-    return (
-        <main className="flex flex-row min-h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
-            <Sidebar></Sidebar>
-            <div className="w-screen h-screen overflow-y-scroll flex flex-col">
-                <p className="text-4xl font-bold mb-20 mt-10 ml-20">{title}</p>
-                {children}
-            </div>
-        </main>
-    )
-}
 
-export default Layout
+const Layout = ({ title, children }) => {
+  
+
+  return (
+    <main className="flex flex-row min-h-screen min-w-screen font-[Montserrat]">
+      <Sidebar></Sidebar>
+      <div className="w-screen h-screen overflow-y-scroll flex flex-col bg-[#FCFCFC]">
+        <p className="font-bold text-3xl leading-[29px] text-[#0D1011] mt-[65px] ml-[64px]">
+          {title}
+        </p>
+        {children}
+      </div>
+    </main>
+  );
+};
+
+export default Layout;

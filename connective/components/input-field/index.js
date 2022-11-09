@@ -1,3 +1,6 @@
+import Image from "next/image";
+import dollarIcon from "../../public/assets/dollar.svg";
+
 const InputField = ({
   name,
   placeholder,
@@ -10,12 +13,22 @@ const InputField = ({
   disabled,
 }) => {
   return (
-    <div className="flex flex-col">
-      <p className="text-sm font-[Montserrat] mb-2">{name}</p>
+    <div className="flex flex-col w-[100%]">
+      <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+        {name}
+      </p>
       {price && (
-        <div className="relative">
-          <div className="absolute h-full ml-4 flex">
+        <div className="relative flex items-center">
+          {/* <div className="absolute h-full ml-4 flex">
             <p className="my-auto text-lg">$</p>
+          </div> */}
+          <div className="absolute z-[10] pl-[12px] my-auto flex items-center">
+            <Image
+              src={dollarIcon}
+              alt="Search icon"
+              width="17.5px"
+              height="17.5px"
+            />
           </div>
           <input
             disabled={disabled}
@@ -25,7 +38,7 @@ const InputField = ({
             type="number"
             min="0"
             step="1"
-            className="outline-none w-full px-5 pl-8 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+            className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
             value={value}
             placeholder={placeholder}
           ></input>
@@ -37,7 +50,7 @@ const InputField = ({
           onChange={(e) => {
             updateValue(e.target.value);
           }}
-          className="outline-none w-full h-36 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+          className="outline-none w-full px-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
           type={password ? "password" : ""}
           placeholder={placeholder}
           value={value}
@@ -49,7 +62,7 @@ const InputField = ({
           onChange={(e) => {
             updateValue(e.target.value);
           }}
-          className="outline-none w-full px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+          className="outline-none w-full px-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
           type={password ? "password" : ""}
           placeholder={placeholder}
           value={value}
