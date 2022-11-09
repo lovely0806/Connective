@@ -29,7 +29,7 @@ const Sidebar = () => {
   const router = useRouter();
   const signout = async () => {
     await axios.get("/api/auth/signout");
-    router.push("https://www.connective-app.xyz");
+    router.push("/");
   };
 
   return (

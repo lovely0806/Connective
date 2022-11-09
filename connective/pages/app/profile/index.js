@@ -5,14 +5,17 @@ import Sidebar from "../../../components/sidebar";
 import BusinessProfile from "../../../components/profile/business";
 import IndividualProfile from "../../../components/profile/individual";
 import Util from "../../../util";
-
+import {useRouter} from "next/router"
+ 
 export default function Profile({ user }) {
   const [accountType, setAccountType] = useState();
+  const router = useRouter()
 
   const getAccountType = async () => {
     setAccountType(await Util.accountType(user.id));
   };
   useEffect(() => {
+    if(typeof(user) == "undefined") router.push("/auth/signin")
     getAccountType();
   }, []);
 
