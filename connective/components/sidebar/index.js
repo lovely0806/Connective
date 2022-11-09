@@ -122,11 +122,12 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <SidebarItem
+      <Link href="/">
+        <SidebarItem
         text="Sign Out"
         icon="/assets/navbar/SignOutIcon.svg"
-        onClick={signout}
-      ></SidebarItem>
+        onClick={signout}></SidebarItem>
+      </Link>
     </div>
   );
 };
