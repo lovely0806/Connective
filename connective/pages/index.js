@@ -4,6 +4,15 @@ import ButtonRounded from "../components/button-rounded";
 import Logo from "../components/logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Header from "components/landing-page/Header/Header";
+import Offers from "components/landing-page/Offers/Offers";
+import Details from "components/landing-page/Details/Details";
+import Benefits from "components/landing-page/Benefits/Benefits";
+import CTA from "components/landing-page/CTA/CTA";
+import ContactForm from "components/landing-page/ContactForm.js/ContactForm";
+import Footer from "components/landing-page/Footer/Footer";
+import Navbar from "components/landing-page/Header/Navbar";
+import Hero from "components/landing-page/Header/Hero";
 
 export default function Home() {
   const router = useRouter();
@@ -14,7 +23,29 @@ export default function Home() {
         <title>Connective</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex flex-col min-h-screen min-w-screen">
+
+      <header className="bg-gradient-to-b from-[#061A40] to-[#0C3A65] text-white h-fit">
+        <Navbar />
+        <Hero />
+      </header>
+
+      <main>
+        <Offers/>
+        <Details/>
+        <Benefits/>
+        <CTA/>
+        <ContactForm/>
+      </main>
+
+      <footer>
+        <Footer/>
+      </footer>
+    </div>
+  );
+}
+
+
+{/* <main className="flex flex-col min-h-screen min-w-screen">
         <Logo></Logo>
         <div className="mt-[20vh] px-[10vw] bg-[#F9F9F9] py-10 relative flex flex-row">
           <div className="flex flex-col">
@@ -53,7 +84,4 @@ export default function Home() {
             src="./assets/hero-image.png"
           ></img>
         </div>
-      </main>
-    </div>
-  );
-}
+      </main> */}
