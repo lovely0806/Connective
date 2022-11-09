@@ -41,7 +41,7 @@ const Offers = () => {
         <div className="relative w-[367px] h-[333px]">
           <Image
             className="rounded-full z-[10]"
-            src="/assets/landing-page/offers-pic.jpg"
+            src="/assets/landing-page/offers-pic.png"
             alt="Offers"
             width="306px"
             height="307px"
