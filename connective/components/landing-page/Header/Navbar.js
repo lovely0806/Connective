@@ -22,7 +22,10 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        <a href="https://calendly.com/connective-app/30min?month=2022-11" target="_blank">
+        <a
+          href="https://calendly.com/connective-app/30min?month=2022-11"
+          target="_blank"
+        >
           <ButtonDark
             src="schedule-icon.svg"
             alt="Schedule"
@@ -30,10 +33,14 @@ const Navbar = () => {
           />
         </a>
 
-        <a href="https://join.slack.com/t/connective-app/shared_invite/zt-1j40vh5y8-CBdGdfI_8syA8TI81ZaAMQ" target="_blank"><ButtonDark src="slack-icon.svg" alt="Slack" text="Join Our Slack" />
+        <a
+          href="https://join.slack.com/t/connective-app/shared_invite/zt-1j40vh5y8-CBdGdfI_8syA8TI81ZaAMQ"
+          target="_blank"
+        >
+          <ButtonDark src="slack-icon.svg" alt="Slack" text="Join Our Slack" />
         </a>
-        
-        <Link href="/auth/signup">
+
+        <Link href="/app/profile">
           <ButtonWhite src="account-icon.svg" alt="Account" text="Account" />
         </Link>
       </div>
