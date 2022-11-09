@@ -1,8 +1,61 @@
 @import url("https://fonts.googleapis.com/css2?family=ABeeZee&family=Montserrat:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  input::placeholder {
+    @apply font-[Poppins] font-normal text-[12px] leading-[18px] 1bp:text-[16px];
+  }
+
+  textarea::placeholder {
+    @apply font-[Poppins] font-normal text-[12px] leading-[18px] 1bp:text-[16px];
+  }
+
+  textarea {
+    @apply min-h-[110px] py-[12px];
+  }
+
+  .inputClass {
+    @apply w-[704px] mt-2.5 px-3 py-3.5 border-[0.5px] border-[#0d101180]/[.15] rounded-lg
+  }
+
+  .error-message {
+    @apply font-[Poppins] font-bold text-xs text-bright-red;
+  }
+
+  .error-border {
+    @apply border-bright-red border-[1px];
+  }
+  
+  .valid-border {
+    @apply border-desaturated-cyan border-[1px];
+  }
+}
+
+table {
+  border-color: white;
+  /* border-collapse: collapse; */
+  /* width: 100%; */
+}
+
+td {
+  /* border: 1px solid #dddddd; */
+  text-align: left;
+  padding: 16px;
+}
+
+th {
+  /* border: 1px solid #dddddd; */
+  text-align: left;
+  padding: 16px;
+}
+
+/* tr:nth-child(even) {
+  background-color: #dddddd;
+} */
 
 .text-subheading {
   font-family: "Montserrat", sans-serif;
@@ -136,13 +189,13 @@ button:disabled {
     width: 80vw;
     min-width: initial;
   }
-    font-family: 'Montserrat', sans-serif;
+  /* font-family: "Montserrat", sans-serif;*/
 }
 
 .faded {
-    background: -webkit-linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: -webkit-linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -156,7 +209,7 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0F172A;
+  background: #0f172a;
   border-radius: 100vh;
 }
 
