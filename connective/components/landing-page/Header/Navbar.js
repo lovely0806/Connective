@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import ButtonDark from "../UI/ButtonDark";
-import ButtonWhite from "../UI/ButtonWhite";
 
 const Navbar = () => {
   return (
@@ -41,7 +40,15 @@ const Navbar = () => {
         </a>
 
         <Link href="/app/profile">
-          <ButtonWhite src="account-icon.svg" alt="Account" text="Account" />
+         <div className="w-fit flex items-center gap-2.5 bg-white py-2.5 px-4 rounded-[50px] cursor-pointer">
+          <Image
+            src="/assets/landing-page/account-icon.svg"
+            alt="Account"
+            width="20px"
+            height="20px"
+          />
+          <p className="text-xs font-semibold text-[#061A40]">Account</p>
+         </div>
         </Link>
       </div>
     </nav>
