@@ -4,7 +4,6 @@ import ButtonRounded from "../components/button-rounded";
 import Logo from "../components/logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Header from "components/landing-page/Header/Header";
 import Offers from "components/landing-page/Offers/Offers";
 import Details from "components/landing-page/Details/Details";
 import Benefits from "components/landing-page/Benefits/Benefits";
@@ -37,9 +36,8 @@ export default function Home() {
         <ContactForm/>
       </main>
 
-      <footer>
-        <Footer/>
-      </footer>
+      
+      <Footer/>
     </div>
   );
 }
