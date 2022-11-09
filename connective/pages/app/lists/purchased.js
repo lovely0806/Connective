@@ -36,7 +36,7 @@ export default function PurchasedLists({ user }) {
     <Layout title="Purchased Lists">
       <div>
         {lists.length > 0 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className="flex flex-col gap-20 mt-10">
             {lists.map((item, index) => {
               return <ListRow item={item} showModal={displayReviewCard} />;
             })}
