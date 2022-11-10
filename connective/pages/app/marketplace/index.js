@@ -151,8 +151,8 @@ export default function Dashboard({ user }) {
                 {!cardDisplayed && (
                   <div className="w-[100%] flex flex-col items-center mt-[170px]">
                     <p className="w-[710px] font-[Poppins] font-normal text-[24px] leading-[30px] text-[#0D1011] text-center mb-[32px]">
-                      Sorry, we could not find the list you re looking for.
-                      Submit request so we can get to you the list!
+                      Sorry, we could not find the list you are looking for.
+                      Submit a request so one of our creators can create your list :)
                     </p>
                     <button
                       className="w-[241px] h-[39px] text-center bg-[#061A40] text-white font-[Poppins] font-medium text-[14px] leading-[17px]"
