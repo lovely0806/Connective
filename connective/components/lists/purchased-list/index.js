@@ -8,12 +8,14 @@ const ListRow = ({ item, showModal }) => {
   const router = useRouter();
 
   return (
-    <div className="mx-20 ml-[64px] h-screen mb-[100px] mt-[64px]">
+    <div className="mx-20 ml-[64px]">
       <div className="bg-white rounded-xl shadow-lg flex flex-row gap-5 p-5">
       <div className="rounded-xl h-48 w-[200px] relative overflow-hidden">
               <Image
                 objectFit="cover"
-                src="/assets/banners/leaves-min.jpeg"
+                src={!item.cover_url || item.cover_url == "null"
+                ? "/assets/banners/leaves-min.jpeg"
+                : item.cover_url}
                 width="200px"
                 height="200px"
               />

@@ -7,7 +7,7 @@ const Layout = ({ title, children }) => {
   return (
     <main className="flex flex-row min-h-screen min-w-screen font-[Montserrat]">
       <Sidebar></Sidebar>
-      <div className="w-screen h-screen overflow-y-scroll flex flex-col bg-[#FCFCFC]">
+      <div className="w-screen h-screen overflow-y-scroll flex flex-col bg-[#FCFCFC] relative">
         <p className="font-bold text-3xl leading-[29px] text-[#0D1011] mt-[65px] ml-[64px]">
           {title}
         </p>
