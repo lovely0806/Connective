@@ -1,7 +1,19 @@
-import { TemporaryCredentials } from "aws-sdk";
 import Layout from "components/layout";
+import {useEffect, useState} from "react"
+import axios from "axios"
 
 const RequestList = () => {
+  const [requests, setRequests] = useState([])
+
+  const getRequests = async () => {
+    let {data} = await axios.get("/api/lists/requests-list")
+    setRequests(data)
+  }
+
+  useEffect(() => {
+    getRequests()
+  }, [])
+
   return (
     <Layout title="Requests List">
       <h1 className="font-[Montserrat] font-bold text-xl text-[#0D1011] ml-[64px] mt-10 mb-4">
@@ -24,28 +36,17 @@ const RequestList = () => {
           </th>
         </tr>
 
-        {/* .map() this one bellow */}
-        <tr className="px-[24px] border-b-[1px] border-b-[#9F9F9F]/[.10]">
-          <td className="px-[24px]">Buyer Name</td>
-          <td className="px-[24px]">02/08/2022</td>
-          <td className="px-[24px]">Lorem Ipsum</td>
-          <td className="px-[24px]">Lorem Ipsum</td>
-        </tr>
 
-        {/* Examples (to delete...) */}
-        <tr className="border-b-[1px] border-b-[#9F9F9F]/[.10]">
-          <td className="px-[24px]">Buyer Name</td>
-          <td className="px-[24px]">02/08/2022</td>
-          <td className="px-[24px]">Lorem Ipsum</td>
-          <td className="px-[24px]">Lorem Ipsum</td>
-        </tr>
-
-        <tr className="border-b-[1px] border-b-[#9F9F9F]/[.10]">
-          <td className="px-[24px]">Buyer Name</td>
-          <td className="px-[24px]">02/08/2022</td>
-          <td className="px-[24px]">Lorem Ipsum</td>
-          <td className="px-[24px]">Lorem Ipsum</td>
-        </tr>
+        {requests.map((item, index) => {
+          return (
+            <tr className="px-[24px] border-b-[1px] border-b-[#9F9F9F]/[.10]">
+              <td className="px-[24px]">{item.username}</td>
+              <td className="px-[24px]">{(new Date(item.timestamp)).toDateString()}</td>
+              <td className="px-[24px]">{item.topic}</td>
+              <td className="px-[24px]">{item.description}</td>
+            </tr>
+          )
+        })}
       </table>
     </Layout>
   );

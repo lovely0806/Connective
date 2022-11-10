@@ -143,7 +143,7 @@ export default function Dashboard({ user }) {
             })}
           </div>
         ) : (
-          <div className="w-full h-full flex flex-col items-center">
+          <div className="w-full flex flex-col items-center">
             {loading ? (
               <p className="mx-auto mt-20 text-2xl">Loading...</p>
             ) : (
@@ -163,12 +163,7 @@ export default function Dashboard({ user }) {
                   </div>
                 )}
                 {cardDisplayed && (
-                  <div
-                    className="w-[100%] mx-auto"
-                    onClick={displayCardHandler}
-                  >
-                    <RequestModal onClick={displayCardHandler} />
-                  </div>
+                  <RequestModal onClick={displayCardHandler} close={()=>{setCardDisplayed(false)}}/>
                 )}
               </div>
             )}
