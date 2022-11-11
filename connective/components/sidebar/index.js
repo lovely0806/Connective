@@ -53,7 +53,7 @@ const Sidebar = () => {
         </div>
       </Link>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
@@ -67,9 +67,14 @@ const Sidebar = () => {
           icon="/assets/navbar/ProfileIcon.svg"
           route="/app/profile"
         ></SidebarItem>
+        <SidebarItem
+          text="Messages"
+          icon="/assets/navbar/messages.png"
+          route="/app/messages"
+        ></SidebarItem>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
         </p>
@@ -85,7 +90,7 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a seller
         </p>
@@ -106,7 +111,7 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
