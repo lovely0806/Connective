@@ -62,6 +62,8 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
     useEffect(() => {
         if(selectedUser != null)
             getMessages()
+        else setMessages([])
+
         let intervalId = setInterval(() => {
             if(selectedUser != null)
                 getMessages()
@@ -115,10 +117,12 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
                     )
                 })}
             </div>
-            <div className="flex flex-row p-5 gap-5">
-                <input id="message-input" placeholder="Type something..." onChange={(e)=>{setText(e.target.value)}} className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
-                <button className="w-fit px-10" onClick={sendMessage}>Send</button>
-            </div>
+            {selectedUser && (
+                <div className="flex flex-row p-5 gap-5">
+                    <input id="message-input" placeholder="Type something..." onChange={(e)=>{setText(e.target.value)}} className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
+                    <button className="w-fit px-10" onClick={sendMessage}>Send</button>
+                </div>
+            )}
         </div>
     )
 }

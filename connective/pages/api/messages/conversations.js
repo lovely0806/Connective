@@ -21,10 +21,8 @@ export async function handler(req, res) {
             results.forEach(result => {
                 temp.push(profiles.filter((a) => a.id == result.sender || a.id == result.receiver))
             })
-            console.log(results)
             let conversations = []
             temp.forEach(item => {
-                console.log(item)
                 if(conversations.filter(a => a.id == item.id).length == 0) {
                     conversations.push(item)
                 }
