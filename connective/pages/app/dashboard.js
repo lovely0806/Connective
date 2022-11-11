@@ -5,6 +5,7 @@ import Sidebar from "../../components/sidebar";
 import Util from "../../util/";
 import Layout from "../../components/layout";
 import ButtonDark from "../../components/button-dark";
+import {useRouter} from "next/router"
 
 const DashboardItem = ({ title, value, icon, color }) => {
   return (
@@ -44,6 +45,7 @@ const Divider = () => {
 };
 
 export default function Dashboard({ user, buttonOnClick }) {
+  const router = useRouter()
   const [isVerified, setIsVerified] = useState(true);
   const [data, setData] = useState();
 
@@ -79,7 +81,7 @@ export default function Dashboard({ user, buttonOnClick }) {
   return (
     <Layout title="Dashboard" className="relative items-center">
       {!isVerified && (
-        <div className="ml-[64px] flex flex-row gap-5 bg-[#FCFCFC] p-5 pl-0 mt-[40px]">
+        <div className="mx-auto w-fit flex flex-row gap-5 bg-[#FCFCFC] rounded-lg shadow p-5 mt-[40px]">
           <p className="my-auto text-[16px]">
             Enter your payment details to begin buying & selling lists:
           </p>
@@ -95,13 +97,13 @@ export default function Dashboard({ user, buttonOnClick }) {
       <div className="absolute flex flex-row right-0 ml-[64px] gap-1 mt-[55px] mr-[100px]">
         <div className="border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
           <ButtonDark
-            onClick={buttonOnClick}
+            onClick={()=>{router.push("/app/marketplace")}}
             text="Explore Marketplace"
             className="w-[180px] bg-white text-sm text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
           />
         </div>
         <ButtonDark
-          onClick={buttonOnClick}
+          onClick={()=>{router.push("/app/lists/create/1")}}
           text="Create a List"
           className="text-sm mr-10 bg-[#0F172A] text-white"
         />
