@@ -137,7 +137,9 @@ export default function Messages({ user }) {
         const {data} = await axios.get("/api/messages/conversations")
         let temp = []
         data.forEach(item => {
-            temp.push(item.filter(a => a.id != user.id)[0])
+            let tempItem = item.filter(a => a.id != user.id)[0]
+            if(temp.filter(a => a.id == tempItem.id).length == 0)
+                temp.push(tempItem)
         })
         setConversations(temp)
     }

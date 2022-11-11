@@ -25,7 +25,7 @@ export async function handler(req, res) {
             let conversations = []
             temp.forEach(item => {
                 console.log(item)
-                if(!conversations.includes(item)) {
+                if(conversations.filter(a => a.id == item.id).length == 0) {
                     conversations.push(item)
                 }
             })
