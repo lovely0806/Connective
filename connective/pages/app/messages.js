@@ -4,6 +4,7 @@ import Layout from "../../components/layout";
 import { withIronSession } from "next-iron-session";
 import ButtonDark from "components/button-dark";
 import Select from "react-select";
+import { useRouter } from "next/router";
 
 const Message = ({ text, sent }) => {
   if (sent) {
@@ -93,12 +94,11 @@ const Chat = ({
 
   const sendMessage = async () => {
     setButtonActive(true);
-    console.log(text);
     await axios.post("/api/messages/" + selectedUser.id, { text });
     document.getElementById("message-input").value = "";
 
     //Re-fetch the list of conversations if the message was sent to a new conversation
-    console.log(conversations.filter((a) => a.id == selectedUser.id));
+    // console.log(conversations.filter((a) => a.id == selectedUser.id));
     if (conversations.filter((a) => a.id == selectedUser.id).length == 0) {
       getConversations();
     }
@@ -171,6 +171,8 @@ const Chat = ({
 };
 
 export default function Messages({ user }) {
+  const router = useRouter();
+  const { newUser } = router.query;
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState();
   const [conversations, setConversations] = useState([]);
@@ -178,10 +180,12 @@ export default function Messages({ user }) {
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
     setUsers(data);
+    newUser && setSelectedUser(data.filter((item) => item.id == newUser)[0]);
   };
 
   const getConversations = async () => {
     const { data } = await axios.get("/api/messages/conversations");
+    console.log(data);
     let temp = [];
     data.forEach((item) => {
       let tempItem = item.filter((a) => a.id != user.id)[0];
