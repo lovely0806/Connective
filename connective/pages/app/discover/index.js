@@ -55,6 +55,7 @@ export default function Messages({ user }) {
               <DiscoverList
                 id={item.id}
                 title={item.username}
+                description={item.description}
                 imgURL={item.logo}
               />
             );
