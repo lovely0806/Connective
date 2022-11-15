@@ -11,7 +11,7 @@ export async function handler(req, res) {
       var [results] = await connection
         .promise()
         .query(
-          `SELECT Users.username, Users.id, Users.email, Business.logo, Business.description FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.username, Users.id, Users.email, Individual.profile_picture AS logo, Individual.bio AS description FROM Users JOIN Individual on Users.id = Individual.user_id;`
+          `SELECT Users.id, Users.email, Business.company_name as username, Business.logo, Business.description FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.id, Users.email, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description FROM Users JOIN Individual on Users.id = Individual.user_id;`
         );
       res.status(200).json(results);
     }

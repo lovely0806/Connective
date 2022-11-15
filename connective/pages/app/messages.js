@@ -32,7 +32,7 @@ const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
 
   useEffect(() => {
     if(filter != "")
-      setFilteredConversations(conversations.filter(a => a.username.includes(filter) || a.email.includes(filter)))
+      setFilteredConversations(conversations.filter(a => a.username.toLowerCase().includes(filter.toLowerCase()) || a.email.toLowerCase().includes(filter.toLowerCase())))
   }, [filter])
 
   return (
@@ -130,7 +130,7 @@ const UserDetails = ({selectedUser}) => {
     <div className="w-1/5 h-full px-2">
       {selectedUser && (
         <>
-          <img src={selectedUser.logo ? selectedUser.logo : `https://avatars.dicebear.com/api/micah/${selectedUser.id}.svg`} className="w-[40%] mx-auto bg-white rounded-full shadow-lg"/>
+          <img src={selectedUser.logo ? selectedUser.logo : `https://avatars.dicebear.com/api/micah/${selectedUser.id}.svg`} className="w-[40%] mt-5 mx-auto bg-white rounded-full shadow-lg"/>
           <p className="font-bold text-lg text-center mt-5">{selectedUser.username}</p>
 
           <p className="text-sm font-bold mt-10">Contact Details:</p>

@@ -10,12 +10,19 @@ import { data } from "autoprefixer";
 
 export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
+  const [filter, setFilter] = useState("")
+  const [filteredUsers, setFilteredUsers] = useState([])
 
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
     setUsers(data);
+    setFilteredUsers(data)
     console.log(data);
   };
+
+  useEffect(() => {
+    setFilteredUsers(users.filter(a => a.username.toLowerCase().includes(filter.toLowerCase())))
+  }, [filter])
 
   useEffect(() => {
     getUsers();
@@ -36,7 +43,7 @@ export default function Messages({ user }) {
             </div>
             <input
               onChange={(e) => {
-                setSearch(e.target.value);
+                setFilter(e.target.value)
               }}
               placeholder="Search for lists"
               className="w-full z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
@@ -50,7 +57,7 @@ export default function Messages({ user }) {
           <Select placeholder="Sort" className="w-[250px] text-[12px]"></Select>
         </div>
         <div className="flex flex-col w-full gap-10">
-          {users.map((item) => {
+          {filteredUsers.map((item) => {
             return (
               <DiscoverList
                 id={item.id}
