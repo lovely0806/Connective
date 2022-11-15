@@ -23,7 +23,11 @@ const Message = ({text, sent}) => {
 
 const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
     const [filter, setFilter] = useState("")
-    const [filteredConversations, setFilteredConversations] = useState(conversations)
+    const [filteredConversations, setFilteredConversations] = useState([])
+
+    useEffect(() => {
+      setFilteredConversations(conversations)
+    }, [])
 
     useEffect(() => {
       setFilteredConversations(conversations.filter(a => a.username.includes(filter) || a.email.includes(filter)))
@@ -107,9 +111,12 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
 
     return (
         <div className="flex flex-col h-full w-4/5 rounded-r-lg">
-            <div className="flex flex-row w-full p-2">
-                <p className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">{selectedUser.username + " (" + selectedUser.email + ")"}</p>
-            </div>
+            {selectedUser && (
+              <div className="flex flex-row w-full p-2">
+                  <p className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">{selectedUser?.username + " (" + selectedUser?.email + ")"}</p>
+              </div>
+            )}
+            
             <div id="messages-container" className="h-full overflow-y-scroll p-5 flex flex-col gap-10">
                 {messages.map((item, index) => {
                     return (
