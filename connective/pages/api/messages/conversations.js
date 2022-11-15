@@ -16,7 +16,7 @@ export async function handler(req, res) {
               );
             var [profiles] = await connection
                 .promise()
-                .query(`SELECT Users.username, Users.id, Users.email, Business.logo FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.username, Users.id, Users.email, Individual.profile_picture AS logo FROM Users JOIN Individual on Users.id = Individual.user_id;`)
+                .query(`SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo FROM Users JOIN Individual on Users.id = Individual.user_id;`)
             let temp = []
             results.forEach(result => {
                 temp.push(profiles.filter((a) => a.id == result.sender || a.id == result.receiver))
