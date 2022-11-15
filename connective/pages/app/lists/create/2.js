@@ -77,7 +77,7 @@ export default function NewList({ user }) {
   }
 
   return (
-    <Layout title="Create New List">
+    <Layout user={user} title="Create New List">
           <Steps />
           
       <div className="bg-white w-[637px] rounded-xl shadow-lg mx-auto px-[80px] py-[40px] mt-[65px] mb-[94px]">

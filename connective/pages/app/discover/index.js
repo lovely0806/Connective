@@ -15,8 +15,8 @@ export default function Messages({ user }) {
 
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
-    setUsers(data);
-    setFilteredUsers(data)
+    setUsers(data.filter(a => a.show_on_discover));
+    setFilteredUsers(data.filter(a => a.show_on_discover))
     console.log(data);
   };
 
@@ -29,7 +29,7 @@ export default function Messages({ user }) {
   }, []);
 
   return (
-    <Layout title="Discover">
+    <Layout user={user} title="Discover">
       <div className="ml-[64px] mr-20 h-screen">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center mt-20">
           <div className="w-full relative">

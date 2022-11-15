@@ -188,7 +188,7 @@ export default function Messages({ user }) {
   }, []);
 
   return (
-    <Layout title="Messages">
+    <Layout user={user} title="Messages">
       <div className="bg-white h-full overflow-clip mt-5 flex flex-row">
         <Conversations
           conversations={conversations}

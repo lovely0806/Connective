@@ -25,7 +25,7 @@ const SidebarItem = ({ text, route, icon, onClick }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({user}) => {
   const router = useRouter();
   const signout = async () => {
     await axios.get("/api/auth/signout");
@@ -65,7 +65,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
-          route="/app/profile"
+          route={`/app/profile/${user.id}`}
         ></SidebarItem>
       </div>
 

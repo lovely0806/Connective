@@ -14,16 +14,17 @@ const DiscoverList = ({ id, title, description, imgURL }) => {
           src={imgURL || "/assets/banners/leaves-min.jpeg"}
         />
       </div>
-      <div className="w-full my-8">
+      <div className="w-full my-8 overflow-y-clip">
         <p className="text-xl font-bold my-1">{title}</p>
-        <p className="text-sm">
+        <p className="text-sm h-full">
           {description.length > 450
             ? description.slice(0, 450) + "..."
             : description}
         </p>
       </div>
       <div className="w-60 shrink-0 flex flex-col justify-center items-center gap-3 m-5">
-        <button className="text-sm font-normal bg-[#006494] font-[Poppins]">
+        <button className="text-sm font-normal bg-[#006494] font-[Poppins]"
+          onClick={() => router.push(`/app/profile/${id}`)}>
           View Profile
         </button>
 
