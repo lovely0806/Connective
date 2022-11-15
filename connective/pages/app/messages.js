@@ -23,12 +23,12 @@ const Message = ({text, sent}) => {
 
 const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
     return (
-        <div className="flex flex-col gap-1 w-1/5 overflow-y-scroll">
+        <div className="flex flex-col w-1/5 overflow-y-scroll">
             {conversations.map((item, index) => {
                 return (
-                    <div onClick={()=>{setSelectedUser(item)}} className="flex flex-row p-2 cursor-pointer bg-slate-100 hover:bg-slate-200 transition-all">
+                    <div onClick={()=>{setSelectedUser(item)}} className={`flex flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
                         <img src={item.logo ? item.logo : `https://avatars.dicebear.com/api/micah/${item.id}.svg`} className="w-12 h-12 bg-white rounded-full shadow-lg"/>
-                        <p className="my-auto ml-2 text-lg">{item.username}</p>
+                        <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
                     </div>
                 )
             })}
@@ -160,9 +160,9 @@ export default function Messages({ user }) {
     }, [])
 
     return (
-      <Layout title="Messages">
-        <div className="bg-white shadow-lg rounded-lg h-[75vh] m-10 flex flex-row">
-            <Conversations conversations={conversations} setSelectedUser={setSelectedUser}></Conversations>
+      <Layout title="Messages" scroll={false}>
+        <div className="bg-white shadow-lg rounded-lg h-full mt-5 flex flex-row">
+            <Conversations conversations={conversations} setSelectedUser={setSelectedUser} selectedUser={selectedUser}></Conversations>
             <Chat user={user} users={users} selectedUser={selectedUser} setSelectedUser={setSelectedUser} conversations={conversations} getConversations={getConversations}></Chat>
         </div>
       </Layout>
