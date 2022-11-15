@@ -67,11 +67,6 @@ const Sidebar = () => {
           icon="/assets/navbar/ProfileIcon.svg"
           route="/app/profile"
         ></SidebarItem>
-        <SidebarItem
-          text="Messages"
-          icon="/assets/navbar/messages.png"
-          route="/app/messages"
-        ></SidebarItem>
       </div>
 
       <div className="mb-3">
@@ -113,6 +108,22 @@ const Sidebar = () => {
 
       <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+          Chat
+        </p>
+        <SidebarItem
+          text="Discover"
+          icon="/assets/navbar/compass.svg"
+          route="/app/discover"
+        ></SidebarItem>
+        <SidebarItem
+          text="Messages"
+          icon="/assets/navbar/messages.png"
+          route="/app/messages"
+        ></SidebarItem>
+      </div>
+
+      <div className="mb-3">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
         <SidebarItem
@@ -129,9 +140,10 @@ const Sidebar = () => {
 
       <Link href="/">
         <SidebarItem
-        text="Sign Out"
-        icon="/assets/navbar/SignOutIcon.svg"
-        onClick={signout}></SidebarItem>
+          text="Sign Out"
+          icon="/assets/navbar/SignOutIcon.svg"
+          onClick={signout}
+        ></SidebarItem>
       </Link>
     </div>
   );
