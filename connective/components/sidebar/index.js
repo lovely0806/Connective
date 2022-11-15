@@ -65,7 +65,7 @@ const Sidebar = ({user}) => {
         <SidebarItem
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
-          route={`/app/profile/${user.id}`}
+          route={`/app/profile/${user?.id ? user.id : 0}`}
         ></SidebarItem>
       </div>
 
