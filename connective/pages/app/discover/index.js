@@ -7,10 +7,12 @@ import searchIcon from "../../../public/assets/search-2.svg";
 import Image from "next/image";
 import DiscoverList from "components/discover/list";
 import { data } from "autoprefixer";
+import { industryOptions } from "common/selectOptions";
 
 export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("")
+  const [category, setCategory] = useState("")
   const [filteredUsers, setFilteredUsers] = useState([])
 
   const getUsers = async () => {
@@ -21,8 +23,8 @@ export default function Messages({ user }) {
   };
 
   useEffect(() => {
-    setFilteredUsers(users.filter(a => a.username.toLowerCase().includes(filter.toLowerCase())))
-  }, [filter])
+    setFilteredUsers(users.filter(a => (a.username.toLowerCase().includes(filter.toLowerCase())) && (category=="All" || a?.industry == category)))
+  }, [filter, category])
 
   useEffect(() => {
     getUsers();
@@ -52,9 +54,13 @@ export default function Messages({ user }) {
           <Select
             placeholder="Categories"
             isMulti={false}
+            options={industryOptions}
+            onChange={(e)=>{setCategory(e.label)}}
             className="w-[250px] text-[12px]"
           ></Select>
+          {/*
           <Select placeholder="Sort" className="w-[250px] text-[12px]"></Select>
+          */}
         </div>
         <div className="flex flex-col w-full gap-10">
           {filteredUsers.map((item) => {
