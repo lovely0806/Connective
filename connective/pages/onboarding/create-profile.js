@@ -12,6 +12,7 @@ import Util from "../../util";
 import Link from "next/link";
 import logo from "../../public/assets/logo.svg";
 import Image from "next/image";
+import { industryOptions } from "common/selectOptions";
 
 export default function CreateProfile({ user }) {
   const [name, setName] = useState("");
@@ -32,12 +33,6 @@ export default function CreateProfile({ user }) {
   // useEffect(() => {
   //     forwardIfProfileSetup()
   // }, [])
-
-  const industryOptions = [
-    { value: "Web3", label: "Web3" },
-    { value: "Software Development", label: "Software Development" },
-    { value: "Event Planning", label: "Event Planning" },
-  ];
 
   const sizeOptions = [
     { value: "1-10", label: "1-10" },

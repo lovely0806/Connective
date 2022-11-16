@@ -24,7 +24,7 @@ export default function Lists({ user }) {
   }, []);
 
   return (
-    <Layout title="Lists for Sale" className="relative items-center">
+    <Layout user={user} title="Lists for Sale" className="relative items-center">
       <Link href="/app/lists/create/1">
         <div className="absolute flex flex-row right-[277px] mt-[55px]">
           <button className="w-[172px] text-[12px] font-[Poppins] bg-[#061A40] text-white rounded-[8px] absolute">

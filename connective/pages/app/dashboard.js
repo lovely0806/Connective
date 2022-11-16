@@ -79,7 +79,7 @@ export default function Dashboard({ user, buttonOnClick }) {
   };
 
   return (
-    <Layout title="Dashboard" className="relative items-center">
+    <Layout user={user} title="Dashboard" className="relative items-center">
       {!isVerified && (
         <div className="mx-auto w-fit flex flex-row gap-5 bg-[#FCFCFC] rounded-lg shadow p-5 mt-[40px]">
           <p className="my-auto text-[16px]">
