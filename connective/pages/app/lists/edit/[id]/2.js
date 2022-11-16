@@ -73,7 +73,7 @@ export default function NewList({ user }) {
   };
 
   return (
-    <Layout title="Lists">
+    <Layout user={user} title="Lists">
       <div className="bg-white rounded-xl shadow-lg mx-[20vw] p-10">
         <p className="text-center font-bold text-xl mb-5">Edit the list</p>
         <p className="text-center mb-10">Step 2 of 3</p>

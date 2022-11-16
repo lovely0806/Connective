@@ -70,7 +70,7 @@ export default function NewList({ user }) {
   };
 
   return (
-    <Layout title="Create New List">
+    <Layout user={user} title="Create New List">
       <Steps />
 
       <div className="w-[637px] px-[80px] mx-auto mt-[64px] py-10 flex flex-col items-center bg-white/70 mb-[94px] shadow-lg rounded-xl">

@@ -8,15 +8,18 @@ export async function handler(req, res) {
       return res.status(500).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "GET") {
+      let {id} = req.query
+      if(typeof(id) == "undefined") id = user.id
+
       //Returns callers account
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Business WHERE user_id='${user.id}';`);
+        .query(`SELECT * FROM Business WHERE user_id='${id}';`);
       var [listResults, listFields, listErr] = await connection
         .promise()
         .query(
-          `SELECT Lists.*, Business.company_name AS username, Business.logo FROM Lists JOIN Business on Lists.creator = Business.user_id WHERE creator=${user.id};`
+          `SELECT Lists.*, Business.company_name AS username, Business.logo FROM Lists JOIN Business on Lists.creator = Business.user_id WHERE creator=${id};`
         );
 
       var [purchaseResults, fields, err] = await connection.promise().query(`select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`)

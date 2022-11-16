@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ButtonDark from "../../button-dark";
 import ListCard from "../../marketplace/ListCard";
-
-export default function BusinessProfile({ user }) {
+ 
+export default function BusinessProfile({ user, id }) {
   const router = useRouter();
 
   const [data, setData] = useState();
@@ -21,7 +21,7 @@ export default function BusinessProfile({ user }) {
   }, [user]);
 
   const getProfile = async () => {
-    await axios.get("/api/profiles/business").then((res) => {
+    await axios.get(`/api/profiles/business?id=${id}`).then((res) => {
       if (typeof res.data != "undefined") {
         setData(res.data);
         console.log(res.data);
@@ -41,10 +41,10 @@ export default function BusinessProfile({ user }) {
 
           <div className="w-[100%] flex flex-row justify-between items-center mt-[-70px]">
             <div className="mb-[64px] flex flex-row items-center gap-[40px] pl-[50px]">
-              {data.profile_picture == "" ? (
+              {data.logo == "" ? (
                 <img
                   className="rounded-full w-[200px] h-[200px] z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md object-cover"
-                  src={`https://avatars.dicebear.com/api/micah/${user.id}.svg`}
+                  src={`https://avatars.dicebear.com/api/micah/${id}.svg`}
                 ></img>
               ) : (
                 <div className="w-[200px] h-[200px]">
@@ -83,15 +83,17 @@ export default function BusinessProfile({ user }) {
               </div>
             </div>
 
-            <div
-              className="flex flex-row gap-[12px] cursor-pointer text-white rounded-lg bg-[#061A40] items-center py-[18px] px-[40px]"
-              onClick={() => router.push("/app/profile/edit-profile")}
-            >
-              <img className="w-[20px] h-[20px]" src="/assets/edit.svg" />
-              <p className="hover:scale-105 hover:shadow-lg font-[Poppins] text-center text-[14px]">
-                Edit Profile
-              </p>
-            </div>
+            {user.id == id && (
+              <div
+                className="flex flex-row gap-[12px] cursor-pointer text-white rounded-lg bg-[#061A40] items-center py-[18px] px-[40px]"
+                onClick={() => router.push("/app/profile/edit-profile")}
+              >
+                <img className="w-[20px] h-[20px]" src="/assets/edit.svg" />
+                <p className="hover:scale-105 hover:shadow-lg font-[Poppins] text-center text-[14px]">
+                  Edit Profile
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="mb-[60px]">

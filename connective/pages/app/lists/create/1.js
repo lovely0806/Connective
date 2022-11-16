@@ -40,7 +40,7 @@ export default function NewList({ user }) {
   };
 
   return (
-    <Layout title="Create New List">
+    <Layout user={user} title="Create New List">
       <Steps />
       
       <div className="mx-20 ml-[64px] p-10 mt-[60px]">

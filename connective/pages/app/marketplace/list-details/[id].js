@@ -43,7 +43,7 @@ export default function Dashboard({ user }) {
   }, []);
 
   return (
-    <Layout title="">
+    <Layout user={user} title="">
       <div>
         <h1 className="ml-[64px] font-[Montserrat] font-bold text-[26px] text-[#0D1011] mb-[40px]">
           {!loading ? data?.title : "..."}
