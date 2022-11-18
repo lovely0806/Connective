@@ -62,7 +62,7 @@ export default function Messages({ user }) {
           <Select placeholder="Sort" className="w-[250px] text-[12px]"></Select>
           */}
         </div>
-        <div className="flex flex-col w-full gap-10">
+        <div className="flex flex-col w-full gap-10 pb-20">
           {filteredUsers.map((item) => {
             return (
               <DiscoverList
