@@ -74,7 +74,7 @@ export default function BusinessProfile({ user, id }) {
                     <img className="h-[14px] w-[14px]" src="/assets/link.png" />
                     <a
                       className="font-normal cursor-pointer text-[#061A40] underline-offset-0 font-[Poppins]"
-                      href={data?.website}
+                      href={data?.website.includes("https") ? data.website :"https://" + data.website}
                     >
                       Visit Website
                     </a>
