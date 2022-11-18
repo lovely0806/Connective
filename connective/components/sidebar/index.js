@@ -25,7 +25,7 @@ const SidebarItem = ({ text, route, icon, onClick }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({user}) => {
   const router = useRouter();
   const signout = async () => {
     await axios.get("/api/auth/signout");
@@ -34,7 +34,7 @@ const Sidebar = () => {
 
   return (
     <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
-      <Link href="https://www.connective-app.xyz">
+      <Link href="/">
         <div className="flex flex-row cursor-pointer items-center gap-2 mb-9">
           <Image
             className="w-[2vh] h-[4vh]"
@@ -53,7 +53,7 @@ const Sidebar = () => {
         </div>
       </Link>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
@@ -65,11 +65,11 @@ const Sidebar = () => {
         <SidebarItem
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
-          route="/app/profile"
+          route={`/app/profile/${user?.id ? user.id : 0}`}
         ></SidebarItem>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
         </p>
@@ -85,7 +85,7 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a seller
         </p>
@@ -106,7 +106,23 @@ const Sidebar = () => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+          Chat
+        </p>
+        <SidebarItem
+          text="Discover"
+          icon="/assets/navbar/compass.svg"
+          route="/app/discover"
+        ></SidebarItem>
+        <SidebarItem
+          text="Messages"
+          icon="/assets/navbar/messages.png"
+          route="/app/messages"
+        ></SidebarItem>
+      </div>
+
+      <div className="mb-3">
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
@@ -124,9 +140,10 @@ const Sidebar = () => {
 
       <Link href="/">
         <SidebarItem
-        text="Sign Out"
-        icon="/assets/navbar/SignOutIcon.svg"
-        onClick={signout}></SidebarItem>
+          text="Sign Out"
+          icon="/assets/navbar/SignOutIcon.svg"
+          onClick={signout}
+        ></SidebarItem>
       </Link>
     </div>
   );

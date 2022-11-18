@@ -39,7 +39,7 @@ const Navbar = () => {
           <ButtonDark src="slack-icon.svg" alt="Slack" text="Join Our Slack" />
         </a>
 
-        <Link href="/app/profile">
+        <Link href="/auth/signin">
          <div className="w-fit flex items-center gap-2.5 bg-white py-2.5 px-4 rounded-[50px] cursor-pointer">
           <Image
             src="/assets/landing-page/account-icon.svg"
