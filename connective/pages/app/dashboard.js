@@ -133,8 +133,8 @@ export default function Dashboard({ user, buttonOnClick }) {
           <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
             <div className="pl-4">
               <DashboardItem
-                title="List Viewed"
-                value={data?.listsViewed}
+                title="Lists Viewed"
+                value={data?.listsViewed == null ? 0 : data.listsViewed}
                 icon="/assets/dashboard/list.svg"
                 color="#CCE0FE"
               ></DashboardItem>
