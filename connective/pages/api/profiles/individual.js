@@ -36,9 +36,8 @@ export async function handler(req, res) {
       await connection.promise().execute(`
                 INSERT INTO Individual (
                     user_id, name, profile_picture, bio, location
-                ) VALUES (
-                    '${user.id}', '${name}', '${pfp}', '${bio}', '${location}'
-                );`);
+                ) VALUES (?, ?, ?, ?, ? );`, 
+                [user.id, name, pfp, bio, location]);
 
       connection.end();
       res.status(200).json({ success: true });
