@@ -141,7 +141,7 @@ const Sidebar = ({user}) => {
         ></SidebarItem>
       </div>
 
-      <Link href="/">
+      <Link href="http://www.connective-app.xyz/">
         <SidebarItem
           text="Sign Out"
           icon="/assets/navbar/SignOutIcon.svg"
