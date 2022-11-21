@@ -17,6 +17,7 @@ export default function Messages({ user }) {
 
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
+    console.log(data.filter(a => a.email == "marko@ventnorwebagency.com"))
     setUsers(data.filter(a => a.show_on_discover));
     setFilteredUsers(data.filter(a => a.show_on_discover))
     console.log(data);

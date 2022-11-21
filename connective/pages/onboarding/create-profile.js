@@ -223,7 +223,7 @@ export default function CreateProfile({ user }) {
       <OnBoardingProfile />
 
       <div className="flex flex-col min-w-[740px] mx-auto font-[Montserrat] rounded-xl my-[40px]">
-        <Link href="https://www.connective-app.xyz">
+        <Link href="/">
           <div className="mb-[40px]">
             <Image
               src={logo}

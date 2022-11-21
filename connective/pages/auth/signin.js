@@ -49,7 +49,7 @@ export default function SignIn({ user }) {
         if (res.status == 201) {
           console.log(res.data);
           res.data
-            ? router.push("/app/marketplace")
+            ? router.push("/app/discover")
             : router.push("/onboarding/create-profile");
         }
       })
