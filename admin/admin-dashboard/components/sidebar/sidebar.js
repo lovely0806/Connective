@@ -9,7 +9,7 @@ const Sidebar = () => {
     ]
 
     return (
-        <div className="flex flex-col text-black">
+        <div  className="flex flex-col text-black">
             {options.map((item, index) => {
                 return (
                     <Link href={item.link}>

@@ -4,22 +4,22 @@ const Benefits = () => {
   return (
     <section
       id="services"
-      className="bg-white font-[Poppins] py-20 mx-auto px-[1.8rem]"
+       className="bg-white font-[Poppins] py-20 mx-auto px-[1.8rem]"
     >
-      <h2 className="text-center text-4xl font-bold text-[#061A40] mb-6">
+      <h2  className="text-center text-4xl font-bold text-[#061A40] mb-6">
         Why buy data from other bussinesses?
       </h2>
 
-      <p className="max-w-[669px] font-normal text-[#061A40] text-lg text-center mx-auto mb-12">
+      <p  className="max-w-[669px] font-normal text-[#061A40] text-lg text-center mx-auto mb-12">
         Our mentality is{" "}
-        <span className="font-bold">
+        <span  className="font-bold">
           "One man's trash is another man's come up."
         </span>{" "}
         In this case, it is not trash but a pot of gold at the end of the
         rainbow basket. By using Connective, a business can:
       </p>
 
-      <div className="flex justify-between max-w-[640px] mx-auto">
+      <div  className="flex justify-between max-w-[640px] mx-auto">
         <BenefitsCard
           src="network-time.svg"
           alt="Network"

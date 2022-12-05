@@ -74,12 +74,12 @@ export default function NewList({ user }) {
 
   return (
     <Layout user={user} title="Lists">
-      <div className="mx-20 p-10 flex flex-col bg-white/70 mb-20 shadow-lg rounded-xl">
-        <p className="text-center font-bold text-xl mb-5">Edit a list</p>
-        <p className="text-center mb-10">Step 3 of 3</p>
-        <p className="font-bold mb-10 text-xl">Preview:</p>
-        <div className="flex flex-row justify-between">
-          <div className="sm:w-[30vw] 2xl:w-[20vw]">
+      <div  className="mx-20 p-10 flex flex-col bg-white/70 mb-20 shadow-lg rounded-xl">
+        <p  className="text-center font-bold text-xl mb-5">Edit a list</p>
+        <p  className="text-center mb-10">Step 3 of 3</p>
+        <p  className="font-bold mb-10 text-xl">Preview:</p>
+        <div  className="flex flex-row justify-between">
+          <div  className="sm:w-[30vw] 2xl:w-[20vw]">
             {typeof title != "undefined" && (
               <ListCard
                 preview={true}
@@ -94,15 +94,15 @@ export default function NewList({ user }) {
             )}
           </div>
 
-          <div className="w-[30vw] object-fit">
+          <div  className="w-[30vw] object-fit">
             <img src={previewUrl} />
           </div>
         </div>
 
-        <div className="flex mx-auto pl-10">
+        <div  className="flex mx-auto pl-10">
           <ButtonDark
             text="Save"
-            className="mr-0 mt-20"
+             className="mr-0 mt-20"
             onClick={submit}
           ></ButtonDark>
         </div>

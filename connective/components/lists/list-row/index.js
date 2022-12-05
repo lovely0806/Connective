@@ -20,11 +20,11 @@ const ListRow = ({ item }) => {
   };
 
   return (
-    <div className="w-[292px] min-h-[385px] bg-white rounded-xl shadow-lg flex flex-col justify-between p-[12px] border-[0.5px] border-[#E0E0E0]">
+    <div  className="w-[292px] min-h-[385px] bg-white rounded-xl shadow-lg flex flex-col justify-between p-[12px] border-[0.5px] border-[#E0E0E0]">
       <div>
-        <div className="rounded-xl max-w-[268px] min-h-[153px] object-cover relative overflow-hidden mb-[12px]">
+        <div  className="rounded-xl max-w-[268px] min-h-[153px] object-cover relative overflow-hidden mb-[12px]">
           <Image
-            className=""
+             className=""
             objectFit="cover"
             src={
               !item.cover_url || item.cover_url == "null"
@@ -36,29 +36,29 @@ const ListRow = ({ item }) => {
           />
         </div>
 
-        <div className="flex flex-col">
-          <p className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">
+        <div  className="flex flex-col">
+          <p  className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">
             {item.title}
           </p>
-          <p className="font-normal text-[12px] leading-[18px] text–[rgba(13_16_17_0.7)] mb-[15px] text-[#0d1011b3]">
+          <p  className="font-normal text-[12px] leading-[18px] text–[rgba(13_16_17_0.7)] mb-[15px] text-[#0d1011b3]">
             {item.description}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <div className="font-bold text-[26px] leading-[29px] text-[#0D1011] text-center mb-[12px]">
+      <div  className="flex flex-col">
+        <div  className="font-bold text-[26px] leading-[29px] text-[#0D1011] text-center mb-[12px]">
           <p>${item.price.toFixed(2)}</p>
         </div>
         <Link href={`lists/edit/${item.id}/1`}>
           <ButtonDark
             text="Edit"
-            className="w-full text-[12px] mb-[4px] bg-[#061A40]"
+             className="w-full text-[12px] mb-[4px] bg-[#061A40]"
           ></ButtonDark>
         </Link>
         <ButtonLight
           text={published ? "Unpublish" : "Publish"}
-          className="w-full text-[12px] border-[#727474] text-[#727474]"
+           className="w-full text-[12px] border-[#727474] text-[#727474]"
           onClick={togglePublish}
         ></ButtonLight>
       </div>

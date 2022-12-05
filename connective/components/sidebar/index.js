@@ -15,11 +15,11 @@ const SidebarItem = ({ text, route, icon, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/10 ${
+       className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/10 ${
         selected ? "bg-[#051533]" : ""
       } ${text == "Sign Out" ? "mt-auto" : ""}`}
     >
-      <img className="w-[2vh] h-[2vh] my-auto" src={icon} />
+      <img  className="w-[2vh] h-[2vh] my-auto" src={icon} />
       <p>{text}</p>
     </div>
   );
@@ -33,18 +33,18 @@ const Sidebar = ({user}) => {
   };
 
   return (
-    <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
+    <div  className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
       <Link href="/">
-        <div className="flex flex-row cursor-pointer items-center gap-2 mb-9">
+        <div  className="flex flex-row cursor-pointer items-center gap-2 mb-9">
           <Image
-            className="w-[2vh] h-[4vh]"
+             className="w-[2vh] h-[4vh]"
             src="/assets/logo-1.svg"
             width="70px"
             height="75px"
             priority
           />
           <Image
-            className="w-[5vh] h-[1.5vh]"
+             className="w-[5vh] h-[1.5vh]"
             src="/assets/logo-2.svg"
             width="196px"
             height="36px"
@@ -53,8 +53,8 @@ const Sidebar = ({user}) => {
         </div>
       </Link>
 
-      <div className="mb-3">
-        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div  className="mb-3">
+        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
         {/* 
@@ -72,8 +72,8 @@ const Sidebar = ({user}) => {
       </div>
 
 {/* 
-      <div className="mb-3">
-        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div  className="mb-3">
+        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
         </p>
         <SidebarItem
@@ -88,8 +88,8 @@ const Sidebar = ({user}) => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-3">
-        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div  className="mb-3">
+        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a seller
         </p>
         <SidebarItem
@@ -109,8 +109,8 @@ const Sidebar = ({user}) => {
         ></SidebarItem>
       </div>
 */}
-      <div className="mb-3">
-        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div  className="mb-3">
+        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Chat
         </p>
         <SidebarItem
@@ -125,8 +125,8 @@ const Sidebar = ({user}) => {
         ></SidebarItem>
       </div>
 
-      <div className="mb-3">
-        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div  className="mb-3">
+        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
         <SidebarItem

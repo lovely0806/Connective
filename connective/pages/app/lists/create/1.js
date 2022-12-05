@@ -43,11 +43,11 @@ export default function NewList({ user }) {
     <Layout user={user} title="Create New List">
       <Steps />
       
-      <div className="mx-20 ml-[64px] p-10 mt-[60px]">
-        <p className="text-center font-bold text-xl mb-5">Upload your CSV</p>
+      <div  className="mx-20 ml-[64px] p-10 mt-[60px]">
+        <p  className="text-center font-bold text-xl mb-5">Upload your CSV</p>
 
-        <div className="relative">
-          <div className="mt-[40px] w-[700px] mx-auto">
+        <div  className="relative">
+          <div  className="mt-[40px] w-[700px] mx-auto">
             <FileUpload
               text="Upload CSV"
               file={file}
@@ -56,14 +56,14 @@ export default function NewList({ user }) {
               accept=".csv,.xls,.xlsx"
             />
           </div>
-          <p className="text-red-500 text-center mt-[4px] font-bold text-[12px]">
+          <p  className="text-red-500 text-center mt-[4px] font-bold text-[12px]">
             {fileError}
           </p>
         </div>
 
         <ButtonDark
           text="Next"
-          className="mx-auto w-[162px] mt-10 font-[Poppins] bg-[#061A40] text-white"
+           className="mx-auto w-[162px] mt-10 font-[Poppins] bg-[#061A40] text-white"
           onClick={submit}
         ></ButtonDark>
       </div>

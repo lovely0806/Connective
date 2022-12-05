@@ -24,17 +24,17 @@ export default function Lists({ user }) {
   }, []);
 
   return (
-    <Layout user={user} title="Lists for Sale" className="relative items-center">
+    <Layout user={user} title="Lists for Sale"  className="relative items-center">
       <Link href="/app/lists/create/1">
-        <div className="absolute flex flex-row right-[277px] mt-[55px]">
-          <button className="w-[172px] text-[12px] font-[Poppins] bg-[#061A40] text-white rounded-[8px] absolute">
+        <div  className="absolute flex flex-row right-[277px] mt-[55px]">
+          <button  className="w-[172px] text-[12px] font-[Poppins] bg-[#061A40] text-white rounded-[8px] absolute">
             Create New List
           </button>
         </div>
       </Link>
 
       <div>
-        <div className="mx-20 ml-[64px] flex flex-row flex-wrap gap-[32px] mt-[64px]">
+        <div  className="mx-20 ml-[64px] flex flex-row flex-wrap gap-[32px] mt-[64px]">
           {lists.map((item, index) => {
             return <ListRow item={item} key={index}></ListRow>;
           })}

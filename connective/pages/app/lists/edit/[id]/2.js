@@ -74,10 +74,10 @@ export default function NewList({ user }) {
 
   return (
     <Layout user={user} title="Lists">
-      <div className="bg-white rounded-xl shadow-lg mx-[20vw] p-10">
-        <p className="text-center font-bold text-xl mb-5">Edit the list</p>
-        <p className="text-center mb-10">Step 2 of 3</p>
-        <p className="font-bold mb-10 text-xl">Price and preview:</p>
+      <div  className="bg-white rounded-xl shadow-lg mx-[20vw] p-10">
+        <p  className="text-center font-bold text-xl mb-5">Edit the list</p>
+        <p  className="text-center mb-10">Step 2 of 3</p>
+        <p  className="font-bold mb-10 text-xl">Price and preview:</p>
         <InputField
           name="Price"
           placeholder="Enter a price for this list"
@@ -87,7 +87,7 @@ export default function NewList({ user }) {
           disabled
         ></InputField>
 
-        <p className="text-sm mb-2 mt-10">Upload a cover image (optional)</p>
+        <p  className="text-sm mb-2 mt-10">Upload a cover image (optional)</p>
         <FileUpload
           text="Upload cover image"
           file={cover}
@@ -97,7 +97,7 @@ export default function NewList({ user }) {
           src={coverSrc}
         ></FileUpload>
 
-        <p className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
+        <p  className="text-sm mb-2 mt-10">Upload your CSV preview image</p>
         <FileUpload
           text="Upload Image"
           file={file}
@@ -106,10 +106,10 @@ export default function NewList({ user }) {
           accept=".jpg,.jpeg,.svg,.png,.JPG,.JPEG,.PNG,.SVG"
           src={fileSrc}
         ></FileUpload>
-        <p className="text-red-500 font-bold text-[12px]">{fileError}</p>
+        <p  className="text-red-500 font-bold text-[12px]">{fileError}</p>
         <ButtonDark
           text="Next"
-          className="mr-0 mt-10"
+           className="mr-0 mt-10"
           onClick={submit}
         ></ButtonDark>
       </div>

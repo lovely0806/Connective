@@ -33,10 +33,10 @@ export default function Messages({ user }) {
 
   return (
     <Layout user={user} title="Discover">
-      <div className="ml-[64px] mr-20 h-screen">
-        <div className="flex flex-row w-[100%] mb-20 gap-10 items-center mt-20">
-          <div className="w-full relative">
-            <div className="absolute z-[10] p-[10px]">
+      <div  className="ml-[64px] mr-20 h-screen">
+        <div  className="flex flex-row w-[100%] mb-20 gap-10 items-center mt-20">
+          <div  className="w-full relative">
+            <div  className="absolute z-[10] p-[10px]">
               <Image
                 src={searchIcon}
                 alt="Search icon"
@@ -49,7 +49,7 @@ export default function Messages({ user }) {
                 setFilter(e.target.value)
               }}
               placeholder="Search for lists"
-              className="w-full z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
+               className="w-full z-[5] h-fit outline-none pl-10 px-5 py-2 border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300 text-[14px]"
             ></input>
           </div>
           <Select
@@ -57,13 +57,13 @@ export default function Messages({ user }) {
             isMulti={false}
             options={industryOptions}
             onChange={(e)=>{setCategory(e.label)}}
-            className="w-[250px] text-[12px]"
+             className="w-[250px] text-[12px]"
           ></Select>
           {/*
-          <Select placeholder="Sort" className="w-[250px] text-[12px]"></Select>
+          <Select placeholder="Sort"  className="w-[250px] text-[12px]"></Select>
           */}
         </div>
-        <div className="flex flex-col w-full gap-10 pb-20">
+        <div  className="flex flex-col w-full gap-10 pb-20">
           {filteredUsers.map((item) => {
             return (
               <DiscoverList

@@ -65,21 +65,21 @@ export default function NewList({ user }) {
     <Layout user={user} title="Create New List">
       <Steps />
 
-      <div className="bg-white w-[637px] mx-auto rounded-xl shadow-lg px-[80px] py-10 mt-[64px] mb-[172px]">
+      <div  className="bg-white w-[637px] mx-auto rounded-xl shadow-lg px-[80px] py-10 mt-[64px] mb-[172px]">
         <div>
-          <p className="text-center font-bold text-xl mb-[32px]">Price</p>
+          <p  className="text-center font-bold text-xl mb-[32px]">Price</p>
           <InputField
             name="Price"
             placeholder="Enter a price for this list"
             price={true}
             updateValue={setPrice}
             errorText={priceError}
-            className="pl-[24px]"
+             className="pl-[24px]"
           ></InputField>
         </div>
 
-        <div className="relative">
-          <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px] mt-10">
+        <div  className="relative">
+          <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px] mt-10">
             Upload a cover image (optional)
           </p>
           <FileUpload
@@ -91,8 +91,8 @@ export default function NewList({ user }) {
           ></FileUpload>
         </div>
 
-        <div className="relative">
-          <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px] mt-10">
+        <div  className="relative">
+          <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px] mt-10">
             Upload your CSV preview image
           </p>
           <div>
@@ -106,10 +106,10 @@ export default function NewList({ user }) {
           </div>
         </div>
 
-        <p className="text-red-500 font-bold text-[12px]">{fileError}</p>
+        <p  className="text-red-500 font-bold text-[12px]">{fileError}</p>
         <ButtonDark
           text="Next"
-          className="w-full mt-10 font-[Poppins] bg-[#061A40] text-white"
+           className="w-full mt-10 font-[Poppins] bg-[#061A40] text-white"
           onClick={submit}
         ></ButtonDark>
       </div>
