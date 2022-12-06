@@ -30,6 +30,7 @@
     "react-select": "^5.5.0",
     "sparkpost": "^2.1.4",
     "stripe": "^10.15.0",
+    "tailwindcss": "^3.2.4",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
   },
@@ -39,7 +40,6 @@
     "babel-eslint": "^10.1.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
-    "postcss": "^8.4.18",
-    "tailwindcss": "^3.1.8"
+    "postcss": "^8.4.18"
   }
 }
