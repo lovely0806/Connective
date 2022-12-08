@@ -1,6 +1,6 @@
 import axios from "axios";
 import useInput from "../../../hooks/use-input";
-import {sendMessage} from "../../../services/api"
+import Api from "../../../services/api"
 const ContactForm = () => {
   // Name input
   const {
@@ -63,12 +63,9 @@ const ContactForm = () => {
       !enteredMessageIsValid &&
       !enteredNumberIsValid
     ) {
-    console.log('Failed...');
     }
 
-      console.log('Sending...')
-     
-      const send = await sendMessage('SMTP', {subject: `${enteredName} contacted you`, msg: mailMessage})
+      const send = await Api.email('SMTP', {subject: `${enteredName} contacted you`, msg: mailMessage})
 
       if(send)
       {
