@@ -1,5 +1,6 @@
+import axios from "axios";
 import useInput from "../../../hooks/use-input";
-
+import {sendMessage} from "../../../services/api"
 const ContactForm = () => {
   // Name input
   const {
@@ -44,7 +45,6 @@ const ContactForm = () => {
 
   // form validation && submission
   let formIsValid = false;
-
   if (
     enteredNameIsValid &&
     enteredEmailIsValid &&
@@ -54,22 +54,30 @@ const ContactForm = () => {
     formIsValid = true;
   }
 
-  const formSubmissionHandler = (e) => {
+   const formSubmissionHandler = async (e) => {
     e.preventDefault();
-
+    const mailMessage = `<p>My name is ${enteredName}, my phone number is ${enteredNumber}, and email address is <a href='mailto:${enteredEmail}'> ${enteredEmail} </a></p>`
     if (
       !enteredNameIsValid &&
       !enteredEmailIsValid &&
       !enteredMessageIsValid &&
       !enteredNumberIsValid
     ) {
-      return;
+    console.log('Failed...');
     }
 
-    nameReset("");
-    emailReset("");
-    messageReset("");
-    numberReset("");
+      console.log('Sending...')
+     
+      const send = await sendMessage('SMTP', {subject: `${enteredName} contacted you`, msg: mailMessage})
+
+      if(send)
+      {
+        console.log('Sent message')
+        nameReset("");
+        emailReset("");
+        messageReset("");
+        numberReset("");
+      }
   };
 
   return (
@@ -179,6 +187,7 @@ const ContactForm = () => {
         <button
            className="bg-[#061A40] font-[Poppins] w-fit py-2 px-10 text-base text-[#F2F4F5] rounded-[50px] cursor-pointer"
           disabled={!formIsValid}
+          onSubmit={formSubmissionHandler}
         >
           Submit
         </button>
