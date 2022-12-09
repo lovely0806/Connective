@@ -5,6 +5,7 @@ import { withIronSession } from "next-iron-session";
 import ButtonDark from "components/button-dark";
 import Select from "react-select";
 import { useRouter } from "next/router";
+import Api from "services/api"
 
 const Message = ({text, sent}) => {
   if(sent) {
@@ -100,16 +101,28 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       }
       prevMessages = data.length
       setMessages(data)
+      console.log(data);
       const unReadMesssages = data.filter(message => {
-        return parseInt(message.read) > 0 && message.receiver == user.id
+        return message.read != '1' && message.receiver == user.id && message.sender == selectedUser.id
       })
+      console.log(unReadMesssages.length)
 
-      sendEmailNotification()
+      readMessages(unReadMesssages)
+  }
+  
+  const readMessages = async (unReadMesssages) => {
+    await axios.post('/api/messages/read-message', {
+      header: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      data: unReadMesssages
+    })
   }
 
   const sendEmailNotification = async (user, sender, messages) => {
     const message = ``
-    const send = await Api.email('SMTP', { subject: `Connective | ${sender.name} left you ${messages.length} message` })
+    // const send = await Api.email('SMTP', { subject: `Connective | ${sender.name} left you ${messages.length} message` })
   }
   return (
       <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
