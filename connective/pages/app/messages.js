@@ -87,6 +87,8 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
           getConversations()
       }
+
+
       setMessages([...messages, {sender: user.id, text}])
   }
 
@@ -98,8 +100,17 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       }
       prevMessages = data.length
       setMessages(data)
+      const unReadMesssages = data.filter(message => {
+        return parseInt(message.read) > 0 && message.receiver == user.id
+      })
+
+      sendEmailNotification()
   }
 
+  const sendEmailNotification = async (user, sender, messages) => {
+    const message = ``
+    const send = await Api.email('SMTP', { subject: `Connective | ${sender.name} left you ${messages.length} message` })
+  }
   return (
       <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
           {selectedUser && (
