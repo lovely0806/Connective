@@ -105,9 +105,8 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       const unReadMesssages = data.filter(message => {
         return message.read != '1' && message.receiver == user.id && message.sender == selectedUser.id
       })
-      console.log(unReadMesssages.length)
 
-      readMessages(unReadMesssages)
+      await readMessages(unReadMesssages)
   }
   
   const readMessages = async (unReadMesssages) => {

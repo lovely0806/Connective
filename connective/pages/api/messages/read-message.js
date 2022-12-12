@@ -9,7 +9,7 @@ export async function handler(req, res) {
         }
         if (req.method == "POST") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
-            req.body.data.forEach(async function(message) {
+            retq.body.data.forEach(async function(message) {
                 console.log(message.id);
                 var [results] = await connection
               .promise()
