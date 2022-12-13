@@ -1,6 +1,5 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import ButtonRounded from "../components/button-rounded";
 import Logo from "../components/logo";
 import Link from "next/link";
 import { useRouter } from "next/router";
