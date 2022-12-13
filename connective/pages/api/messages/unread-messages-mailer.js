@@ -5,7 +5,7 @@ const _ = require('lodash')
 export default async function apiNewSession(req, res) {
     try {
         if (req.method == "GET") {
-            const connection = mysql.createConnection(process.env.DATABASE_URL);
+            const connection = mysql.createConnection(process.env.DATABASE_URL)
            
                 var [messages] = await connection
               .promise()
@@ -14,7 +14,7 @@ export default async function apiNewSession(req, res) {
               )
 
               let emails = messages.map((message) =>{
-                // console.log(message);
+                // console.log(message)
                 return message.email.replace(/\s/g, '')
               })
               
@@ -22,12 +22,12 @@ export default async function apiNewSession(req, res) {
               emails = [...emails]
             
               let groupedMessages = _.mapValues(_.groupBy(messages, 'email'),
-              mlist => mlist.map(msg => _.omit(msg, msg.email)));
+              mlist => mlist.map(msg => _.omit(msg, msg.email)))
             
-            // console.log(groupedMessages); 
+            // console.log(groupedMessages) 
             await mailer(groupedMessages)
-            //   console.log(results);
-            res.status(200).json(emails);
+            //   console.log(results)
+            res.status(200).json({ success: true})
         }
     } catch(e) {
         console.log(e)
@@ -36,16 +36,14 @@ export default async function apiNewSession(req, res) {
 }
 const markSentMessages = async (messages) => {
     const connection = mysql.createConnection(process.env.DATABASE_URL)
-    // console.log(ids[0]);
+    // console.log(ids[0])
     messages.forEach(async function(message) {
         await connection
       .promise()
       .query(
         "UPDATE messages SET `notified`='1' WHERE id ="+message.id+";"
-      );
-    
-        console.log(message.id);
-    });
+      )
+    })
 }
 
 const mailer = async (emails) =>{
