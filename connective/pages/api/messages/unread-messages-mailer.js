@@ -16,6 +16,7 @@ export default async function apiNewSession(req, res) {
               let groupedMessages = _.mapValues(_.groupBy(messages, 'email'),
               mlist => mlist.map(msg => _.omit(msg, msg.email)))
             
+              
             // console.log(groupedMessages) 
             await mailer(groupedMessages)
             //   console.log(results)
