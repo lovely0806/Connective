@@ -1,7 +1,7 @@
 const mysql = require("mysql2")
 import {mailOptions, transporter} from 'services/nodemailer'
 
-export async function handler(req, res) {
+export default async function handler(req, res) {
     try {
         if (req.method == "GET") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -13,7 +13,7 @@ export async function handler(req, res) {
               )
 
               let emails = messages.map((message) =>{
-                console.log(message);
+                // console.log(message);
                 return message.email.replace(/\s/g, '')
               })
               
