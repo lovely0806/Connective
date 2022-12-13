@@ -20,7 +20,7 @@ class Api
                 }
                 return false
             } catch (error) {
-                console.log('Failed'+error);
+                console.log('Failed '+error);
             }
         }
         else

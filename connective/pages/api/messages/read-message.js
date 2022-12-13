@@ -9,7 +9,7 @@ export async function handler(req, res) {
         }
         if (req.method == "POST") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
-            retq.body.data.forEach(async function(message) {
+            req.body.data.forEach(async function(message) {
                 console.log(message.id);
                 var [results] = await connection
               .promise()
@@ -22,7 +22,7 @@ export async function handler(req, res) {
         }
     } catch(e) {
         console.log(e)
-        return res.status(500).json({success: false, error: e})
+        return res.status(200).json({success: false, error: e})
     }
 }
 

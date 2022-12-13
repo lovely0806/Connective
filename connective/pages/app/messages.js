@@ -92,7 +92,6 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
 
       setMessages([...messages, {sender: user.id, text}])
   }
-
   const getMessages = async () => {
       let temp = messages
       const {data} = await axios.get("/api/messages/" + selectedUser.id)
@@ -105,6 +104,15 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       const unReadMesssages = data.filter(message => {
         return message.read != '1' && message.receiver == user.id && message.sender == selectedUser.id
       })
+      const emailz = await axios('/api/messages/unread-messages-mailer', {
+        header: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+      })
+
+      // console.log(emailz);
+
 
       await readMessages(unReadMesssages)
   }
