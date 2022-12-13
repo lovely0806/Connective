@@ -1,14 +1,9 @@
 const mysql = require("mysql2")
-import {withIronSession} from "next-iron-session"
 import {mailOptions, transporter} from 'services/nodemailer'
 import Api from "services/api"
 
 export async function handler(req, res) {
     try {
-        let user = req.session.get().user
-        if(typeof(user) == "undefined") {
-            return res.status(500).json({success: false, error: "Not signed in"})
-        }
         if (req.method == "GET") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
            
