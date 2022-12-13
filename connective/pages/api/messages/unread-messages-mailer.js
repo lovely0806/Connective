@@ -12,14 +12,6 @@ export default async function apiNewSession(req, res) {
               .query(
                 "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(CURDATE(), INTERVAL 24 HOUR) AND `notified` ='0' ORDER BY timestamp DESC;"
               )
-
-              let emails = messages.map((message) =>{
-                // console.log(message)
-                return message.email.replace(/\s/g, '')
-              })
-              
-              emails = new Set(emails) 
-              emails = [...emails]
             
               let groupedMessages = _.mapValues(_.groupBy(messages, 'email'),
               mlist => mlist.map(msg => _.omit(msg, msg.email)))
@@ -38,7 +30,7 @@ const markSentMessages = async (messages) => {
     const connection = mysql.createConnection(process.env.DATABASE_URL)
     // console.log(ids[0])
     messages.forEach(async function(message) {
-        await connection
+      await connection
       .promise()
       .query(
         "UPDATE messages SET `notified`='1' WHERE id ="+message.id+";"
@@ -59,17 +51,17 @@ const mailer = async (emails) =>{
     
       for(const msg in emails)
       {
-        mailOptions.to = msg
-        const send = await transporter.sendMail({
-            ...mailOptions,
-            subject: 'Affiliate partner sent you a message',
-            text: mail.replace(/<[^>]*>?/gm, ''),
-            html: mail
-        })
+            mailOptions.to = msg
+            const send = await transporter.sendMail({
+                ...mailOptions,
+                subject: 'Affiliate partner sent you a message',
+                text: mail.replace(/<[^>]*>?/gm, ''),
+                html: mail
+            })
 
-        if(send)
-        {
-            markSentMessages(emails[msg])
+            if(send)
+            {
+                markSentMessages(emails[msg])
+            }
         }
-    }
 }
