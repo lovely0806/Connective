@@ -45,6 +45,7 @@ export default function SignIn({ user }) {
       url: "/api/auth/sessions",
       data: { email, password },
     })
+    
       .then((res) => {
         if (res.status == 201) {
           console.log(res.data);
