@@ -1,6 +1,5 @@
 const mysql = require("mysql2")
 import {mailOptions, transporter} from 'services/nodemailer'
-import Api from "services/api"
 
 export async function handler(req, res) {
     try {
@@ -47,7 +46,7 @@ async function mailer(emails)
 
     for(var i = 0; i < emails.length; i++)
     {
-        console.log(emails[i]);
+        // console.log(emails[i]);
         mailOptions.to = emails[i]
         await transporter.sendMail({
             ...mailOptions,
@@ -55,23 +54,5 @@ async function mailer(emails)
             text: mail.replace(/<[^>]*>?/gm, ''),
             html: mail
         })
-    }
-}
-
-
-export default withIronSession(handler, {
-    password: process.env.APPLICATION_SECRET,
-    cookieName: "Connective",
-    // if your localhost is served on http:// then disable the secure flag
-    cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
-    },
-});
-
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: "4mb"
-        }
     }
 }
