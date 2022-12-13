@@ -1,7 +1,8 @@
 const mysql = require("mysql2")
 import {mailOptions, transporter} from 'services/nodemailer'
+const _ = require('lodash')
 
-export default async function handler(req, res) {
+export default async function apiNewSession(req, res) {
     try {
         if (req.method == "GET") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -9,7 +10,7 @@ export default async function handler(req, res) {
                 var [messages] = await connection
               .promise()
               .query(
-                "SELECT Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(CURDATE(), INTERVAL 24 HOUR) ORDER BY timestamp DESC;"
+                "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(CURDATE(), INTERVAL 24 HOUR) AND `notified` ='0' ORDER BY timestamp DESC;"
               )
 
               let emails = messages.map((message) =>{
@@ -20,11 +21,11 @@ export default async function handler(req, res) {
               emails = new Set(emails) 
               emails = [...emails]
             
-            //   let groupedMessages = _.mapValues(_.groupBy(messages, 'email'),
-            //   mlist => mlist.map(msg => _.omit(msg, msg.email)));
+              let groupedMessages = _.mapValues(_.groupBy(messages, 'email'),
+              mlist => mlist.map(msg => _.omit(msg, msg.email)));
             
             // console.log(groupedMessages); 
-            mailer(emails)
+            await mailer(groupedMessages)
             //   console.log(results);
             res.status(200).json(emails);
         }
@@ -33,8 +34,21 @@ export default async function handler(req, res) {
         return res.status(200).json({success: false, error: e})
     }
 }
-async function mailer(emails)
-{
+const markSentMessages = async (messages) => {
+    const connection = mysql.createConnection(process.env.DATABASE_URL)
+    // console.log(ids[0]);
+    messages.forEach(async function(message) {
+        await connection
+      .promise()
+      .query(
+        "UPDATE messages SET `notified`='1' WHERE id ="+message.id+";"
+      );
+    
+        console.log(message.id);
+    });
+}
+
+const mailer = async (emails) =>{
     const mail = `
       <p>Hello There,</p>
       <p>You have an unread message from an affiliate partner on Connective. Please <a href="${process.env.BASE_URL}/auth/signin">sign in</a> below and respond to them.<br/>
@@ -44,15 +58,20 @@ async function mailer(emails)
       <br/>
       Team Connective</p>`
 
-    for(var i = 0; i < emails.length; i++)
-    {
-        // console.log(emails[i]);
-        mailOptions.to = emails[i]
-        await transporter.sendMail({
+    
+      for(const msg in emails)
+      {
+        mailOptions.to = msg
+        const send = await transporter.sendMail({
             ...mailOptions,
             subject: 'Affiliate partner sent you a message',
             text: mail.replace(/<[^>]*>?/gm, ''),
             html: mail
         })
+
+        if(send)
+        {
+            markSentMessages(emails[msg])
+        }
     }
 }

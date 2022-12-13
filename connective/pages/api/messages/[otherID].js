@@ -23,7 +23,7 @@ export async function handler(req, res) {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
             var [results] = await connection
               .promise()
-              .query(`INSERT INTO messages (`+'`sender`'+`, `+'`receiver`'+`, `+'`text`'+`, `+'`read`'+`) VALUES ('${user.id}', '${otherID}', '${text}', '0')`);
+              .query(`INSERT INTO messages (`+'`sender`'+`, `+'`receiver`'+`, `+'`text`'+`, `+'`read`'+`, `+'`notified`'+`) VALUES ('${user.id}', '${otherID}', '${text}', '0', '0')`);
             res.status(200).json(results);
         }
     } catch(e) {
