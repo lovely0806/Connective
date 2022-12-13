@@ -10,4 +10,3 @@ jobs:
         run: |
           curl --request GET \
           --url 'https://connective-app.vercel.app/api/messages/unread-messages-mailer' \
-          --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
