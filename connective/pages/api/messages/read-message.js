@@ -9,7 +9,7 @@ export async function handler(req, res) {
         }
         if (req.method == "POST") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
-            const IDs = req.body.data.map(async (message) =>{
+            const IDs = req.body.data.map( message =>{
                 console.log(message.id)
                 return message.id
             })
