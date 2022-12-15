@@ -10,14 +10,14 @@ export default async function apiNewSession(req, res) {
                 var [messages] = await connection
               .promise()
               .query(
-                "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(CURDATE(), INTERVAL 24 HOUR) AND `notified` ='0' ORDER BY timestamp DESC;"
+                "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;"
               )
             
               let groupedMessages = _.mapValues(_.groupBy(messages, 'email'),
               mlist => mlist.map(msg => _.omit(msg, msg.email)))
             
 
-            // console.log(groupedMessages) 
+            console.log(groupedMessages) 
             await mailer(groupedMessages)
             //   console.log(results)
             res.status(200).json({ success: true})

@@ -9,15 +9,16 @@ export async function handler(req, res) {
         }
         if (req.method == "POST") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
-            req.body.data.forEach(async function(message) {
-                console.log(message.id);
+            const IDs = req.body.data.map(async (message) =>{
+                console.log(message.id)
+                return message.id
+            })
                 var [results] = await connection
               .promise()
               .query(
-                'UPDATE messages SET `read`="1" WHERE id ='+message.id+";"
+                'UPDATE messages SET `read`="1" WHERE id IN ('+IDs.join(", ")+');'
               );
             
-            });
             res.status(200).json({success: true});
         }
     } catch(e) {

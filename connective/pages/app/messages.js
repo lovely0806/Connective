@@ -127,10 +127,6 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
     })
   }
 
-  const sendEmailNotification = async (user, sender, messages) => {
-    const message = ``
-    // const send = await Api.email('SMTP', { subject: `Connective | ${sender.name} left you ${messages.length} message` })
-  }
   return (
       <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
           {selectedUser && (
