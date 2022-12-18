@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ButtonDark from "../../button-dark";
 import ListCard from "../../marketplace/ListCard";
-
-export default function BusinessProfile({ user }) {
+ 
+export default function BusinessProfile({ user, id }) {
   const router = useRouter();
 
   const [data, setData] = useState();
@@ -21,7 +21,7 @@ export default function BusinessProfile({ user }) {
   }, [user]);
 
   const getProfile = async () => {
-    await axios.get("/api/profiles/business").then((res) => {
+    await axios.get(`/api/profiles/business?id=${id}`).then((res) => {
       if (typeof res.data != "undefined") {
         setData(res.data);
         console.log(res.data);
@@ -31,50 +31,50 @@ export default function BusinessProfile({ user }) {
   };
 
   return (
-    <div className="flex flex-col w-[100%] h-full p-[64px]">
+    <div  className="flex flex-col w-[100%] h-full p-[64px]">
       {loaded ? (
         <>
           <img
-            className="h-[18vh] w-[100%] object-cover relative shadow-md rounded-[12px]"
+             className="h-[18vh] w-[100%] object-cover relative shadow-md rounded-[12px]"
             src="/assets/banners/waves-min.jpeg"
           />
 
-          <div className="w-[100%] flex flex-row justify-between items-center mt-[-70px]">
-            <div className="mb-[64px] flex flex-row items-center gap-[40px] pl-[50px]">
-              {data.profile_picture == "" ? (
+          <div  className="w-[100%] flex flex-row justify-between items-center mt-[-70px]">
+            <div  className="mb-[64px] flex flex-row items-center gap-[40px] pl-[50px]">
+              {data.logo == "" ? (
                 <img
-                  className="rounded-full w-[200px] h-[200px] z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md object-cover"
-                  src={`https://avatars.dicebear.com/api/micah/${user.id}.svg`}
+                   className="rounded-full w-[200px] h-[200px] z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md object-cover"
+                  src={`https://avatars.dicebear.com/api/micah/${id}.svg`}
                 ></img>
               ) : (
-                <div className="w-[200px] h-[200px]">
+                <div  className="w-[200px] h-[200px]">
                   <img
-                    className="rounded-full w-[100%] h-[100%] z-10 backdrop-blur-sm bg-white/20 shadow-md object-cover"
+                     className="rounded-full w-[100%] h-[100%] z-10 backdrop-blur-sm bg-white/20 shadow-md object-cover"
                     src={data.logo}
                   ></img>
                 </div>
               )}
 
-              <div className="flex flex-col mt-[80px]">
-                <div className="flex flex-row">
-                  <p className="font-bold text-2xl 2xl:text-4xl mb-1 text-[#0D1011]">
+              <div  className="flex flex-col mt-[80px]">
+                <div  className="flex flex-row">
+                  <p  className="font-bold text-2xl 2xl:text-4xl mb-1 text-[#0D1011]">
                     {data?.company_name}
                   </p>
                 </div>
 
-                <div className="flex flex-row gap-10 text-[14px] 2xl:text-xl mr-16 pb-5 font-[Poppins]">
-                  <div className="flex flex-row gap-2 items-center">
+                <div  className="flex flex-row gap-10 text-[14px] 2xl:text-xl mr-16 pb-5 font-[Poppins]">
+                  <div  className="flex flex-row gap-2 items-center">
                     <img
-                      className="h-[14px] w-[14px]"
+                       className="h-[14px] w-[14px]"
                       src="/assets/location-pin.png"
                     />
                     <p>{data?.location}</p>
                   </div>
-                  <div className="flex flex-row gap-2 items-center">
-                    <img className="h-[14px] w-[14px]" src="/assets/link.png" />
+                  <div  className="flex flex-row gap-2 items-center">
+                    <img  className="h-[14px] w-[14px]" src="/assets/link.png" />
                     <a
-                      className="font-normal cursor-pointer text-[#061A40] underline-offset-0 font-[Poppins]"
-                      href={data?.website}
+                       className="font-normal cursor-pointer text-[#061A40] underline-offset-0 font-[Poppins]"
+                      href={data?.website.includes("https") ? data.website :"https://" + data.website}
                     >
                       Visit Website
                     </a>
@@ -83,46 +83,48 @@ export default function BusinessProfile({ user }) {
               </div>
             </div>
 
-            <div
-              className="flex flex-row gap-[12px] cursor-pointer text-white rounded-lg bg-[#061A40] items-center py-[18px] px-[40px]"
-              onClick={() => router.push("/app/profile/edit-profile")}
-            >
-              <img className="w-[20px] h-[20px]" src="/assets/edit.svg" />
-              <p className="hover:scale-105 hover:shadow-lg font-[Poppins] text-center text-[14px]">
-                Edit Profile
-              </p>
-            </div>
+            {user.id == id && (
+              <div
+                 className="flex flex-row gap-[12px] cursor-pointer text-white rounded-lg bg-[#061A40] items-center py-[18px] px-[40px]"
+                onClick={() => router.push("/app/profile/edit-profile")}
+              >
+                <img  className="w-[20px] h-[20px]" src="/assets/edit.svg" />
+                <p  className="hover:scale-105 hover:shadow-lg font-[Poppins] text-center text-[14px]">
+                  Edit Profile
+                </p>
+              </div>
+            )}
           </div>
 
-          <div className="mb-[60px]">
-            <p className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
+          <div  className="mb-[60px]">
+            <p  className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
               About
             </p>
-            <div className="max-w-[540px] font-[Poppins] font-normal text-[16px] leading-[24px] text-[#0D1011]">
+            <div  className="max-w-[540px] font-[Poppins] font-normal text-[16px] leading-[24px] text-[#0D1011]">
               <p>{data?.description}</p>
             </div>
           </div>
 
-          <div className="flex flex-row gap-[35px] mb-[60px]">
-            <div className="flex flex-row gap-[5px] items-center">
-              <img className="w-[17px] h-[17px]" src="/assets/size.svg" alt="Size" />
-              <p className="font-[Montserrat] text-[14px] text-[#061A40]">
-                <span className="font-bold">Size:</span> {data?.size}
+          <div  className="flex flex-row gap-[35px] mb-[60px]">
+            <div  className="flex flex-row gap-[5px] items-center">
+              <img  className="w-[17px] h-[17px]" src="/assets/size.svg" alt="Size" />
+              <p  className="font-[Montserrat] text-[14px] text-[#061A40]">
+                <span  className="font-bold">Size:</span> {data?.size}
               </p>
             </div>
-            <div className="flex flex-row gap-[5px] items-center">
-              <img className="w-[17px] h-[17px]" src="/assets/industry.svg" alt="Industry" />
-              <p className="font-[Montserrat] text-[14px] text-[#061A40]">
-                <span className="font-bold">Industry:</span> {data?.industry}
+            <div  className="flex flex-row gap-[5px] items-center">
+              <img  className="w-[17px] h-[17px]" src="/assets/industry.svg" alt="Industry" />
+              <p  className="font-[Montserrat] text-[14px] text-[#061A40]">
+                <span  className="font-bold">Industry:</span> {data?.industry}
               </p>
             </div>
           </div>
 
           <div>
-            <p className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
+            <p  className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
               Lists for Sale
             </p>
-            <div className="flex flex-row flex-wrap gap-[32px] mb-[65px]">
+            <div  className="flex flex-row flex-wrap gap-[32px] mb-[65px]">
               {typeof data.lists != "undefined" && data.lists.length > 0 && (
                 <>
                   {data.lists.map((item, index) => {
@@ -135,7 +137,7 @@ export default function BusinessProfile({ user }) {
         </>
       ) : (
         <div>
-          <p className="text-center">Loading...</p>
+          <p  className="text-center">Loading...</p>
         </div>
       )}
     </div>

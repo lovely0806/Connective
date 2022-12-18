@@ -77,47 +77,47 @@ export default function SignUp() {
   };
 
   return (
-    <main className="flex flex-row min-h-screen min-w-screen gap-[90px] justify-center 2bp:gap-[50px]">
+    <main  className="flex flex-row min-h-screen min-w-screen gap-[90px] justify-center 2bp:gap-[50px]">
       <OnboardingSidebar></OnboardingSidebar>
 
-      <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[92px] mr-[32px]">
+      <div  className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[92px] mr-[32px]">
         <div>
-          <p className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
+          <p  className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
             Sign up
           </p>
-          <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins]  1bp:text-[18px] mb-[40px]">
+          <p  className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins]  1bp:text-[18px] mb-[40px]">
             Have an account?{" "}
             <Link href="./signin">
-              <span className="font-bold cursor-pointer">Log In</span>
+              <span  className="font-bold cursor-pointer">Log In</span>
             </Link>
           </p>
           {/* <div
-            className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
+             className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
             onClick=""
           >
             <Image
-              className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
+               className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
               src={googleIcon}
               alt="Google"
               width="16.67px"
               height="16.67px"
             />
-            <p className="font-normal text-[12px] leading-[18px] text-[#0D1011] font-[Poppins] 1bp:text-[14px]">
+            <p  className="font-normal text-[12px] leading-[18px] text-[#0D1011] font-[Poppins] 1bp:text-[14px]">
               Sign up with Google
             </p>
           </div>
-          <div className="flex flex-row items-center gap-[12px] mt-[24px]">
-            <div className="w-[100%] h-[1px] bg-[#D9D9D9]" />
+          <div  className="flex flex-row items-center gap-[12px] mt-[24px]">
+            <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
             <div>
-              <p className="font-normal text-[12px] leading-[18px] text-[#414141] font-[Poppins] 1bp:text-[14px]">
+              <p  className="font-normal text-[12px] leading-[18px] text-[#414141] font-[Poppins] 1bp:text-[14px]">
                 or
               </p>
             </div>
-            <div className="w-[100%] h-[1px] bg-[#D9D9D9]" />
+            <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
           </div> */}
         </div>
 
-        <div className="flex flex-col gap-5 mt-[28px]">
+        <div  className="flex flex-col gap-5 mt-[28px]">
           <InputField
             name={"Name"}
             placeholder={"Enter your name"}
@@ -132,7 +132,7 @@ export default function SignUp() {
             errorText={emailError}
           ></InputField>
 
-          <div className="relative flex flex-row items-center justify-center">
+          <div  className="relative flex flex-row items-center justify-center">
             <InputField
               name={"Password"}
               placeholder={"Enter password"}
@@ -141,7 +141,7 @@ export default function SignUp() {
               errorText={passwordError}
             ></InputField>
             <div
-              className="absolute right-[14px] bottom-[5px] cursor-pointer"
+               className="absolute right-[14px] bottom-[5px] cursor-pointer"
               onClick={showPasswordHandler}
             >
               {!showPassword && (
@@ -163,25 +163,25 @@ export default function SignUp() {
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
+        <div  className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
           <input
-            className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
+             className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
             type="checkbox"
             id="checkbox"
           ></input>
-          <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
+          <p  className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
             I accept the{" "}
-            <span className="underline cursor-pointer">
+            <span  className="underline cursor-pointer">
               Terms and Conditions
             </span>{" "}
             and I have read the{" "}
-            <span className="underline cursor-pointer">Privacy Policy</span>
+            <span  className="underline cursor-pointer">Privacy Policy</span>
           </p>
         </div>
-        <p className="text-red-500 font-bold text-[12px]">{tacError}</p>
+        <p  className="text-red-500 font-bold text-[12px]">{tacError}</p>
         <button
           onClick={submitAccount}
-          className="w-[229px] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
+           className="w-[229px] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
         >
           Sign up
         </button>

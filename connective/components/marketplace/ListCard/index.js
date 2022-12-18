@@ -58,11 +58,11 @@ const ListCard = ({ item, preview, user }) => {
   }, [item]);
 
   return (
-    <div className="w-[350px] h-fill bg-white rounded-[8px] p-[12px] flex flex-col justify-between font-[Montserrat] drop-shadow-lg border-[0.5px] border-[#E0E0E0]">
+    <div  className="w-[350px] h-fill bg-white rounded-[8px] p-[12px] flex flex-col justify-between font-[Montserrat] drop-shadow-lg border-[0.5px] border-[#E0E0E0]">
       <div>
         <div>
           <img
-            className="object-cover w-full h-[153px] mb-[12px] rounded-[8px]"
+             className="object-cover w-full h-[153px] mb-[12px] rounded-[8px]"
             src={
               item.cover_url == "undefined" ||
               !item.cover_url ||
@@ -74,31 +74,31 @@ const ListCard = ({ item, preview, user }) => {
             alt="List image"
           />
         </div>
-        <p className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">
+        <p  className="font-bold text-[18px] leading-[20px] text-[#0D1011] mb-[12px]">
           {truncatedTitle}
         </p>
-        <p className="font-normal text-[12px] leading-[18px] text–[rgba(13_16_17_0.7)] mb-[15px] text-[#0d1011b3]">
+        <p  className="font-normal text-[12px] leading-[18px] text–[rgba(13_16_17_0.7)] mb-[15px] text-[#0d1011b3]">
           {truncatedDesc}
         </p>
       </div>
 
       <div>
-        <div className="flex flex-row justify-between items-center mb-[12px]">
-          <div className="bg-[#D2F8DF] rounded-[50px] w-fit text-[#06A83D] font-bold text-[14px] leading-[14px] py-[11px] px-[16px]">
+        <div  className="flex flex-row justify-between items-center mb-[12px]">
+          <div  className="bg-[#D2F8DF] rounded-[50px] w-fit text-[#06A83D] font-bold text-[14px] leading-[14px] py-[11px] px-[16px]">
             {preview ? 0 : item.buyers} {item.buyers == 1 ? "Buyer" : "Buyers"}
           </div>
-          <p className="font-bold text-[26px] leading-[29px] text-[#0D1011]">
+          <p  className="font-bold text-[26px] leading-[29px] text-[#0D1011]">
             ${parseInt(item.price).toFixed(2)}
           </p>
         </div>
         {!preview && (
-          <div className="w-[100%]">
+          <div  className="w-[100%]">
             <ButtonDark
               onClick={() => {
                 router.push(`/app/marketplace/list-details/${item.id}`);
               }}
               text="More Details"
-              className="bg-[#061A40] text-sm"
+               className="bg-[#061A40] text-sm"
             ></ButtonDark>
           </div>
         )}

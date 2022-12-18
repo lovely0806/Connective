@@ -4,14 +4,14 @@ import Link from "next/link";
 const ButtonDark = ({src, alt, text}) => {
   return (
     
-      <div className="w-fit flex items-center gap-2.5 border border-[white] py-2.5 px-4 rounded-[50px] cursor-pointer hover:bg-white/[.10]">
+      <div  className="w-fit flex items-center gap-2.5 border border-[white] py-2.5 px-4 rounded-[50px] cursor-pointer hover:bg-white/[.10]">
           <Image
             src={`/assets/landing-page/${src}`}
             alt={`${alt}`}
             width="20px"
             height="20px"
           />
-          <p className="text-xs font-semibold">{text}</p>
+          <p  className="text-xs font-semibold">{text}</p>
         </div>
     
   );

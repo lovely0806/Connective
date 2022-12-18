@@ -1,5 +1,6 @@
+import axios from "axios";
 import useInput from "../../../hooks/use-input";
-
+import Api from "../../../services/api"
 const ContactForm = () => {
   // Name input
   const {
@@ -44,7 +45,6 @@ const ContactForm = () => {
 
   // form validation && submission
   let formIsValid = false;
-
   if (
     enteredNameIsValid &&
     enteredEmailIsValid &&
@@ -54,44 +54,49 @@ const ContactForm = () => {
     formIsValid = true;
   }
 
-  const formSubmissionHandler = (e) => {
+   const formSubmissionHandler = async (e) => {
     e.preventDefault();
-
+    const mailMessage = `<p>My name is ${enteredName}, my phone number is ${enteredNumber}, and email address is <a href='mailto:${enteredEmail}'> ${enteredEmail} </a></p>`
     if (
       !enteredNameIsValid &&
       !enteredEmailIsValid &&
       !enteredMessageIsValid &&
       !enteredNumberIsValid
     ) {
-      return;
     }
 
-    nameReset("");
-    emailReset("");
-    messageReset("");
-    numberReset("");
+      const send = await Api.email('SMTP', {subject: `${enteredName} contacted you`, msg: mailMessage})
+
+      if(send)
+      {
+        console.log('Sent message')
+        nameReset("");
+        emailReset("");
+        messageReset("");
+        numberReset("");
+      }
   };
 
   return (
-    <section id="contact" className="bg-white font-[Poppins] py-20 mx-auto px-[1.8rem]">
-      <h2 className="text-center text-4xl font-bold text-[#061A40] mb-6">
+    <section id="contact"  className="bg-white font-[Poppins] py-20 mx-auto px-[1.8rem]">
+      <h2  className="text-center text-4xl font-bold text-[#061A40] mb-6">
         Contact Us
       </h2>
-      <p className="font-normal text-[#061A40] text-lg text-center mx-auto mb-12">
+      <p  className="font-normal text-[#061A40] text-lg text-center mx-auto mb-12">
         Got questions? Don't hesitate to contact us.
       </p>
 
       <form
-        className="flex flex-col justify-center items-center mx-auto gap-5"
+         className="flex flex-col justify-center items-center mx-auto gap-5"
         onSubmit={formSubmissionHandler}
       >
         <div>
-          <label className="text-[#0D1011] font-bold text-xs" for="name">
+          <label  className="text-[#0D1011] font-bold text-xs" htmlFor="name">
             Name
           </label>
           <br />
           <input
-            className={`inputClass ${nameHasError ? "error-border" : ""} ${
+             className={`inputClass ${nameHasError ? "error-border" : ""} ${
               enteredName ? "valid-border" : ""
             }`}
             type="text"
@@ -103,17 +108,17 @@ const ContactForm = () => {
             onBlur={nameBlurHandler}
           />
           {nameHasError && (
-            <p className="error-message mt-1">This field is required</p>
+            <p  className="error-message mt-1">This field is required</p>
           )}
         </div>
 
         <div>
-          <label className="text-[#0D1011] font-bold text-xs" for="email">
+          <label  className="text-[#0D1011] font-bold text-xs" htmlFor="email">
             E-mail
           </label>
           <br />
           <input
-            className={`inputClass ${emailHasError ? "error-border" : ""} ${
+             className={`inputClass ${emailHasError ? "error-border" : ""} ${
               enteredEmail ? "valid-border" : ""
             }`}
             type="text"
@@ -125,19 +130,19 @@ const ContactForm = () => {
             onBlur={emailBlurHandler}
           />
           {emailHasError && (
-            <p className="error-message mt-1">
+            <p  className="error-message mt-1">
               This field is required, enter a valid email
             </p>
           )}
         </div>
 
         <div>
-          <label className="text-[#0D1011] font-bold text-xs" for="number">
+          <label  className="text-[#0D1011] font-bold text-xs" htmlFor="number">
             Phone Number
           </label>
           <br />
           <input
-            className={`inputClass ${numberHasError ? "error-border" : ""} ${
+             className={`inputClass ${numberHasError ? "error-border" : ""} ${
               enteredNumber ? "valid-border" : ""
             }`}
             type="text"
@@ -149,17 +154,17 @@ const ContactForm = () => {
             onBlur={numberBlurHandler}
           />
           {numberHasError && (
-            <p className="error-message mt-1">This field is required</p>
+            <p  className="error-message mt-1">This field is required</p>
           )}
         </div>
 
         <div>
-          <label className="text-[#0D1011] font-bold text-xs" for="message">
+          <label  className="text-[#0D1011] font-bold text-xs" htmlFor="message">
             What do you need help with?
           </label>
           <br />
           <input
-            className={`inputClass ${messageHasError ? "error-border" : ""} ${
+             className={`inputClass ${messageHasError ? "error-border" : ""} ${
               enteredMessage ? "valid-border" : ""
             }`}
             type="text"
@@ -171,14 +176,15 @@ const ContactForm = () => {
             onBlur={messageBlurHandler}
           />
           {messageHasError && (
-            <p className="error-message mt-1">This field is required</p>
+            <p  className="error-message mt-1">This field is required</p>
           )}
         </div>
 
         {/* Submit Button */}
         <button
-          className="bg-[#061A40] font-[Poppins] w-fit py-2 px-10 text-base text-[#F2F4F5] rounded-[50px] cursor-pointer"
+           className="bg-[#061A40] font-[Poppins] w-fit py-2 px-10 text-base text-[#F2F4F5] rounded-[50px] cursor-pointer"
           disabled={!formIsValid}
+          onSubmit={formSubmissionHandler}
         >
           Submit
         </button>

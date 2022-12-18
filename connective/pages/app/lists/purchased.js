@@ -36,18 +36,18 @@ export default function PurchasedLists({ user }) {
     <Layout title="Purchased Lists">
       <div>
         {lists.length > 0 ? (
-          <div className="flex flex-col gap-20 mt-10">
+          <div  className="flex flex-col gap-20 mt-10">
             {lists.map((item, index) => {
               return <ListRow item={item} showModal={displayReviewCard} />;
             })}
           </div>
         ) : (
-          <div className="w-full h-full flex">
-            <p className="mx-auto mt-20 text-2xl">Loading...</p>
+          <div  className="w-full h-full flex">
+            <p  className="mx-auto mt-20 text-2xl">Loading...</p>
           </div>
         )}
         {reviewCardDisplayed && (
-          <div className="w-[100%] mx-auto" onClick={displayReviewCard}>
+          <div  className="w-[100%] mx-auto" onClick={displayReviewCard}>
             <ReviewModal onClick={displayReviewCard} />
           </div>
         )}

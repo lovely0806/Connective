@@ -56,8 +56,8 @@ const ListMarketplace = ({ item, preview, user }) => {
   }, [item]);
 
   return (
-    <div className="bg-white flex flex-col gap-5 p-3 rounded-xl shadow-lg h-full">
-      <div className="rounded-xl object-cover h-48 relative overflow-hidden">
+    <div  className="bg-white flex flex-col gap-5 p-3 rounded-xl shadow-lg h-full">
+      <div  className="rounded-xl object-cover h-48 relative overflow-hidden">
         <Image
           layout="fill"
           objectFit="cover"
@@ -71,13 +71,13 @@ const ListMarketplace = ({ item, preview, user }) => {
           }
         />
       </div>
-      <p className="font-bold text-base w-full h-10 mb-5">{truncatedTitle}</p>
-      <p className="text-[#8A8888] text-sm overflow-clip h-36">
+      <p  className="font-bold text-base w-full h-10 mb-5">{truncatedTitle}</p>
+      <p  className="text-[#8A8888] text-sm overflow-clip h-36">
         {truncatedDesc}
       </p>
 
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row gap-2">
+      <div  className="flex flex-row justify-between items-center">
+        <div  className="flex flex-row gap-2">
           {preview ? (
             <Image
               src={
@@ -85,7 +85,7 @@ const ListMarketplace = ({ item, preview, user }) => {
                   ? `https://avatars.dicebear.com/api/micah/${user.id}.svg`
                   : profilePicture
               }
-              className="rounded-full w-10 h-10 object-cover"
+               className="rounded-full w-10 h-10 object-cover"
               width="40px"
               height="40px"
             />
@@ -96,20 +96,20 @@ const ListMarketplace = ({ item, preview, user }) => {
                   ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg`
                   : item.logo
               }
-              className="rounded-full w-10 h-10 object-cover"
+               className="rounded-full w-10 h-10 object-cover"
               width="40px"
               height="40px"
             />
           )}
-          <p className="font-[Poppins] my-auto text-[#0d101180] text-xs mr-3">
+          <p  className="font-[Poppins] my-auto text-[#0d101180] text-xs mr-3">
             {preview ? username : item?.username}
           </p>
         </div>
-        <div className="flex flex-col text-right">
-          <p className="text-xl font-bold">
+        <div  className="flex flex-col text-right">
+          <p  className="text-xl font-bold">
             ${parseInt(item.price).toFixed(2)}
           </p>
-          <p className="text-[#0D1011] text-xs">
+          <p  className="text-[#0D1011] text-xs">
             {preview ? 0 : item.buyers} {item.buyers == 1 ? "buyer" : "buyers"}
           </p>
         </div>
@@ -122,7 +122,7 @@ const ListMarketplace = ({ item, preview, user }) => {
               router.push(`/app/marketplace/list-details/${item.id}`);
             }}
             text="More Details"
-            className="w-[100%] bg-[#061A40] text-sm"
+             className="w-[100%] bg-[#061A40] text-sm"
           ></ButtonDark>
         </div>
       )}

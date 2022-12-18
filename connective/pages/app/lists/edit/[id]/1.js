@@ -80,12 +80,12 @@ export default function NewList({ user }) {
   };
 
   return (
-    <Layout title="Lists">
-      <div className="bg-white rounded-xl shadow-lg mx-[20vw] p-10">
-        <p className="text-center font-bold text-xl mb-5">Edit the list</p>
-        <p className="text-center mb-10">Step 1 of 3</p>
-        <p className="font-bold mb-10 text-xl">List details:</p>
-        <div className="flex flex-col gap-10">
+    <Layout user={user} title="Lists">
+      <div  className="bg-white rounded-xl shadow-lg mx-[20vw] p-10">
+        <p  className="text-center font-bold text-xl mb-5">Edit the list</p>
+        <p  className="text-center mb-10">Step 1 of 3</p>
+        <p  className="font-bold mb-10 text-xl">List details:</p>
+        <div  className="flex flex-col gap-10">
           <InputField
             name="Title"
             placeholder="Name your list"
@@ -94,7 +94,7 @@ export default function NewList({ user }) {
             errorText={titleError}
           ></InputField>
           <div>
-            <p className="text-sm font-[Montserrat] mb-2">Category</p>
+            <p  className="text-sm font-[Montserrat] mb-2">Category</p>
             <Select
               options={categoryOptions}
               defaultValue={categoryOptions[0]}
@@ -138,7 +138,7 @@ export default function NewList({ user }) {
 
         <ButtonDark
           text="Next"
-          className="mr-0 mt-10"
+           className="mr-0 mt-10"
           onClick={submit}
         ></ButtonDark>
       </div>

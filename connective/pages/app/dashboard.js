@@ -5,16 +5,17 @@ import Sidebar from "../../components/sidebar";
 import Util from "../../util/";
 import Layout from "../../components/layout";
 import ButtonDark from "../../components/button-dark";
+import {useRouter} from "next/router"
 
 const DashboardItem = ({ title, value, icon, color }) => {
   return (
-    <div className="flex flex-col pr-4 py-7 w-[260px] gap-2">
-      <div className="flex flex-row gap-5 mr-20">
-        <p className="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#8A8888]">
+    <div  className="flex flex-col pr-4 py-7 w-[260px] gap-2">
+      <div  className="flex flex-row gap-5 mr-20">
+        <p  className="font-[Poppins] font-medium text-[12px] leading-[18px] text-[#8A8888]">
           {title}
         </p>
       </div>
-      <p className="font-[Montserrat] font-bold text-[32px] leading-[39px] text-[#0D1011]">
+      <p  className="font-[Montserrat] font-bold text-[32px] leading-[39px] text-[#0D1011]">
         {value == "$undefined" ? "" : value}
       </p>
     </div>
@@ -23,16 +24,16 @@ const DashboardItem = ({ title, value, icon, color }) => {
 
 const DashboardRow = ({ title, buttonText, children }) => {
   return (
-    <div className="ml-[64px]">
-      <p className="text-2xl font-bold">{title}</p>
-      <div className="w-fit">
-        <div className="flex flex-row justify-between py-6 w-fit gap-6 rounded-xl">
+    <div  className="ml-[64px]">
+      <p  className="text-2xl font-bold">{title}</p>
+      <div  className="w-fit">
+        <div  className="flex flex-row justify-between py-6 w-fit gap-6 rounded-xl">
           {children}
         </div>
         {/* <ButtonDark
           onClick={buttonOnClick}
           text={buttonText}
-          className="w-[270px]"
+           className="w-[270px]"
         ></ButtonDark> */}
       </div>
     </div>
@@ -40,10 +41,11 @@ const DashboardRow = ({ title, buttonText, children }) => {
 };
 
 const Divider = () => {
-  return <div className="w-[1px] h-fill bg-black/10 my-3 mr-[40px]"></div>;
+  return <div  className="w-[1px] h-fill bg-black/10 my-3 mr-[40px]"></div>;
 };
 
 export default function Dashboard({ user, buttonOnClick }) {
+  const router = useRouter()
   const [isVerified, setIsVerified] = useState(true);
   const [data, setData] = useState();
 
@@ -77,40 +79,40 @@ export default function Dashboard({ user, buttonOnClick }) {
   };
 
   return (
-    <Layout title="Dashboard" className="relative items-center">
+    <Layout user={user} title="Dashboard"  className="relative items-center">
       {!isVerified && (
-        <div className="ml-[64px] flex flex-row gap-5 bg-[#FCFCFC] p-5 pl-0 mt-[40px]">
-          <p className="my-auto text-[16px]">
+        <div  className="mx-auto w-fit flex flex-row gap-5 bg-[#FCFCFC] rounded-lg shadow p-5 mt-[40px]">
+          <p  className="my-auto text-[16px]">
             Enter your payment details to begin buying & selling lists:
           </p>
           <ButtonDark
             text="Connect"
             onClick={connectwithBankDetails}
-            className="w-fit text-sm bg-[#0F172A]"
+             className="w-fit text-sm bg-[#0F172A]"
           />
         </div>
       )}
 
       {/* Buttons top right*/}
-      <div className="absolute flex flex-row right-0 ml-[64px] gap-1 mt-[55px] mr-[100px]">
-        <div className="border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
+      <div  className="absolute flex flex-row right-0 ml-[64px] gap-1 mt-[55px] mr-[100px]">
+        <div  className="border-[1px] border-[#0F172A] mr-4 rounded-[8px] hover:text-white hover:bg-[#1f2b45]">
           <ButtonDark
-            onClick={buttonOnClick}
+            onClick={()=>{router.push("/app/marketplace")}}
             text="Explore Marketplace"
-            className="w-[180px] bg-white text-sm text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
+             className="w-[180px] bg-white text-sm text-[#0F172A] rounded-[8px] hover:text-white hover:bg-[#1f2b45]"
           />
         </div>
         <ButtonDark
-          onClick={buttonOnClick}
+          onClick={()=>{router.push("/app/lists/create/1")}}
           text="Create a List"
-          className="text-sm mr-10 bg-[#0F172A] text-white"
+           className="text-sm mr-10 bg-[#0F172A] text-white"
         />
       </div>
 
       {/* Stats */}
-      <div className="flex flex-row ml-[64px] gap-1 mb-20 mt-20">
+      <div  className="flex flex-row ml-[64px] gap-1 mb-20 mt-20">
         <DashboardItem
-          className="border-0"
+           className="border-0"
           title="EARNINGS"
           value={"$" + data?.totalEarned}
           icon="/assets/dashboard/money.svg"
@@ -126,34 +128,34 @@ export default function Dashboard({ user, buttonOnClick }) {
         ></DashboardItem>
       </div>
 
-      <div className="flex flex-row gap-6">
+      <div  className="flex flex-row gap-6">
         <DashboardRow title="Buyer" buttonText="Explore Marketplace">
-          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
-            <div className="pl-4">
+          <div  className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div  className="pl-4">
               <DashboardItem
-                title="List Viewed"
-                value={data?.listsViewed}
+                title="Lists Viewed"
+                value={data?.listsViewed == null ? 0 : data.listsViewed}
                 icon="/assets/dashboard/list.svg"
                 color="#CCE0FE"
               ></DashboardItem>
             </div>
           </div>
-          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
-            <div className="pl-4">
+          <div  className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div  className="pl-4">
               <DashboardItem
                 title="Lists Bought"
                 value={data?.purchasedLists}
                 icon="/assets/dashboard/listCheck.svg"
                 color="#CCE0FE"
-                className="border-[1px] border-[#0D1011]/[.10]"
+                 className="border-[1px] border-[#0D1011]/[.10]"
               ></DashboardItem>
             </div>
           </div>
         </DashboardRow>
 
         <DashboardRow title="Seller" buttonText="Create a List">
-          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
-            <div className="pl-4">
+          <div  className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div  className="pl-4">
               <DashboardItem
                 title="List Created"
                 value={data?.listsCreated}
@@ -162,8 +164,8 @@ export default function Dashboard({ user, buttonOnClick }) {
               ></DashboardItem>
             </div>
           </div>
-          <div className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
-            <div className="pl-4">
+          <div  className="border-[1px] border-[#0D1011]/[.10] rounded-[10px]">
+            <div  className="pl-4">
               <DashboardItem
                 title="Lists Sold"
                 value={data?.listsSold}

@@ -3,13 +3,13 @@ import DetailsCard from "./DetailsCard";
 
 const Details = () => {
   return (
-    <section className="relative bg-gradient-to-b from-[#061A40] to-[#0C3A65] font-[Poppins] text-white py-20 mx-auto px-[1.8rem]">
-      <h2 className="text-center text-4xl font-bold text-white mb-14">
+    <section  className="relative bg-gradient-to-b from-[#061A40] to-[#0C3A65] font-[Poppins] text-white py-20 mx-auto px-[1.8rem]">
+      <h2  className="text-center text-4xl font-bold text-white mb-14">
         What can be considered a digital asset? Why sell it?
       </h2>
 
-      <div className="max-w-[800px] mx-auto">
-        <div className="flex items-center justify-center gap-16 mb-14">
+      <div  className="max-w-[800px] mx-auto">
+        <div  className="flex items-center justify-center gap-16 mb-14">
           <DetailsCard
             src="network-icon.svg"
             alt="Network"
@@ -30,7 +30,7 @@ const Details = () => {
           />
         </div>
 
-        <div className="flex items-center justify-center gap-16">
+        <div  className="flex items-center justify-center gap-16">
           <DetailsCard
             src="industry-icon.svg"
             alt="Industry"
@@ -52,7 +52,7 @@ const Details = () => {
         </div>
       </div>
 
-      <div className="absolute flex gap-4 left-[23px] top-0 bottom-0">
+      <div  className="absolute flex gap-4 left-[23px] top-0 bottom-0">
         <Image
           src="/assets/landing-page/vectors.svg"
           alt="Vector"
@@ -73,7 +73,7 @@ const Details = () => {
         />
       </div>
 
-      <div className="absolute flex gap-4 right-0 bottom-0">
+      <div  className="absolute flex gap-4 right-0 bottom-0">
         <Image
           src="/assets/landing-page/vectors-2.svg"
           alt="Vector"

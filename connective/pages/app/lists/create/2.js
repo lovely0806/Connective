@@ -77,15 +77,15 @@ export default function NewList({ user }) {
   }
 
   return (
-    <Layout title="Create New List">
+    <Layout user={user} title="Create New List">
           <Steps />
           
-      <div className="bg-white w-[637px] rounded-xl shadow-lg mx-auto px-[80px] py-[40px] mt-[65px] mb-[94px]">
-        <p className="text-center font-bold text-xl mb-[32px]">
+      <div  className="bg-white w-[637px] rounded-xl shadow-lg mx-auto px-[80px] py-[40px] mt-[65px] mb-[94px]">
+        <p  className="text-center font-bold text-xl mb-[32px]">
           Create Details
         </p>
 
-        <div className="flex flex-col gap-10">
+        <div  className="flex flex-col gap-10">
           <InputField
             name="Title"
             placeholder="Name your list"
@@ -93,7 +93,7 @@ export default function NewList({ user }) {
             errorText={titleError}
           ></InputField>
           <div>
-            <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+            <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
               Category
             </p>
             <Select
@@ -102,7 +102,7 @@ export default function NewList({ user }) {
               onChange={(e) => {
                 setCategory(e.value);
               }}
-              className="text-[14px]"
+               className="text-[14px]"
             ></Select>
           </div>
           <InputField
@@ -134,17 +134,17 @@ export default function NewList({ user }) {
           ></ConfigurableTable>
         </div>
 
-        <div className="flex flex-row items-center gap-[24px] mt-[46px]">
-          <div className="w-full border-[1px] border-[#061A40] rounded-lg">
+        <div  className="flex flex-row items-center gap-[24px] mt-[46px]">
+          <div  className="w-full border-[1px] border-[#061A40] rounded-lg">
             <ButtonDark
               text="Back"
-              className="text-[14px] font-[Poppins] bg-white text-[#061A40] "
+               className="text-[14px] font-[Poppins] bg-white text-[#061A40] "
               onClick={backPage}
             />
           </div>
           <ButtonDark
             text="Next"
-            className="text-[14px] w-full font-[Poppins] bg-[#061A40] text-white"
+             className="text-[14px] w-full font-[Poppins] bg-[#061A40] text-white"
             onClick={submit}
           />
         </div>

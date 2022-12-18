@@ -12,6 +12,7 @@ import Util from "../../util";
 import Link from "next/link";
 import logo from "../../public/assets/logo.svg";
 import Image from "next/image";
+import { industryOptions } from "common/selectOptions";
 
 export default function CreateProfile({ user }) {
   const [name, setName] = useState("");
@@ -32,12 +33,6 @@ export default function CreateProfile({ user }) {
   // useEffect(() => {
   //     forwardIfProfileSetup()
   // }, [])
-
-  const industryOptions = [
-    { value: "Web3", label: "Web3" },
-    { value: "Software Development", label: "Software Development" },
-    { value: "Event Planning", label: "Event Planning" },
-  ];
 
   const sizeOptions = [
     { value: "1-10", label: "1-10" },
@@ -146,7 +141,7 @@ export default function CreateProfile({ user }) {
       .then((res) => {
         if (res.status == 200) {
           console.log("success");
-          router.push("/app/profile");
+          router.push(`/app/profile/${user.id}`);
         }
       })
       .catch((e) => {
@@ -224,12 +219,12 @@ export default function CreateProfile({ user }) {
   };
 
   return (
-    <main className="flex flex-row min-h-screen min-w-screen gap-5">
+    <main  className="flex flex-row min-h-screen min-w-screen gap-5">
       <OnBoardingProfile />
 
-      <div className="flex flex-col min-w-[740px] mx-auto font-[Montserrat] rounded-xl my-[40px]">
-        <Link href="https://www.connective-app.xyz">
-          <div className="mb-[40px]">
+      <div  className="flex flex-col min-w-[740px] mx-auto font-[Montserrat] rounded-xl my-[40px]">
+        <Link href="/">
+          <div  className="mb-[40px]">
             <Image
               src={logo}
               alt="Connective logo"
@@ -239,13 +234,13 @@ export default function CreateProfile({ user }) {
           </div>
         </Link>
 
-        <div className="mb-[40px]">
-          <p className="text-[24px] font-bold leading-[29px] text-[#061A40]">
+        <div  className="mb-[40px]">
+          <p  className="text-[24px] font-bold leading-[29px] text-[#061A40]">
             Create {type == "business" ? "Company" : "Individual"} Profile
           </p>
         </div>
 
-        <p className="font-[Poppins font-normal text-[16px] leading-[24px] text-[#0D1011] text-center mb-[20px]">
+        <p  className="font-[Poppins font-normal text-[16px] leading-[24px] text-[#0D1011] text-center mb-[20px]">
           Choose that best describes you
         </p>
 
@@ -255,7 +250,7 @@ export default function CreateProfile({ user }) {
         ></ProfileTypeSelector>
 
         {type == "business" ? (
-          <div className="flex flex-col gap-5 mt-10">
+          <div  className="flex flex-col gap-5 mt-10">
             <InputField
               name={"Name"}
               placeholder={"Enter company name"}
@@ -269,8 +264,8 @@ export default function CreateProfile({ user }) {
               errorText={descriptionError}
               textarea={true}
             ></InputField>
-            <div className="relative">
-              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+            <div  className="relative">
+              <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                 Logo
               </p>
               <FileUpload
@@ -283,7 +278,7 @@ export default function CreateProfile({ user }) {
               ></FileUpload>
             </div>
 
-            <div className="flex flex-row gap-[24px]">
+            <div  className="flex flex-row gap-[24px]">
               <InputField
                 name={"Website"}
                 placeholder={"Enter company website URL"}
@@ -296,43 +291,43 @@ export default function CreateProfile({ user }) {
               ></InputField>
             </div>
 
-            <div className="flex flex-row justify-between gap-[24px]">
-              <div className="w-full">
-                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+            <div  className="flex flex-row justify-between gap-[24px]">
+              <div  className="w-full">
+                <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Industry
                 </p>
                 <Select
-                  className="w-full text-[12px] font-[Poppins]"
+                   className="w-full text-[12px] font-[Poppins]"
                   onChange={(e) => {
                     setIndustry(e.value);
                   }}
                   options={industryOptions}
                   placeholder="Choose your industry"
                 ></Select>
-                <p className="text-red-500 font-bold text-[12px]">
+                <p  className="text-red-500 font-bold text-[12px]">
                   {industryError}
                 </p>
               </div>
-              <div className="w-full customSelect">
-                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+              <div  className="w-full customSelect">
+                <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Size
                 </p>
                 <Select
-                  className="w-full text-[12px] font-[Poppins]"
+                   className="w-full text-[12px] font-[Poppins]"
                   onChange={(e) => {
                     setSize(e.value);
                   }}
                   options={sizeOptions}
                   placeholder="Choose your company size"
                 ></Select>
-                <p className="text-red-500 font-bold text-[12px]">
+                <p  className="text-red-500 font-bold text-[12px]">
                   {sizeError}
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-5 mt-10">
+          <div  className="flex flex-col gap-5 mt-10">
             <InputField
               name={"Name"}
               placeholder={"Enter your name"}
@@ -346,8 +341,8 @@ export default function CreateProfile({ user }) {
               errorText={descriptionError}
               textarea={true}
             ></InputField>
-            <div className="relative">
-              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-[10px] 1bp:text-[16.5px]">
+            <div  className="relative">
+              <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-[10px] 1bp:text-[16.5px]">
                 Profile picture
               </p>
               <FileUpload
@@ -370,7 +365,7 @@ export default function CreateProfile({ user }) {
         <button
           onClick={submit}
           disabled={processing}
-          className={`w-full h-[47px] font-semibold font-[Poppins] text-[12px] leading-[18px] text-[#F2F4F5] mt-10 rounded-md shadow-md transition-all ${
+           className={`w-full h-[47px] font-semibold font-[Poppins] text-[12px] leading-[18px] text-[#F2F4F5] mt-10 rounded-md shadow-md transition-all ${
             !processing
               ? "hover:scale-105 hover:shadow-lg bg-[#0F172A]"
               : "bg-[#0F172A]/70"

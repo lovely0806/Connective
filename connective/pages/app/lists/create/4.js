@@ -70,17 +70,17 @@ export default function NewList({ user }) {
   };
 
   return (
-    <Layout title="Create New List">
+    <Layout user={user} title="Create New List">
       <Steps />
 
-      <div className="w-[637px] px-[80px] mx-auto mt-[64px] py-10 flex flex-col items-center bg-white/70 mb-[94px] shadow-lg rounded-xl">
+      <div  className="w-[637px] px-[80px] mx-auto mt-[64px] py-10 flex flex-col items-center bg-white/70 mb-[94px] shadow-lg rounded-xl">
 
-        <p className="font-bold mb-[12px] text-xl text-center text-[#0D1011]">
+        <p  className="font-bold mb-[12px] text-xl text-center text-[#0D1011]">
           Preview
         </p>
 
-        <div className="flex flex-col items-center">
-          <div className="sm:w-[30vw] 2xl:w-[20vw] mb-[40px]">
+        <div  className="flex flex-col items-center">
+          <div  className="sm:w-[30vw] 2xl:w-[20vw] mb-[40px]">
             {typeof title != "undefined" && (
               <ListMarketplace
                 preview={true}
@@ -95,25 +95,25 @@ export default function NewList({ user }) {
             )}
           </div>
 
-          <div className="w-[30vw] flex flex-col items-center">
-            <p className="font-bold mb-[12px] text-xl text-center text-[#0D1011]">
+          <div  className="w-[30vw] flex flex-col items-center">
+            <p  className="font-bold mb-[12px] text-xl text-center text-[#0D1011]">
               Your List
             </p>
-            <img src={previewUrl} className="object-cover w-[217px] h-[120px]" />
+            <img src={previewUrl}  className="object-cover w-[217px] h-[120px]" />
           </div>
         </div>
 
-        <div className="w-full flex flex-row items-center gap-[24px] mt-[46px]">
-          <div className="w-full border-[1px] border-[#061A40] rounded-lg">
+        <div  className="w-full flex flex-row items-center gap-[24px] mt-[46px]">
+          <div  className="w-full border-[1px] border-[#061A40] rounded-lg">
             <ButtonDark
               text="Back"
-              className="text-[14px] w-full font-[Poppins] bg-white text-[#061A40] "
+               className="text-[14px] w-full font-[Poppins] bg-white text-[#061A40] "
               onClick={backPage}
             />
           </div>
           <ButtonDark
             text="Publish"
-            className="text-[14px] w-full font-[Poppins] bg-[#061A40] text-white"
+             className="text-[14px] w-full font-[Poppins] bg-[#061A40] text-white"
             onClick={submit}
           />
         </div>

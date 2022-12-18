@@ -8,15 +8,17 @@ export async function handler(req, res) {
       return res.status(500).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "GET") {
+      let {id} = req.query
+      if(typeof(id) == "undefined") id = user.id
       //Returns callers account
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Individual WHERE user_id='${user.id}';`);
+        .query(`SELECT * FROM Individual WHERE user_id='${id}';`);
       var [listResults, listFields, listErr] = await connection
         .promise()
         .query(
-          `SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${user.id};`
+          `SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${id};`
         );
       var [purchaseResults, fields, err] = await connection.promise().query(`select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`)
 
@@ -34,9 +36,8 @@ export async function handler(req, res) {
       await connection.promise().execute(`
                 INSERT INTO Individual (
                     user_id, name, profile_picture, bio, location
-                ) VALUES (
-                    '${user.id}', '${name}', '${pfp}', '${bio}', '${location}'
-                );`);
+                ) VALUES (?, ?, ?, ?, ? );`, 
+                [user.id, name, pfp, bio, location]);
 
       connection.end();
       res.status(200).json({ success: true });

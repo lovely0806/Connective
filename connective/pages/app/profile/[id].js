@@ -10,9 +10,10 @@ import {useRouter} from "next/router"
 export default function Profile({ user }) {
   const [accountType, setAccountType] = useState();
   const router = useRouter()
+  const {id} = router.query
 
   const getAccountType = async () => {
-    setAccountType(await Util.accountType(user.id));
+    setAccountType(await Util.accountType(id));
   };
   useEffect(() => {
     if(typeof(user) == "undefined") router.push("/auth/signin")
@@ -20,14 +21,14 @@ export default function Profile({ user }) {
   }, []);
 
   return (
-    <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
-      <Sidebar></Sidebar>
-      <div className="h-screen w-screen overflow-y-scroll">
+    <main  className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
+      <Sidebar user={user}></Sidebar>
+      <div  className="h-screen w-screen overflow-y-scroll">
         {accountType == "Business" && (
-          <BusinessProfile user={user}></BusinessProfile>
+          <BusinessProfile user={user} id={id}></BusinessProfile>
         )}
         {accountType == "Individual" && (
-          <IndividualProfile user={user}></IndividualProfile>
+          <IndividualProfile user={user} id={id}></IndividualProfile>
         )}
       </div>
     </main>

@@ -17,9 +17,9 @@ export default function EditProfile({ user }) {
   }, []);
 
   return (
-    <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
+    <main  className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
       <Sidebar></Sidebar>
-      <div className="h-screen w-screen overflow-y-scroll">
+      <div  className="h-screen w-screen overflow-y-scroll">
         {accountType == "Business" && (
           <EditBusinessProfile user={user}></EditBusinessProfile>
         )}
