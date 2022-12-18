@@ -60,7 +60,7 @@ async function sendEmail(to) {
   
     const msg = {
       to,
-      from: 'kyle.kingsberry@metaphy-labs.xyz',
+      from: 'notifications@connective-app.xyz',
       subject: 'An affiliate partner has sent you a message',
       text: template.replace(/<[^>]*>?/gm, ''),
       html: template,
