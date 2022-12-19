@@ -3,13 +3,18 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
-const SidebarItem = ({ text, route, icon, onClick }) => {
+const SidebarItem = ({ text, route, icon, onClick, target }) => {
   const router = useRouter();
   let selected = router.route == route;
   if (typeof onClick == "undefined") {
     onClick = () => {
       router.push(route);
     };
+  }
+  if (typeof target != "undefined") {
+    onClick = () => {
+      window.open(route, '_blank')
+    }
   }
 
   return (
@@ -138,6 +143,12 @@ const Sidebar = ({user}) => {
           text="Contact Us"
           icon="/assets/navbar/ContactUsIcon.svg"
           route="https://calendly.com/connective-app/30min?month=2022-12"
+          target="_blank"
+        ></SidebarItem>
+        <SidebarItem
+          text="Join Our Slack"
+          icon="/assets/navbar/Slack.svg"
+          route="https://join.slack.com/t/connectiveaff-gdx2039/shared_invite/zt-1k972uih0-fn~2DbSdWPR8fTNRl~HCkw"
           target="_blank"
         ></SidebarItem>
       </div>
