@@ -10,6 +10,7 @@ const LoginSidebar = () => {
         alt="bg"
         priority
       />
+      
 
       {/* <div  className="absolute bottom-0 px-[60px] mb-[208px] z-[20] top-0">
         <h1  className="max-w-[403px] font-[Montserrat] text-[#F2F4F5] font-bold text-[40px] leading-[49px] mb-[24px] 1bp:text-[54px] 1bp:leading-[59px]">
