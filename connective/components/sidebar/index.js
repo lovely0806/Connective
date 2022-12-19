@@ -129,11 +129,11 @@ const Sidebar = ({user}) => {
         <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
-        <SidebarItem
+        {/* <SidebarItem
           text="Feedback"
           icon="/assets/navbar/FeedbackIcon.svg"
           route="/app/feedback"
-        ></SidebarItem>
+        ></SidebarItem> */}
         <SidebarItem
           text="Contact Us"
           icon="/assets/navbar/ContactUsIcon.svg"
