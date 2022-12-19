@@ -162,6 +162,8 @@ const Sidebar = ({user}) => {
       </Link>
     </div>
   );
+
+  
 };
 
 export default Sidebar;
