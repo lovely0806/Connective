@@ -137,7 +137,8 @@ const Sidebar = ({user}) => {
         <SidebarItem
           text="Contact Us"
           icon="/assets/navbar/ContactUsIcon.svg"
-          route="https://join.slack.com/t/connective-app/shared_invite/zt-1j40vh5y8-CBdGdfI_8syA8TI81ZaAMQ"
+          route="https://calendly.com/connective-app/30min?month=2022-12"
+          target="_blank"
         ></SidebarItem>
       </div>
 
