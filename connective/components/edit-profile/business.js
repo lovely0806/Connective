@@ -171,6 +171,7 @@ export default function EditProfile({ user }) {
               setFile={setPfp}
               id={"Company pfp upload"}
               src={src}
+              user={name}
               profilePicture={true}
             ></FileUpload>
           </div>

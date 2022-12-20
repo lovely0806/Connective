@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dicebear/avatars": "^4.10.7",
+    "@dicebear/avatars-initials-sprites": "^4.10.7",
     "@sendgrid/mail": "^7.7.0",
     "@stripe/react-stripe-js": "^1.13.0",
     "@stripe/stripe-js": "^1.42.0",

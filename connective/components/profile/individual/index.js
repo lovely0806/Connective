@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ButtonDark from "../../button-dark";
 import ListCard from "../../marketplace/ListCard";
+import Avatar from "components/avatar";
 
 export default function IndividualProfile({ user, id }) { 
   const router = useRouter();
@@ -43,10 +44,7 @@ export default function IndividualProfile({ user, id }) {
           <div  className="w-[100%] flex flex-row justify-between items-center mt-[-70px]">
             <div  className="mb-[64px] flex flex-row items-center gap-[40px] pl-[50px]">
               {data.profile_picture == "" ? (
-                <img
-                   className="rounded-full w-[200px] h-[200px] z-10 ml-16 backdrop-blur-sm bg-white/20 shadow-md"
-                  src={`https://avatars.dicebear.com/api/micah/${id}.svg`}
-                ></img>
+                <Avatar width="100px" height="100px" title={data?.name}/>
               ) : (
                 <div  className="w-[200px] h-[200px]"><img
                    className="rounded-full w-[100%] h-[100%] z-10 backdrop-blur-sm bg-white/20 shadow-md"

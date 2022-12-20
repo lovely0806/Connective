@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Avatar from "components/avatar/index"
 
 const DiscoverList = ({ id, title, description, imgURL }) => {
   const router = useRouter();
@@ -7,12 +8,12 @@ const DiscoverList = ({ id, title, description, imgURL }) => {
   return (
     <div  className="flex flex-row w-full h-44 shadow-lg bg-white rounded justify-between gap-2">
       <div  className="w-60 relative m-3 rounded-sm shrink-0">
-        <Image
+      { imgURL ? <Image
           layout="fill"
           objectFit="cover"
            className="rounded"
-          src={imgURL || "/assets/banners/leaves-min.jpeg"}
-        />
+          src={imgURL}
+        /> : <Avatar title={title}/>}
       </div>
       <div  className="w-full my-8 overflow-y-clip">
         <p  className="text-xl font-bold my-1">{title}</p>

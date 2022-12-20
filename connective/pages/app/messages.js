@@ -6,6 +6,7 @@ import ButtonDark from "components/button-dark";
 import Select from "react-select";
 import { useRouter } from "next/router";
 import Api from "services/api"
+import Avatar from "components/avatar";
 
 const Message = ({text, sent}) => {
   if(sent) {
@@ -43,7 +44,7 @@ const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
           {filteredConversations.map((item, index) => {
               return (
                   <div onClick={()=>{setSelectedUser(item)}}  className={`flex flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
-                      <img src={item.logo ? item.logo : `https://avatars.dicebear.com/api/micah/${item.id}.svg`}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>
+                     {item.logo ? (<img src={item.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg" width="50px" height="50px" title={item.username}/>) }
                       <p  className="my-auto ml-2 text-md font-medium">{item.username}</p>
                   </div>
               )
@@ -157,8 +158,9 @@ const UserDetails = ({selectedUser}) => {
     <div  className="w-1/5 h-full px-2">
       {selectedUser && (
         <>
-          <img src={selectedUser.logo ? selectedUser.logo : `https://avatars.dicebear.com/api/micah/${selectedUser.id}.svg`}  className="w-[40%] mt-5 mx-auto bg-white rounded-full shadow-lg"/>
-          <p  className="font-bold text-lg text-center mt-5">{selectedUser.username}</p>
+        {selectedUser.logo ? (<img src={selectedUser.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg mt-5" width="30px" height="30px" title={selectedUser.username}/>) }
+                      
+         <p  className="font-bold text-lg text-center mt-5">{selectedUser.username}</p>
 
           <p  className="text-sm font-bold mt-10">Contact Details:</p>
           <div  className="flex flex-row gap-2 my-5">

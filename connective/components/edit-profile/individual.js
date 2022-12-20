@@ -120,6 +120,7 @@ export default function EditProfile({ user }) {
               id={"Individual pfp upload"}
               src={src}
               profilePicture={true}
+              user={name}
             ></FileUpload>
           </div>
           <InputField
