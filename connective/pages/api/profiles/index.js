@@ -3,9 +3,6 @@ import { withIronSession } from "next-iron-session";
 
 export async function handler(req, res) {
   try {
-    if (typeof req.session.get().user == "undefined") {
-      return res.status(500).json({ success: false, error: "Not signed in" });
-    }
     if (req.method == "GET") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results] = await connection
