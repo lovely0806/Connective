@@ -1,7 +1,6 @@
 const mysql = require("mysql2");
-import { withIronSession } from "next-iron-session";
 
-export async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     if (req.method == "GET") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -17,20 +16,3 @@ export async function handler(req, res) {
     return res.status(500).json({ success: false, error: e });
   }
 }
-
-export default withIronSession(handler, {
-  password: process.env.APPLICATION_SECRET,
-  cookieName: "Connective",
-  // if your localhost is served on http:// then disable the secure flag
-  cookieOptions: {
-    secure: process.env.NODE_ENV === "production",
-  },
-});
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "4mb",
-    },
-  },
-};
