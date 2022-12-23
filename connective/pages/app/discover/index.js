@@ -8,6 +8,7 @@ import Image from "next/image";
 import DiscoverList from "components/discover/list";
 import { data } from "autoprefixer";
 import { industryOptions } from "common/selectOptions";
+import {Recache} from "recache-client"
 
 export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
@@ -16,12 +17,14 @@ export default function Messages({ user }) {
   const [filteredUsers, setFilteredUsers] = useState([])
 
   const getUsers = async () => {
-    //const { data } = await axios.get("/api/cache/discover");
-    const { data } = await axios.get("/api/profiles");
+    let start = Date.now()
+    const {data} = await Recache.cached(235, 137, axios.get, ["/api/profiles"]);
+    console.log(data)
     console.log(data.filter(a => a.email == "marko@ventnorwebagency.com"))
     setUsers(data.filter(a => a.show_on_discover));
     setFilteredUsers(data.filter(a => a.show_on_discover))
     console.log(data);
+    console.log(Date.now() - start)
   };
 
   useEffect(() => {
@@ -29,7 +32,9 @@ export default function Messages({ user }) {
   }, [filter, category])
 
   useEffect(() => {
-    getUsers();
+    Recache.init("cac121461df5ec95fd867894904f0839b108b03a")
+
+    getUsers()
   }, []);
 
   return (
