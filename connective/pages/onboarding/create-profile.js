@@ -27,6 +27,8 @@ export default function CreateProfile({ user }) {
   const [industry, setIndustry] = useState("");
   const [industryError, setIndustryError] = useState("");
   const [size, setSize] = useState("");
+  const [status, setStatus] = useState("");
+  const [statusError, setStatusError] = useState("");
   const [sizeError, setSizeError] = useState("");
   const [processing, setProcessing] = useState(false);
 
@@ -41,6 +43,17 @@ export default function CreateProfile({ user }) {
     { value: "100-200", label: "100-200" },
     { value: "200-1000", label: "200-1000" },
     { value: "1000+", label: "1000+" },
+  ];
+
+  const statusOptions = [
+    {
+      value: "Looking to give client for commission.",
+      label: "Looking to give client for commission.",
+    },
+    {
+      value: "Looking to get client for a commission.",
+      label: "Looking to get client for a commission.",
+    },
   ];
 
   const router = useRouter();
@@ -108,12 +121,22 @@ export default function CreateProfile({ user }) {
       return;
     }
 
+    if (status == "") {
+      setStatusError("You must select a status.");
+      setIndustryError("");
+      setSizeError("");
+      setNameError("");
+      setProcessing(false);
+      return;
+    }
+
     setNameError("");
     setSizeError("");
     setIndustryError("");
     setDescriptionError("");
     setIndustryError("");
     setSizeError("");
+    setStatusError("");
     setNameError("");
 
     let hasPfp = false;
@@ -137,6 +160,7 @@ export default function CreateProfile({ user }) {
         url,
         industry,
         size,
+        status,
       })
       .then((res) => {
         if (res.status == 200) {
@@ -179,6 +203,13 @@ export default function CreateProfile({ user }) {
       return;
     }
 
+    if (status == "") {
+      setStatusError("You must select a status.");
+      setNameError("");
+      setProcessing(false);
+      return;
+    }
+
     setNameError("");
     setDescriptionError("");
 
@@ -200,6 +231,7 @@ export default function CreateProfile({ user }) {
         name,
         bio: description,
         location,
+        status,
       })
       .then((res) => {
         if (res.status == 200) {
@@ -219,12 +251,12 @@ export default function CreateProfile({ user }) {
   };
 
   return (
-    <main  className="flex flex-row min-h-screen min-w-screen gap-5">
+    <main className="flex flex-row min-h-screen min-w-screen gap-5">
       <OnBoardingProfile />
 
-      <div  className="flex flex-col min-w-[740px] mx-auto font-[Montserrat] rounded-xl my-[40px]">
+      <div className="flex flex-col min-w-[740px] mx-auto font-[Montserrat] rounded-xl my-[40px]">
         <Link href="/">
-          <div  className="mb-[40px]">
+          <div className="mb-[40px]">
             <Image
               src={logo}
               alt="Connective logo"
@@ -234,13 +266,13 @@ export default function CreateProfile({ user }) {
           </div>
         </Link>
 
-        <div  className="mb-[40px]">
-          <p  className="text-[24px] font-bold leading-[29px] text-[#061A40]">
+        <div className="mb-[40px]">
+          <p className="text-[24px] font-bold leading-[29px] text-[#061A40]">
             Create {type == "business" ? "Company" : "Individual"} Profile
           </p>
         </div>
 
-        <p  className="font-[Poppins font-normal text-[16px] leading-[24px] text-[#0D1011] text-center mb-[20px]">
+        <p className="font-[Poppins font-normal text-[16px] leading-[24px] text-[#0D1011] text-center mb-[20px]">
           Choose that best describes you
         </p>
 
@@ -250,7 +282,7 @@ export default function CreateProfile({ user }) {
         ></ProfileTypeSelector>
 
         {type == "business" ? (
-          <div  className="flex flex-col gap-5 mt-10">
+          <div className="flex flex-col gap-5 mt-10">
             <InputField
               name={"Name"}
               placeholder={"Enter company name"}
@@ -264,8 +296,8 @@ export default function CreateProfile({ user }) {
               errorText={descriptionError}
               textarea={true}
             ></InputField>
-            <div  className="relative">
-              <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+            <div className="relative">
+              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                 Logo
               </p>
               <FileUpload
@@ -278,7 +310,7 @@ export default function CreateProfile({ user }) {
               ></FileUpload>
             </div>
 
-            <div  className="flex flex-row gap-[24px]">
+            <div className="flex flex-row gap-[24px]">
               <InputField
                 name={"Website"}
                 placeholder={"Enter company website URL"}
@@ -291,43 +323,59 @@ export default function CreateProfile({ user }) {
               ></InputField>
             </div>
 
-            <div  className="flex flex-row justify-between gap-[24px]">
-              <div  className="w-full">
-                <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+            <div className="flex flex-row justify-between gap-[24px]">
+              <div className="w-full">
+                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Industry
                 </p>
                 <Select
-                   className="w-full text-[12px] font-[Poppins]"
+                  className="w-full text-[12px] font-[Poppins]"
                   onChange={(e) => {
                     setIndustry(e.value);
                   }}
                   options={industryOptions}
                   placeholder="Choose your industry"
                 ></Select>
-                <p  className="text-red-500 font-bold text-[12px]">
+                <p className="text-red-500 font-bold text-[12px]">
                   {industryError}
                 </p>
               </div>
-              <div  className="w-full customSelect">
-                <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+              <div className="w-full customSelect">
+                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
                   Size
                 </p>
                 <Select
-                   className="w-full text-[12px] font-[Poppins]"
+                  className="w-full text-[12px] font-[Poppins]"
                   onChange={(e) => {
                     setSize(e.value);
                   }}
                   options={sizeOptions}
                   placeholder="Choose your company size"
                 ></Select>
-                <p  className="text-red-500 font-bold text-[12px]">
+                <p className="text-red-500 font-bold text-[12px]">
                   {sizeError}
+                </p>
+              </div>
+              <div className="w-full customSelect">
+                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+                  Status
+                </p>
+                <Select
+                  className="w-full text-[12px] font-[Poppins]"
+                  onChange={(e) => {
+                    setStatus(e.value);
+                  }}
+                  options={statusOptions}
+                  placeholder="Choose your Status"
+                ></Select>
+                <p className="text-red-500 font-bold text-[12px]">
+                  {statusError}
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          <div  className="flex flex-col gap-5 mt-10">
+          <div className="flex flex-col gap-5 mt-10">
             <InputField
               name={"Name"}
               placeholder={"Enter your name"}
@@ -341,8 +389,8 @@ export default function CreateProfile({ user }) {
               errorText={descriptionError}
               textarea={true}
             ></InputField>
-            <div  className="relative">
-              <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-[10px] 1bp:text-[16.5px]">
+            <div className="relative">
+              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-[10px] 1bp:text-[16.5px]">
                 Profile picture
               </p>
               <FileUpload
@@ -359,13 +407,29 @@ export default function CreateProfile({ user }) {
               placeholder={"Enter your location"}
               updateValue={setLocation}
             ></InputField>
+            <div className="w-full customSelect">
+              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+                Status
+              </p>
+              <Select
+                className="w-full text-[12px] font-[Poppins]"
+                onChange={(e) => {
+                  setStatus(e.value);
+                }}
+                options={statusOptions}
+                placeholder="Choose your Status"
+              ></Select>
+              <p className="text-red-500 font-bold text-[12px]">
+                {statusError}
+              </p>
+            </div>
           </div>
         )}
 
         <button
           onClick={submit}
           disabled={processing}
-           className={`w-full h-[47px] font-semibold font-[Poppins] text-[12px] leading-[18px] text-[#F2F4F5] mt-10 rounded-md shadow-md transition-all ${
+          className={`w-full h-[47px] font-semibold font-[Poppins] text-[12px] leading-[18px] text-[#F2F4F5] mt-10 rounded-md shadow-md transition-all ${
             !processing
               ? "hover:scale-105 hover:shadow-lg bg-[#0F172A]"
               : "bg-[#0F172A]/70"

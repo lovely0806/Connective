@@ -8,8 +8,8 @@ export async function handler(req, res) {
       return res.status(500).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "GET") {
-      let {id} = req.query
-      if(typeof(id) == "undefined") id = user.id
+      let { id } = req.query;
+      if (typeof id == "undefined") id = user.id;
       //Returns callers account
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results, fields, err] = await connection
@@ -18,26 +18,34 @@ export async function handler(req, res) {
       var [listResults, listFields, listErr] = await connection
         .promise()
         .query(
-          `SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${id};`
+          `SELECT Lists.*, Individual.name AS username, Individual.profile_picture AS logo, Individual.status FROM Lists JOIN Individual on Lists.creator = Individual.user_id WHERE creator=${id};`
         );
-      var [purchaseResults, fields, err] = await connection.promise().query(`select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`)
+      var [purchaseResults, fields, err] = await connection
+        .promise()
+        .query(
+          `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`
+        );
 
-      listResults.forEach(list => {
-          list.buyers = purchaseResults.filter((i) => {if(i.list_id == list.id) return 1}).length
-      })
+      listResults.forEach((list) => {
+        list.buyers = purchaseResults.filter((i) => {
+          if (i.list_id == list.id) return 1;
+        }).length;
+      });
 
       results[0].lists = listResults;
       res.status(200).json(results[0]);
     }
     if (req.method == "POST") {
-      const { name, bio, pfp, location } = req.body;
+      const { name, bio, pfp, location, status } = req.body;
 
       const connection = mysql.createConnection(process.env.DATABASE_URL);
-      await connection.promise().execute(`
+      await connection.promise().execute(
+        `
                 INSERT INTO Individual (
-                    user_id, name, profile_picture, bio, location
-                ) VALUES (?, ?, ?, ?, ? );`, 
-                [user.id, name, pfp, bio, location]);
+                    user_id, name, profile_picture, bio, location, status
+                ) VALUES (?, ?, ?, ?, ?, ?);`,
+        [user.id, name, pfp, bio, location, status]
+      );
 
       connection.end();
       res.status(200).json({ success: true });
@@ -47,15 +55,19 @@ export async function handler(req, res) {
     }
     if (req.method == "PUT") {
       // console.log(user);
-      const { name, bio, pfp, location, pfpChanged } = req.body;
+      const { name, bio, pfp, location, pfpChanged, status } = req.body;
       const connection = mysql.createConnection(process.env.DATABASE_URL);
-
-      await connection.promise().execute(`
-                UPDATE Individual
-                SET name = '${name}', ${
-        pfpChanged && "profile_picture =" + `'${pfp}',`
-      } bio = '${bio}', location = '${location}'
-                WHERE user_id = '${user.id}';`);
+      let query;
+      if (pfpChanged) {
+        query = `UPDATE Individual SET name = '${name}', ${
+          pfpChanged ?? "profile_picture =" + `'${pfp}',`
+        } bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${
+          user.id
+        }';`;
+      } else {
+        query = `UPDATE Individual SET name = '${name}',bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${user.id}';`;
+      }
+      await connection.promise().execute(query);
 
       connection.end();
       res.status(200).json({ success: true });

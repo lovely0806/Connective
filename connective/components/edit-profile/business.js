@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import FileUpload from "../../components/file-upload";
 import Select from "react-select";
 import Util from "../../util";
+import { industryOptions } from "common/selectOptions";
 
 export default function EditProfile({ user }) {
   const [name, setName] = useState("");
@@ -15,12 +16,14 @@ export default function EditProfile({ user }) {
   const [pfp, setPfp] = useState("");
   const [src, setSrc] = useState("");
   const [industry, setIndustry] = useState("");
+  const [industryName, setIndustryName] = useState("");
   const [industryError, setIndustryError] = useState("");
   const [size, setSize] = useState("");
   const [sizeError, setSizeError] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [pfpChanged, setPfpChanged] = useState(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     setLoaded(false);
@@ -35,18 +38,28 @@ export default function EditProfile({ user }) {
         setDescription(res.data.description);
         setLocation(res.data.location);
         setUrl(res.data.website);
-        setIndustry(res.data.industry);
+        const selectedIndustry = industryOptions.find(
+          (industry) => industry.value == res.data.industry
+        );
+        setIndustry(selectedIndustry.value);
+        setIndustryName(selectedIndustry.label);
         setSize(res.data.size);
         setSrc(res.data.logo);
+        setStatus(res.data.status);
         setLoaded(true);
       }
     });
   };
 
-  const industryOptions = [
-    { value: "Web3", label: "Web3" },
-    { value: "Software Development", label: "Software Development" },
-    { value: "Event Planning", label: "Event Planning" },
+  const statusOptions = [
+    {
+      value: "Looking to give client for commission.",
+      label: "Looking to give client for commission.",
+    },
+    {
+      value: "Looking to get client for a commission.",
+      label: "Looking to get client for a commission.",
+    },
   ];
 
   const sizeOptions = [
@@ -73,6 +86,14 @@ export default function EditProfile({ user }) {
   //         router.push("/app/profile")
   //     }
   // }
+
+  const handleChangeIndustry = (value) => {
+    const selectedIndustry = industryOptions.find(
+      (industry) => industry.value == value
+    );
+    setIndustryName(selectedIndustry.label);
+    setIndustry(selectedIndustry.value);
+  };
 
   const submit = async () => {
     if (processing) return;
@@ -123,6 +144,7 @@ export default function EditProfile({ user }) {
         url,
         industry,
         size,
+        status,
       })
       .then((res) => {
         if (res.status == 200) {
@@ -142,13 +164,13 @@ export default function EditProfile({ user }) {
   };
 
   return loaded ? (
-    <main  className="flex flex-row min-h-screen min-w-screen">
-      <div  className="flex flex-col w-[40vw] mx-auto font-[Montserrat] bg-[#F9F9F9] rounded-xl shadow-md p-5 my-20">
-        <div  className="flex flex-row gap-10 mb-10">
-          <p  className="text-3xl font-bold">Edit Profile</p>
+    <main className="flex flex-row min-h-screen min-w-screen">
+      <div className="flex flex-col w-[40vw] mx-auto font-[Montserrat] bg-[#F9F9F9] rounded-xl shadow-md p-5 my-20">
+        <div className="flex flex-row gap-10 mb-10">
+          <p className="text-3xl font-bold">Edit Profile</p>
         </div>
 
-        <div  className="flex flex-col gap-5 mt-0">
+        <div className="flex flex-col gap-5 mt-0">
           <InputField
             name={"Name*"}
             placeholder={"Enter company name"}
@@ -164,7 +186,7 @@ export default function EditProfile({ user }) {
             value={description}
           ></InputField>
           <div>
-            <p  className="text-sm mb-2">Logo</p>
+            <p className="text-sm mb-2">Logo</p>
             <FileUpload
               text="Upload company logo"
               file={pfp}
@@ -187,26 +209,26 @@ export default function EditProfile({ user }) {
             updateValue={setLocation}
             value={location}
           ></InputField>
-          <div  className="flex flex-row justify-between gap-10">
-            <div  className="w-full">
-              <p  className="text-sm mb-2">Industry*</p>
+          <div className="flex flex-row justify-between gap-10">
+            <div className="w-full">
+              <p className="text-sm mb-2">Industry*</p>
               <Select
-                 className="w-full"
+                className="w-full"
                 onChange={(e) => {
-                  setIndustry(e.value);
+                  handleChangeIndustry(e.value);
                 }}
                 options={industryOptions}
                 placeholder="Choose your industry"
-                value={{ value: industry, label: industry }}
+                value={{ value: industryName, label: industryName }}
               ></Select>
-              <p  className="text-red-500 font-bold text-[12px]">
+              <p className="text-red-500 font-bold text-[12px]">
                 {industryError}
               </p>
             </div>
-            <div  className="w-full">
-              <p  className="text-sm mb-2">Size*</p>
+            <div className="w-full">
+              <p className="text-sm mb-2">Size*</p>
               <Select
-                 className="w-full"
+                className="w-full"
                 onChange={(e) => {
                   setSize(e.value);
                 }}
@@ -214,7 +236,26 @@ export default function EditProfile({ user }) {
                 placeholder="Choose your company size"
                 value={{ value: size, label: size }}
               ></Select>
-              <p  className="text-red-500 font-bold text-[12px]">{sizeError}</p>
+              <p className="text-red-500 font-bold text-[12px]">{sizeError}</p>
+            </div>
+            <div className="w-full">
+              {status ? (
+                <>
+                  <p className="text-sm mb-2">Status*</p>
+                  {/* <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] 1bp:text-[16.5px]">
+                    Status
+                  </p> */}
+                  <Select
+                    className="w-full text-[12px] font-[Poppins]"
+                    onChange={(e) => {
+                      setStatus(e.value);
+                    }}
+                    options={statusOptions}
+                    placeholder="Choose your Status"
+                    value={{ value: status, label: status }}
+                  ></Select>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -222,7 +263,7 @@ export default function EditProfile({ user }) {
         <button
           onClick={submit}
           disabled={processing}
-           className={`w-full  font-bold text-white py-4 mt-20 rounded-md shadow-md transition-all ${
+          className={`w-full  font-bold text-white py-4 mt-20 rounded-md shadow-md transition-all ${
             !processing
               ? "hover:scale-105 hover:shadow-lg bg-[#0F172A]"
               : "bg-[#0F172A]/70"

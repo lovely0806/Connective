@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+console.log(process.env.URL);
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -11,7 +12,7 @@ const nextConfig = {
     EMAIL_USER: process.env.EMAIL_USER,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
-  }
+  },
 };
 
 module.exports = nextConfig;
