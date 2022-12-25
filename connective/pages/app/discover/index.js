@@ -18,10 +18,8 @@ export default function Messages({ user }) {
 
   const getUsers = async () => {
     let start = Date.now()
-    const {data} = await Recache.cached(235, 137, axios.get, ["/api/profiles"]);
+    const {data} = await Recache.cached(137, axios.get, ["/api/profiles"]);
     //const {data} = await axios.get("/api/profiles")
-    console.log(data)
-    console.log(data.filter(a => a.email == "marko@ventnorwebagency.com"))
     setUsers(data.filter(a => a.show_on_discover));
     setFilteredUsers(data.filter(a => a.show_on_discover))
     console.log(data);
@@ -33,7 +31,7 @@ export default function Messages({ user }) {
   }, [filter, category])
 
   useEffect(() => {
-    Recache.init("cac121461df5ec95fd867894904f0839b108b03a")
+    Recache.init("cac121461df5ec95fd867894904f0839b108b03a", 235)
 
     getUsers()
   }, []);
