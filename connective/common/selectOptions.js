@@ -56,7 +56,7 @@ exports.industryOptions = [
     { value: 27, label: 'Desktop Apps' },
     { value: 28, label: 'Education' },
     { value: 29, label: 'Emerging Markets' },
-    { value: 30, label: 'Energy' },
+    { value: 30, label: 'Energy' }, 
     { value: 31, label: 'Enterprise' },
     { value: 32, label: 'Ethereum' },
     { value: 33, label: 'Events' },
