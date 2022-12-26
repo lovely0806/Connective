@@ -88,8 +88,9 @@ export default function IndividualProfile({ user, id }) {
 
           {data.status ? (
             <div
+              className="rounded"
               style={{
-                width: "30%",
+                width: "35%",
                 height: "7%",
                 backgroundColor:
                   data.status === "Looking to give client for commission."

@@ -239,23 +239,16 @@ export default function EditProfile({ user }) {
               <p className="text-red-500 font-bold text-[12px]">{sizeError}</p>
             </div>
             <div className="w-full">
-              {status ? (
-                <>
-                  <p className="text-sm mb-2">Status*</p>
-                  {/* <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] 1bp:text-[16.5px]">
-                    Status
-                  </p> */}
-                  <Select
-                    className="w-full text-[12px] font-[Poppins]"
-                    onChange={(e) => {
-                      setStatus(e.value);
-                    }}
-                    options={statusOptions}
-                    placeholder="Choose your Status"
-                    value={{ value: status, label: status }}
-                  ></Select>
-                </>
-              ) : null}
+              <p className="text-sm mb-2">Status*</p>
+              <Select
+                className="w-full text-[12px] font-[Poppins]"
+                onChange={(e) => {
+                  setStatus(e.value);
+                }}
+                options={statusOptions}
+                placeholder="Choose your Status"
+                value={{ value: status, label: status }}
+              ></Select>
             </div>
           </div>
         </div>
