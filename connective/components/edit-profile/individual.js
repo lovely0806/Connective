@@ -144,22 +144,18 @@ export default function EditProfile({ user }) {
             updateValue={setLocation}
             value={location}
           ></InputField>
-          {status ? (
-            <>
-              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] 1bp:text-[16.5px]">
-                Status
-              </p>
-              <Select
-                className="w-full text-[12px] font-[Poppins]"
-                onChange={(e) => {
-                  setStatus(e.value);
-                }}
-                options={statusOptions}
-                placeholder="Choose your Status"
-                value={{ value: status, label: status }}
-              ></Select>
-            </>
-          ) : null}
+          <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] 1bp:text-[16.5px]">
+            Status
+          </p>
+          <Select
+            className="w-full text-[12px] font-[Poppins]"
+            onChange={(e) => {
+              setStatus(e.value);
+            }}
+            options={statusOptions}
+            placeholder="Choose your Status"
+            value={{ value: status, label: status }}
+          ></Select>
         </div>
 
         <button

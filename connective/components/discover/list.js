@@ -8,18 +8,19 @@ const DiscoverList = ({ id, title, description, imgURL, status }) => {
   let statusStyle;
   if (status) {
     statusStyle = {
-      marginTop: description.length > 195 ? "10px" : "30px",
+      marginTop: description.length > 195 ? "5px" : "45px",
       backgroundColor:
         status === "Looking to give client for commission."
           ? "#4b5e6d"
           : "#c2cfd8",
       textColor:
         status === "Looking to give client for commission." ? "white" : "black",
+      textMarginBottom: description.length > 195 ? "1px" : "",
     };
   }
 
   return (
-    <div className="flex flex-row w-full h-44 shadow-lg bg-white rounded justify-between gap-2">
+    <div className="flex flex-row w-full h-48 shadow-lg bg-white rounded justify-between gap-2">
       <div className="w-60 relative m-3 rounded-sm shrink-0">
         {imgURL ? (
           <Image
@@ -40,8 +41,9 @@ const DiscoverList = ({ id, title, description, imgURL, status }) => {
             : description}
           {status ? (
             <div
+              className="rounded"
               style={{
-                width: "50%",
+                width: "65%",
                 height: "30%",
                 backgroundColor: statusStyle.backgroundColor,
                 display: "flex",
@@ -53,6 +55,7 @@ const DiscoverList = ({ id, title, description, imgURL, status }) => {
               <p
                 style={{
                   color: statusStyle.textColor,
+                  marginBottom: statusStyle.textMarginBottom,
                 }}
               >{`Status: ${status}`}</p>
             </div>
