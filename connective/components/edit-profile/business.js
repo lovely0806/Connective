@@ -197,6 +197,7 @@ export default function EditProfile({ user }) {
               src={src}
               user={name}
               profilePicture={true}
+              editProfile={true}
             ></FileUpload>
           </div>
           <InputField
