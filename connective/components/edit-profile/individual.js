@@ -8,6 +8,7 @@ import Select from "react-select";
 
 export default function EditProfile({ user }) {
   const [name, setName] = useState("");
+  const [userId, setUserId] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
@@ -25,7 +26,8 @@ export default function EditProfile({ user }) {
   const getProfile = async () => {
     await axios.get("/api/profiles/individual").then((res) => {
       if (typeof res.data != "undefined") {
-        console.log(res.data);
+        console.log("res.data", res.data);
+        setUserId(res.data.user_id);
         setSrc(res.data.profile_picture);
         setName(res.data.name);
         setDescription(res.data.bio);
@@ -90,7 +92,7 @@ export default function EditProfile({ user }) {
       .then((res) => {
         if (res.status == 200) {
           console.log("success");
-          router.push("/app/profile");
+          router.push(`/app/profile/${userId}`);
         }
       })
       .catch((e) => {

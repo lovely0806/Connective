@@ -9,6 +9,7 @@ import { industryOptions } from "common/selectOptions";
 
 export default function EditProfile({ user }) {
   const [name, setName] = useState("");
+  const [userId, setUserId] = useState("");
   const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
@@ -33,7 +34,8 @@ export default function EditProfile({ user }) {
   const getProfile = async () => {
     await axios.get("/api/profiles/business").then((res) => {
       if (typeof res.data != "undefined") {
-        console.log(res.data);
+        console.log("res.data", res.data);
+        setUserId(res.data.user_id);
         setName(res.data.company_name);
         setDescription(res.data.description);
         setLocation(res.data.location);
@@ -149,7 +151,7 @@ export default function EditProfile({ user }) {
       .then((res) => {
         if (res.status == 200) {
           console.log("success");
-          router.push("/app/profile");
+          router.push(`/app/profile/userId${userId}`);
         }
       })
       .catch((e) => {
