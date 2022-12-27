@@ -109,10 +109,8 @@ export default function BusinessProfile({ user, id }) {
 
           {data.status ? (
             <div
-              className="rounded"
+              className="rounded py-3 px-6 w-fit"
               style={{
-                width: "35%",
-                height: "7%",
                 backgroundColor:
                   data.status === "Looking to give client for commission."
                     ? "#4b5e6d"

@@ -33,23 +33,19 @@ const DiscoverList = ({ id, title, description, imgURL, status }) => {
           <Avatar title={title} />
         )}
       </div>
-      <div className="w-full h-36 my-8 overflow-y-clip">
-        <p className="text-xl font-bold my-1">{title}</p>
-        <p className="text-sm h-full">
+      <div className="w-full h-full overflow-y-clip flex flex-col py-3">
+        <p className="text-xl font-bold mt-4">{title}</p>
+        <p className="text-sm flex-1 h-full">
           {description.length > 195
             ? description.slice(0, 195) + "..."
             : description}
+        </p>
+        <div className="text-sm">
           {status ? (
             <div
-              className="rounded"
+              className="rounded py-3 px-6 w-fit"
               style={{
-                width: "65%",
-                height: "30%",
                 backgroundColor: statusStyle.backgroundColor,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: statusStyle.marginTop,
               }}
             >
               <p
@@ -60,7 +56,7 @@ const DiscoverList = ({ id, title, description, imgURL, status }) => {
               >{`Status: ${status}`}</p>
             </div>
           ) : null}
-        </p>
+        </div>
       </div>
       <div className="w-60 shrink-0 flex flex-col justify-center items-center gap-3 m-5">
         <button

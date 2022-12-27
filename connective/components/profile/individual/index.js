@@ -88,15 +88,12 @@ export default function IndividualProfile({ user, id }) {
 
           {data.status ? (
             <div
-              className="rounded"
+              className="rounded py-3 px-6 w-fit"
               style={{
-                width: "35%",
-                height: "7%",
                 backgroundColor:
                   data.status === "Looking to give client for commission."
                     ? "#4b5e6d"
                     : "#c2cfd8",
-                display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 marginBottom: "20px",
