@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Layout from "../../components/layout";
 import { withIronSession } from "next-iron-session";
 import ButtonDark from "components/button-dark";
@@ -81,6 +81,7 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
   }, [selectedUser])
 
   const sendMessage = async() => {
+    if(document.getElementById("message-input").value != ""){
       await axios.post("/api/messages/" + selectedUser.id, {text})
       document.getElementById("message-input").value = ""
 
@@ -89,9 +90,9 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
           getConversations()
       }
-
-
       setMessages([...messages, {sender: user.id, text}])
+    }
+      
   }
   const getMessages = async () => {
       let temp = messages
@@ -125,8 +126,24 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
         Accept: 'application/json'
       },
       data: unReadMesssages
-    })
-  }
+    });
+  };
+
+  // Send message on pressing Enter key
+  const messageInputRef = useRef(null);
+  useEffect(() => {
+    const keyDownHandler = event => {
+      if (event.key === 'Enter' && document.activeElement === messageInputRef.current) {
+        document.getElementById("message-submit-button").click();
+      }
+    };
+    document.addEventListener('keydown', keyDownHandler);
+    return () => {
+      document.removeEventListener('keydown', keyDownHandler);
+    };
+  }, []);
+  
+  
 
   return (
       <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
@@ -145,8 +162,8 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
           </div>
           {selectedUser && (
               <div  className="flex flex-row p-5 gap-5">
-                  <input id="message-input" placeholder="Type something..." onChange={(e)=>{setText(e.target.value)}}  className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
-                  <button  className="w-fit px-10" onClick={sendMessage}>Send</button>
+                  <input ref={messageInputRef} id="message-input" placeholder="Type something..." onChange={(e)=>{setText(e.target.value)}}  className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
+                  <button id="message-submit-button" className="w-fit px-10" onClick={sendMessage}>Send</button>
               </div>
           )}
       </div>
