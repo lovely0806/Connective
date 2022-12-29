@@ -9,6 +9,8 @@ const EmailVerification = ({
 }) => {
   const [inputValue, setInputValue] = useState(1);
   const [otpError, setOtpError] = useState(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   const otpInitialValue = {
     0: "",
     1: "",
@@ -20,10 +22,17 @@ const EmailVerification = ({
   const numbersArray = [1, 2, 3, 4];
 
   useEffect(() => {
+    if (otpNotMatchError) {
+      setButtonDisabled(false);
+    }
+  }, [otpNotMatchError]);
+
+  useEffect(() => {
     document.querySelector(`input[id=code_1]`)?.focus();
   }, []);
 
   const handleOnChangeNumber = (e, index) => {
+    setButtonDisabled(false);
     const value = e.target.value;
     let updateOtp = otp;
     updateOtp[index] = value;
@@ -35,15 +44,19 @@ const EmailVerification = ({
   const handleResendCode = async () => {
     setOtpError(null);
     setOtpNotMatchError(null);
+    setButtonDisabled(false);
     const randomOtp = Math.floor(1000 + Math.random() * 9000);
     const verifiedEmail = await axios({
       method: "post",
       url: "/api/auth/resendCode",
       data: { code: randomOtp, email },
     });
-    if (verifiedEmail?.data?.error === "You can send code after 15 minutes") {
+    if (
+      verifiedEmail?.data?.error === "You can send another code in 15 minutes"
+    ) {
       setOtpNotMatchError(null);
-      setOtpError("You can send code after 15 minutes");
+      setButtonDisabled(false);
+      setOtpError("You can send another code in 15 minutes");
     } else {
       setOtpError(null);
     }
@@ -51,11 +64,14 @@ const EmailVerification = ({
   };
 
   const handleOnVerify = () => {
+    setOtpNotMatchError(null);
+    setButtonDisabled(false);
     const isEmpty = Object.values(otp).map((number) => number == "");
     if (isEmpty.includes(true)) {
       setOtpError("Please enter 4 digits code");
     } else {
       setOtpError(null);
+      setButtonDisabled(true);
       const updatedOtp = Object.values(otp)
         .map((number) => number)
         .join("");
@@ -101,7 +117,7 @@ const EmailVerification = ({
                   </div>
                   {otpNotMatchError && !otpError ? (
                     <p className="text-center text-xs text-red-600 mt-2">
-                      OTP did not matched
+                      Incorrect verification code
                     </p>
                   ) : null}
                   {otpError ? (
@@ -126,6 +142,7 @@ const EmailVerification = ({
                       type="button"
                       className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
                       onClick={handleOnVerify}
+                      disabled={buttonDisabled}
                     >
                       Verify
                     </button>

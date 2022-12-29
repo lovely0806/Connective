@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         if (diff < 15) {
           return res.status(200).json({
             success: false,
-            error: "You can send code after 15 minutes",
+            error: "You can send another code in 15 minutes",
           });
         }
       }

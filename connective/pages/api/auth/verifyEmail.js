@@ -18,7 +18,9 @@ export default async function handler(req, res) {
           );
         res.status(200).json({ success: true });
       } else {
-        res.status(200).json({ success: false, error: "OTP did not matched" });
+        res
+          .status(200)
+          .json({ success: false, error: "Incorrect verification code" });
       }
     } else {
       res.status(200).json({ success: false, error: "User not found" });

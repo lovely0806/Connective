@@ -39,8 +39,8 @@ export default function SignIn({ user }) {
           data: { code: otpCode, email },
         });
         if (!verifiedEmail.data.success) {
-          if (verifiedEmail.data.error === "OTP did not matched") {
-            setOtpError("OTP did not matched");
+          if (verifiedEmail.data.error === "Incorrect verification code") {
+            setOtpError("Incorrect verification code");
           } else {
             setOtpError(verifiedEmail.data.error);
           }
@@ -63,8 +63,8 @@ export default function SignIn({ user }) {
           data: { code: otpCode, email },
         });
         if (!verifiedEmail.data.success) {
-          if (verifiedEmail.data.error === "OTP did not matched")
-            setOtpError("OTP did not matched");
+          if (verifiedEmail.data.error === "Incorrect verification code")
+            setOtpError("Incorrect verification code");
         } else {
           setEmailNotVerified(false);
         }
