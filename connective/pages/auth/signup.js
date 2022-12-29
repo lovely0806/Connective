@@ -1,12 +1,13 @@
 import InputField from "../../components/input-field";
 import Logo from "../../components/logo";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import OnboardingSidebar from "../../components/onboarding-sidebar";
 import Link from "next/link";
 import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
+import EmailVerification from "../../components/dailog/EmailVerification";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -15,9 +16,61 @@ export default function SignUp() {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [otpError, setOtpError] = useState(null);
   const [tacError, setTacError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [otpCode, setOtpCode] = useState(null);
+  const [emailVerified, setEmailVerified] = useState(null);
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (otpCode && signUpSuccess) {
+      async function verifyEmail() {
+        const verifiedEmail = await axios({
+          method: "post",
+          url: "/api/auth/verifyEmail",
+          data: { code: otpCode, email },
+        });
+        if (!verifiedEmail.data.success) {
+          if (verifiedEmail.data.error === "OTP did not matched")
+            setOtpError("OTP did not matched");
+        } else {
+          setEmailVerified(true);
+        }
+      }
+      verifyEmail();
+    }
+  }, [otpCode, signUpSuccess]);
+
+  useEffect(() => {
+    if (emailVerified) {
+      async function signIn() {
+        await axios({
+          method: "post",
+          url: "/api/auth/sessions",
+          data: { email, password },
+        })
+          .then((res) => {
+            if (res.status == 201) {
+              console.log(res.data);
+              res.data
+                ? router.push("/app/discover")
+                : router.push("/onboarding/create-profile");
+            }
+          })
+          .catch((e) => {
+            if (
+              e.response.status == 403 ||
+              e.response.data.error == "Account does not exist"
+            )
+              setPasswordError("Incorrect email or password");
+          });
+      }
+      signIn();
+    }
+  }, [emailVerified]);
 
   const submitAccount = async () => {
     let checkboxChecked = document.getElementById("checkbox").checked;
@@ -60,26 +113,18 @@ export default function SignUp() {
       url: "/api/auth/signup",
       data: { username: name, email, password },
     })
-      .then(async () => {
+      .then(async (res) => {
+        const randomOtp = Math.floor(1000 + Math.random() * 9000);
         await axios({
           method: "post",
-          url: "/api/auth/sessions",
-          data: { email, password },
+          url: "/api/auth/sendVerificationCode",
+          data: { code: randomOtp, email },
         })
-          .then((res) => {
-            if (res.status == 201) {
-              console.log(res.data);
-              res.data
-                ? router.push("/app/discover")
-                : router.push("/onboarding/create-profile");
-            }
+          .then(async (data) => {
+            if (data) setSignUpSuccess(true);
           })
-          .catch((e) => {
-            if (
-              e.response.status == 403 ||
-              e.response.data.error == "Account does not exist"
-            )
-              setPasswordError("Incorrect email or password");
+          .catch((error) => {
+            console.log(error);
           });
       })
       .catch((e) => {
@@ -98,7 +143,6 @@ export default function SignUp() {
   return (
     <main className="flex flex-row min-h-screen min-w-screen gap-[90px] justify-center 2bp:gap-[50px]">
       <OnboardingSidebar></OnboardingSidebar>
-
       <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[92px] mr-[32px]">
         <div>
           <p className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
@@ -205,6 +249,18 @@ export default function SignUp() {
           Sign up
         </button>
       </div>
+      {signUpSuccess ? (
+        <>
+          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+            <EmailVerification
+              code={setOtpCode}
+              email={email}
+              otpNotMatchError={otpError}
+              setOtpNotMatchError={setOtpError}
+            />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }

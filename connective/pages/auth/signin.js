@@ -10,6 +10,7 @@ import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
 import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
+import EmailVerification from "components/dailog/EmailVerification";
 
 export default function SignIn({ user }) {
   const [email, setEmail] = useState("");
@@ -17,6 +18,10 @@ export default function SignIn({ user }) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [otpCode, setOtpCode] = useState(null);
+  const [otpError, setOtpError] = useState(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -24,6 +29,49 @@ export default function SignIn({ user }) {
       //router.push("/onboarding/create-profile")
     }
   }, [user]);
+
+  useEffect(() => {
+    if (otpCode && emailNotVerified) {
+      async function verifyEmail() {
+        const verifiedEmail = await axios({
+          method: "post",
+          url: "/api/auth/verifyEmail",
+          data: { code: otpCode, email },
+        });
+        if (!verifiedEmail.data.success) {
+          if (verifiedEmail.data.error === "OTP did not matched") {
+            setOtpError("OTP did not matched");
+          } else {
+            setOtpError(verifiedEmail.data.error);
+          }
+        } else {
+          setOtpError(null);
+          setEmailError(null);
+          setEmailNotVerified(false);
+        }
+      }
+      verifyEmail();
+    }
+  }, [otpCode, emailNotVerified]);
+
+  useEffect(() => {
+    if (!emailNotVerified) {
+      async function verifyEmail() {
+        const verifiedEmail = await axios({
+          method: "post",
+          url: "/api/auth/verifyEmail",
+          data: { code: otpCode, email },
+        });
+        if (!verifiedEmail.data.success) {
+          if (verifiedEmail.data.error === "OTP did not matched")
+            setOtpError("OTP did not matched");
+        } else {
+          setEmailNotVerified(false);
+        }
+      }
+      verifyEmail();
+    }
+  }, [otpCode, emailNotVerified]);
 
   const submitAccount = async () => {
     if (email == "") {
@@ -54,6 +102,10 @@ export default function SignIn({ user }) {
         }
       })
       .catch((e) => {
+        if (e.response.data.error == "Email not verified") {
+          setEmailError("Email not verified");
+          setEmailNotVerified(true);
+        }
         if (
           e.response.status == 403 ||
           e.response.data.error == "Account does not exist"
@@ -191,6 +243,18 @@ export default function SignIn({ user }) {
           </p>
         </div>
       </div>
+      {emailNotVerified ? (
+        <>
+          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+            <EmailVerification
+              code={setOtpCode}
+              email={email}
+              otpNotMatchError={otpError}
+              setOtpNotMatchError={setOtpError}
+            />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
