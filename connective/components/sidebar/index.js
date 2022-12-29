@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
-const SidebarItem = ({ text, route, icon, onClick, target }) => {
+const SidebarItem = ({ text,text2, route, icon, onClick, target }) => {
   const router = useRouter();
   let selected = router.route == route;
   if (typeof onClick == "undefined") {
@@ -26,6 +27,7 @@ const SidebarItem = ({ text, route, icon, onClick, target }) => {
     >
       <img  className="w-[2vh] h-[2vh] my-auto" src={icon} />
       <p>{text}</p>
+      <p>{text2}</p>
     </div>
   );
 };
@@ -36,6 +38,42 @@ const Sidebar = ({user}) => {
     await axios.get("/api/auth/signout");
     router.push("/");
   };
+
+  const [sum, setSum] = useState();
+  const [array1, setArray1] = useState([]);
+  const getConversations = async () => {
+    const { data } = await axios.get("/api/messages/conversations");
+    let temp = [];
+    data.forEach((item) => {
+      let tempItem = item.filter((a) => a.id != user.id)[0];
+      if (temp.filter((a) => a.id == tempItem.id).length == 0)
+        temp.push(tempItem);
+    });
+    let temp2 = [...temp];
+    temp2?.map(async (item, index) =>{
+      let x = await getUnreadMessages(item.id);
+        item.unread = x;
+        array1[item.id] = x;
+      });
+    setSum(array1?.reduce((a,v) =>  a + v, 0 ));
+    console.log(sum)
+  };
+  const getUnreadMessages = async (id) => {
+    const {data} = await axios.get("/api/messages/" + id)
+    const unReadMesssages =(data.filter(message => {
+      return message.read != '1' && message.receiver == user.id
+    }).length);
+    return unReadMesssages;
+}
+  useEffect(() => {
+    getConversations();
+
+    let intervalId = setInterval(() => {
+      getConversations();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <div  className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
@@ -124,7 +162,8 @@ const Sidebar = ({user}) => {
           route="/app/discover"
         ></SidebarItem>
         <SidebarItem
-          text="Messages"
+          text='Messages'
+          text2={sum > 0 ? sum : null}
           icon="/assets/navbar/messages.png"
           route="/app/messages"
         ></SidebarItem>

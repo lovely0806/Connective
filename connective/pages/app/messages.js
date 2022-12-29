@@ -24,10 +24,10 @@ const Message = ({text, sent}) => {
   }
 }
 
-const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
+const Conversations = ({selectedUser, setSelectedUser, conversations, array1}) => {
   const [filter, setFilter] = useState("")
   const [filteredConversations, setFilteredConversations] = useState([])
-
+  
   useEffect(() => {
     setFilteredConversations([...conversations])
   }, [conversations])
@@ -43,9 +43,22 @@ const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
 
           {filteredConversations.map((item, index) => {
               return (
-                  <div onClick={()=>{setSelectedUser(item)}}  className={`flex flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
+                  <div onClick={()=>{setSelectedUser(item)}}  className={`flex items-center  flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
                      {item.logo ? (<img src={item.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg" width="50px" height="50px" title={item.username}/>) }
                       <p  className="my-auto ml-2 text-md font-medium">{item.username}</p>
+                        {
+                          // console.log(item, item.unread)
+                        }
+                        {
+                          array1[item.id] > 0 ?
+                          <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
+                            {array1[item.id]}
+                          </span>
+                          : null
+                        }
+                        
+                        
+                    
                   </div>
               )
           })}
@@ -204,13 +217,14 @@ export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState();
   const [conversations, setConversations] = useState([]);
+  const [array1, setArray1] = useState([]);
 
+  let sum = 0;
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
     setUsers(data);
     newUser && setSelectedUser(data.filter((item) => item.id == newUser)[0]);
   };
-
   const getConversations = async () => {
     const { data } = await axios.get("/api/messages/conversations");
     let temp = [];
@@ -219,8 +233,23 @@ export default function Messages({ user }) {
       if (temp.filter((a) => a.id == tempItem.id).length == 0)
         temp.push(tempItem);
     });
-    setConversations(temp);
+    let temp2 = [...temp];
+    temp2?.map(async (item, index) =>{
+      let x = await getUnreadMessages(item.id);
+        item.unread = x;
+        array1[item.id] = x;
+      });
+    setConversations(temp2);
+    sum = (array1?.reduce((a,v) =>  a + v, 0 ));
   };
+
+  const getUnreadMessages = async (id) => {
+    const {data} = await axios.get("/api/messages/" + id)
+    const unReadMesssages =(data.filter(message => {
+      return message.read != '1' && message.receiver == user.id
+    }).length);
+    return unReadMesssages;
+}
 
   useEffect(() => {
     getUsers();
@@ -237,6 +266,9 @@ export default function Messages({ user }) {
     <Layout user={user} title="Messages">
       <div  className="bg-white h-full overflow-clip mt-5 flex flex-row">
         <Conversations
+          sum = {sum}
+          array1 = {array1}
+          selectedUser={selectedUser}
           conversations={conversations}
           setSelectedUser={setSelectedUser}
         ></Conversations>
