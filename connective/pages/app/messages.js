@@ -222,7 +222,7 @@ export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState();
 
-  // Automatically open latest openned conversation when navigating to messages page
+  // Automatically open latest (last opened) conversation when navigating to messages page
   useEffect(() => {
     let x;
     if(sessionStorage.selectedUser) x= JSON.parse(sessionStorage.selectedUser);
