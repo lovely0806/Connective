@@ -7,6 +7,7 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 import Api from "services/api"
 import Avatar from "components/avatar";
+import Head from 'next/head'
 
 const Message = ({text, sent}) => {
   if(sent) {
@@ -39,6 +40,10 @@ const Conversations = ({selectedUser, setSelectedUser, conversations, array1}) =
 
   return (
       <div  className="flex flex-col w-1/5 overflow-y-scroll bg-black/5">
+        <Head>
+          <title>Messages - Conenctive</title>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        </Head>
           <input placeholder="Search..." onChange={(e)=>{setFilter(e.target.value)}}  className="outline-none pl-[32px] pr-[14px] text-sm py-2 rounded-full m-5 shadow-lg focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
 
           {filteredConversations.map((item, index) => {

@@ -10,6 +10,7 @@ import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
 import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
+import Head from 'next/head'
 
 export default function SignIn({ user }) {
   const [email, setEmail] = useState("");
@@ -68,6 +69,9 @@ export default function SignIn({ user }) {
 
   return (
     <main className="flex flex-row-reverse gap-[80px] 2bp:gap-[40px] justify-center">
+      <Head>
+        <title>Signin - Conenctive</title>
+      </Head>
       <LoginSidebar />
 
       <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px] ml-[64px]">

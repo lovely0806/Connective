@@ -9,6 +9,7 @@ import DiscoverList from "components/discover/list";
 import { data } from "autoprefixer";
 import { industryOptions } from "common/selectOptions";
 import { Recache } from "recache-client";
+import Head from 'next/head'
 
 export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
@@ -44,6 +45,9 @@ export default function Messages({ user }) {
 
   return (
     <Layout user={user} title="Discover">
+      <Head>
+        <title>Discover - Conenctive</title>
+      </Head>
       <div className="ml-[64px] mr-20 h-screen">
         <div className="flex flex-row w-[100%] mb-20 gap-10 items-center mt-20">
           <div className="w-full relative">

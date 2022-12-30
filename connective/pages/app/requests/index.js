@@ -1,6 +1,7 @@
 import Layout from "components/layout";
 import {useEffect, useState} from "react"
 import axios from "axios"
+import Head from 'next/head'
 
 const RequestList = () => {
   const [requests, setRequests] = useState([])
@@ -16,6 +17,9 @@ const RequestList = () => {
 
   return (
     <Layout title="Requests List">
+      <Head>
+        <title>Requests - Conenctive</title>
+      </Head>
       <h1  className="font-[Montserrat] font-bold text-xl text-[#0D1011] ml-[64px] mt-10 mb-4">
         Requests submitted by buyers
       </h1>

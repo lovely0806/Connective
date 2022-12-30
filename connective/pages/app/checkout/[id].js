@@ -5,6 +5,7 @@ import {loadStripe} from '@stripe/stripe-js';
 import {withIronSession} from "next-iron-session"
 import CheckoutForm from '../../../components/checkoutform/index';
 import { useRouter } from 'next/router';
+import Head from 'next/head'
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -32,6 +33,9 @@ const Checkout = ({ user }) => {
   if(options) {
     return (
       <Elements stripe={stripePromise} options={options}>
+        <Head>
+          <title>Checkout - Conenctive</title>
+        </Head>
         <CheckoutForm />
       </Elements>
     );

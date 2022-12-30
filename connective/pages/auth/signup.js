@@ -7,6 +7,7 @@ import OnboardingSidebar from "../../components/onboarding-sidebar";
 import Link from "next/link";
 import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
+import Head from 'next/head'
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -78,6 +79,9 @@ export default function SignUp() {
 
   return (
     <main  className="flex flex-row min-h-screen min-w-screen gap-[90px] justify-center 2bp:gap-[50px]">
+      <Head>
+        <title>Signup - Conenctive</title>
+      </Head>
       <OnboardingSidebar></OnboardingSidebar>
 
       <div  className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[92px] mr-[32px]">

@@ -9,6 +9,7 @@ import Image from "next/image";
 import searchIcon from "../../../public/assets/search-2.svg";
 import RequestModal from "components/modal/request-modal";
 import ListMarketplace from "components/marketplace/ListMarketplace";
+import Head from 'next/head'
 
 export default function Dashboard({ user }) {
   const [lists, setLists] = useState([]);
@@ -100,6 +101,9 @@ export default function Dashboard({ user }) {
 
   return (
     <Layout user={user} title="Marketplace">
+      <Head>
+        <title>Marketplace - Conenctive</title>
+      </Head>
       <div  className="ml-[64px] mr-20 h-screen">
         <div  className="flex flex-row w-[100%] mb-20 gap-10 items-center mt-20">
           <div  className="w-full relative">
