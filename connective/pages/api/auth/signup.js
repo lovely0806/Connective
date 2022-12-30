@@ -1,9 +1,7 @@
 const mysql = require("mysql2");
 var bcrypt = require("bcryptjs");
 
-const stripe = require("stripe")(
-  process.env.STRIPE_SECRET_KEY
-);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   try {
@@ -23,7 +21,7 @@ export default async function handler(req, res) {
       const stripe_account = await stripe.accounts.create({ type: "express" });
       // stripe_account.id
       // add stripe_account.id to the User database # FieldName: stripeID
-    
+
       connection.execute(
         `INSERT INTO Users (username, password_hash, email, stripeID) VALUES ('${username}', '${hash}', '${email}', '${stripe_account.id}');`
       );

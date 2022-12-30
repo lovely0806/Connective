@@ -19,6 +19,17 @@ export default withIronSession(
           .json({ success: false, error: "Account does not exist" });
       }
 
+      if (results.length) {
+        const user = results[0];
+        console.log("session results", user);
+        console.log("session user", user);
+        if (!user.email_verified) {
+          return res
+            .status(500)
+            .json({ success: false, error: "Email not verified" });
+        }
+      }
+
       if (bcrypt.compareSync(password, results[0].password_hash.toString())) {
         req.session.set("user", { email, id: results[0].id });
         console.log(req.session.get("user"));
