@@ -44,7 +44,7 @@ const EmailVerification = ({
   const handleResendCode = async () => {
     setOtpError(null);
     setOtpNotMatchError(null);
-    setButtonDisabled(false);
+    setButtonDisabled(true);
     const randomOtp = Math.floor(1000 + Math.random() * 9000);
     const verifiedEmail = await axios({
       method: "post",
@@ -59,6 +59,7 @@ const EmailVerification = ({
       setOtpError("You can send another code in 15 minutes");
     } else {
       setOtpError(null);
+      setButtonDisabled(false);
     }
     return;
   };
