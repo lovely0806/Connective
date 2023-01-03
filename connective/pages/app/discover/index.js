@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import Layout from "../../../components/layout";
 import { withIronSession } from "next-iron-session";
 import Select from "react-select";
@@ -10,12 +10,48 @@ import { data } from "autoprefixer";
 import { industryOptions } from "common/selectOptions";
 import { Recache } from "recache-client";
 import Head from 'next/head'
+import ReactPaginate from 'react-paginate';
 
-export default function Messages({ user }) {
+function Items({ currentItems }) {
+  return (
+    <>
+      {currentItems &&
+        currentItems.map((item) => (
+          <div>
+            {item}
+          </div>
+        ))}
+    </>
+  );
+}
+
+
+export default function Messages({ user}) {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("");
   const [category, setCategory] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [page, setPage] = useState(0);
+  const discoverRef = useRef(null)
+  // Here we use item offsets; we could also use page offsets
+  // following the API or data you're working with.
+  const [itemOffset, setItemOffset] = useState(0);
+
+  // Simulate fetching items from another resources.
+  // (This could be items from props; or items loaded in a local state
+  // from an API endpoint with useEffect and useState)
+  // items per page = 10
+  const endOffset = itemOffset + 10;
+  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+  const currentItems = filteredUsers.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(filteredUsers.length / 10);
+
+  // Invoke when user click to request another page.
+  const handlePageClick = (page) => {
+    setPage(page.selected);
+    const newOffset = (page.selected * 10) % filteredUsers.length;
+    setItemOffset(newOffset);
+  };
 
   const getUsers = async () => {
     let start = Date.now();
@@ -80,8 +116,28 @@ export default function Messages({ user }) {
           <Select placeholder="Sort"  className="w-[250px] text-[12px]"></Select>
           */}
         </div>
-        <div className="flex flex-col w-full gap-10 pb-20">
-          {filteredUsers.map((item) => {
+        <div className="flex flex-col w-full gap-10 pb-20" ref={discoverRef}>
+          <ReactPaginate
+            forcePage={page}
+            breakLabel="..."
+            nextLabel="next >"
+            onPageChange={(page) => handlePageClick(page)}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="< previous"
+            renderOnZeroPageCount={null}
+            breakClassName={'page-item'}
+            breakLinkClassName={'page-link'}
+            containerClassName={'pagination'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+            activeClassName={'active'}
+          />
+          <Items currentItems={currentItems.map((item) => {
             return (
               <DiscoverList
                 id={item.id}
@@ -91,8 +147,32 @@ export default function Messages({ user }) {
                 status={item?.status ? item.status : null}
               />
             );
-          })}
+          })} />
+          <ReactPaginate
+            forcePage={page}
+            breakLabel="..."
+            nextLabel="next >"
+            onPageChange={function(page){
+              handlePageClick(page);
+              discoverRef.current.scrollIntoView({behavior: "smooth"});
+           }}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="< previous"
+            renderOnZeroPageCount={null}
+            breakClassName={'page-item'}
+            breakLinkClassName={'page-link'}
+            containerClassName={'pagination'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+            activeClassName={'active'}
+          />
         </div>
+
       </div>
     </Layout>
   );
