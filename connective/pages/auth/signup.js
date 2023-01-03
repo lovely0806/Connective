@@ -1,13 +1,15 @@
 import InputField from "../../components/input-field";
 import Logo from "../../components/logo";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import OnboardingSidebar from "../../components/onboarding-sidebar";
 import Link from "next/link";
 import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
 import Head from 'next/head'
+import EmailVerification from "../../components/dailog/EmailVerification";
+
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -16,9 +18,61 @@ export default function SignUp() {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [otpError, setOtpError] = useState(null);
   const [tacError, setTacError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [otpCode, setOtpCode] = useState(null);
+  const [emailVerified, setEmailVerified] = useState(null);
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (otpCode && signUpSuccess) {
+      async function verifyEmail() {
+        const verifiedEmail = await axios({
+          method: "post",
+          url: "/api/auth/verifyEmail",
+          data: { code: otpCode, email },
+        });
+        if (!verifiedEmail.data.success) {
+          if (verifiedEmail.data.error === "Incorrect verification code")
+            setOtpError("Incorrect verification code");
+        } else {
+          setEmailVerified(true);
+        }
+      }
+      verifyEmail();
+    }
+  }, [otpCode, signUpSuccess]);
+
+  useEffect(() => {
+    if (emailVerified) {
+      async function signIn() {
+        await axios({
+          method: "post",
+          url: "/api/auth/sessions",
+          data: { email, password },
+        })
+          .then((res) => {
+            if (res.status == 201) {
+              console.log(res.data);
+              res.data
+                ? router.push("/app/discover")
+                : router.push("/onboarding/create-profile");
+            }
+          })
+          .catch((e) => {
+            if (
+              e.response.status == 403 ||
+              e.response.data.error == "Account does not exist"
+            )
+              setPasswordError("Incorrect email or password");
+          });
+      }
+      signIn();
+    }
+  }, [emailVerified]);
 
   const submitAccount = async () => {
     let checkboxChecked = document.getElementById("checkbox").checked;
@@ -61,8 +115,19 @@ export default function SignUp() {
       url: "/api/auth/signup",
       data: { username: name, email, password },
     })
-      .then(() => {
-        router.push("/auth/signin");
+      .then(async (res) => {
+        const randomOtp = Math.floor(1000 + Math.random() * 9000);
+        await axios({
+          method: "post",
+          url: "/api/auth/sendVerificationCode",
+          data: { code: randomOtp, email },
+        })
+          .then(async (data) => {
+            if (data) setSignUpSuccess(true);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((e) => {
         if (e.response.data.error == "Email already exists") {
@@ -83,16 +148,15 @@ export default function SignUp() {
         <title>Signup - Conenctive</title>
       </Head>
       <OnboardingSidebar></OnboardingSidebar>
-
-      <div  className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[92px] mr-[32px]">
+      <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[92px] mr-[32px]">
         <div>
-          <p  className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
+          <p className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
             Sign up
           </p>
-          <p  className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins]  1bp:text-[18px] mb-[40px]">
+          <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins]  1bp:text-[18px] mb-[40px]">
             Have an account?{" "}
             <Link href="./signin">
-              <span  className="font-bold cursor-pointer">Log In</span>
+              <span className="font-bold cursor-pointer">Log In</span>
             </Link>
           </p>
           {/* <div
@@ -121,7 +185,7 @@ export default function SignUp() {
           </div> */}
         </div>
 
-        <div  className="flex flex-col gap-5 mt-[28px]">
+        <div className="flex flex-col gap-5 mt-[28px]">
           <InputField
             name={"Name"}
             placeholder={"Enter your name"}
@@ -136,7 +200,7 @@ export default function SignUp() {
             errorText={emailError}
           ></InputField>
 
-          <div  className="relative flex flex-row items-center justify-center">
+          <div className="relative flex flex-row items-center justify-center">
             <InputField
               name={"Password"}
               placeholder={"Enter password"}
@@ -145,7 +209,7 @@ export default function SignUp() {
               errorText={passwordError}
             ></InputField>
             <div
-               className="absolute right-[14px] bottom-[5px] cursor-pointer"
+              className="absolute right-[14px] bottom-[5px] cursor-pointer"
               onClick={showPasswordHandler}
             >
               {!showPassword && (
@@ -167,29 +231,41 @@ export default function SignUp() {
             </div>
           </div>
         </div>
-        <div  className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
+        <div className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
           <input
-             className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
+            className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
             type="checkbox"
             id="checkbox"
           ></input>
-          <p  className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
+          <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
             I accept the{" "}
-            <span  className="underline cursor-pointer">
+            <span className="underline cursor-pointer">
               Terms and Conditions
             </span>{" "}
             and I have read the{" "}
-            <span  className="underline cursor-pointer">Privacy Policy</span>
+            <span className="underline cursor-pointer">Privacy Policy</span>
           </p>
         </div>
-        <p  className="text-red-500 font-bold text-[12px]">{tacError}</p>
+        <p className="text-red-500 font-bold text-[12px]">{tacError}</p>
         <button
           onClick={submitAccount}
-           className="w-[229px] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
+          className="w-[229px] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
         >
           Sign up
         </button>
       </div>
+      {signUpSuccess ? (
+        <>
+          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+            <EmailVerification
+              code={setOtpCode}
+              email={email}
+              otpNotMatchError={otpError}
+              setOtpNotMatchError={setOtpError}
+            />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
