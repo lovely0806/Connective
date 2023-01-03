@@ -6,6 +6,7 @@ import Util from "../../util/";
 import Layout from "../../components/layout";
 import ButtonDark from "../../components/button-dark";
 import {useRouter} from "next/router"
+import Head from 'next/head'
 
 const DashboardItem = ({ title, value, icon, color }) => {
   return (
@@ -25,6 +26,10 @@ const DashboardItem = ({ title, value, icon, color }) => {
 const DashboardRow = ({ title, buttonText, children }) => {
   return (
     <div  className="ml-[64px]">
+      <Head>
+        <title>Dashboard - Conenctive</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <p  className="text-2xl font-bold">{title}</p>
       <div  className="w-fit">
         <div  className="flex flex-row justify-between py-6 w-fit gap-6 rounded-xl">
