@@ -6,6 +6,8 @@ import BusinessProfile from "../../../components/profile/business";
 import IndividualProfile from "../../../components/profile/individual";
 import Util from "../../../util";
 import {useRouter} from "next/router"
+import Head from 'next/head'
+
  
 export default function Profile({ user }) {
   const [accountType, setAccountType] = useState();
@@ -22,6 +24,9 @@ export default function Profile({ user }) {
 
   return (
     <main  className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
+      <Head>
+        <title>Profile - Conenctive</title>
+      </Head>
       <Sidebar user={user}></Sidebar>
       <div  className="h-screen w-screen overflow-y-scroll">
         {accountType == "Business" && (

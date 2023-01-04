@@ -121,7 +121,7 @@ export default function IndividualProfile({ user, id }) {
             <div></div>
           </div>
 
-          <div>
+          {/* <div>
             <p className="text-[18px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-4 1bp:text-[16.5px]">
               Lists for Sale
             </p>
@@ -134,7 +134,7 @@ export default function IndividualProfile({ user, id }) {
                 </>
               )}
             </div>
-          </div>
+          </div> */}
         </>
       ) : (
         <div>

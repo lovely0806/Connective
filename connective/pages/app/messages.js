@@ -7,6 +7,7 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 import Api from "services/api"
 import Avatar from "components/avatar";
+import Head from 'next/head'
 
 const Message = ({text, sent}) => {
   if(sent) {
@@ -24,10 +25,10 @@ const Message = ({text, sent}) => {
   }
 }
 
-const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
+const Conversations = ({selectedUser, setSelectedUser, conversations, array1}) => {
   const [filter, setFilter] = useState("")
   const [filteredConversations, setFilteredConversations] = useState([])
-
+  
   useEffect(() => {
     setFilteredConversations([...conversations])
   }, [conversations])
@@ -39,13 +40,30 @@ const Conversations = ({selectedUser, setSelectedUser, conversations}) => {
 
   return (
       <div  className="flex flex-col w-1/5 overflow-y-scroll bg-black/5">
+        <Head>
+          <title>Messages - Conenctive</title>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        </Head>
           <input placeholder="Search..." onChange={(e)=>{setFilter(e.target.value)}}  className="outline-none pl-[32px] pr-[14px] text-sm py-2 rounded-full m-5 shadow-lg focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
 
           {filteredConversations.map((item, index) => {
               return (
-                  <div onClick={()=>{setSelectedUser(item)}}  className={`flex flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
+                  <div onClick={()=>{setSelectedUser(item)}}  className={`flex items-center  flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
                      {item.logo ? (<img src={item.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg" width="50px" height="50px" title={item.username}/>) }
                       <p  className="my-auto ml-2 text-md font-medium">{item.username}</p>
+                        {
+                          // console.log(item, item.unread)
+                        }
+                        {
+                          array1[item.id] > 0 ?
+                          <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
+                            {array1[item.id]}
+                          </span>
+                          : null
+                        }
+                        
+                        
+                    
                   </div>
               )
           })}
@@ -203,14 +221,30 @@ export default function Messages({ user }) {
   const { newUser } = router.query;
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState();
-  const [conversations, setConversations] = useState([]);
 
+  // Automatically open latest (last opened) conversation when navigating to messages page
+  useEffect(() => {
+    let x;
+    if(sessionStorage.selectedUser) x= JSON.parse(sessionStorage.selectedUser);
+    if(x !== undefined) {
+      setSelectedUser(x);
+    }
+  }, []);
+  useEffect(() => {
+    if(selectedUser != undefined ) {
+      window.sessionStorage.setItem("selectedUser", JSON.stringify(selectedUser));
+    }
+  }, [selectedUser]);
+
+  const [conversations, setConversations] = useState([]);
+  const [array1, setArray1] = useState([]);
+
+  let sum = 0;
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
     setUsers(data);
     newUser && setSelectedUser(data.filter((item) => item.id == newUser)[0]);
   };
-
   const getConversations = async () => {
     const { data } = await axios.get("/api/messages/conversations");
     let temp = [];
@@ -219,8 +253,23 @@ export default function Messages({ user }) {
       if (temp.filter((a) => a.id == tempItem.id).length == 0)
         temp.push(tempItem);
     });
-    setConversations(temp);
+    let temp2 = [...temp];
+    temp2?.map(async (item, index) =>{
+      let x = await getUnreadMessages(item.id);
+        item.unread = x;
+        array1[item.id] = x;
+      });
+    setConversations(temp2);
+    sum = (array1?.reduce((a,v) =>  a + v, 0 ));
   };
+
+  const getUnreadMessages = async (id) => {
+    const {data} = await axios.get("/api/messages/" + id)
+    const unReadMesssages =(data.filter(message => {
+      return message.read != '1' && message.receiver == user.id
+    }).length);
+    return unReadMesssages;
+}
 
   useEffect(() => {
     getUsers();
@@ -237,6 +286,9 @@ export default function Messages({ user }) {
     <Layout user={user} title="Messages">
       <div  className="bg-white h-full overflow-clip mt-5 flex flex-row">
         <Conversations
+          sum = {sum}
+          array1 = {array1}
+          selectedUser={selectedUser}
           conversations={conversations}
           setSelectedUser={setSelectedUser}
         ></Conversations>
