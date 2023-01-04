@@ -64,11 +64,12 @@ async function sendEmail(code, email) {
     };
     sgMail
       .send(msg)
-      .then(() => {
+      .then((data) => {
         console.log(`Email sent successfully to ${email}`);
-        resolve();
+        resolve(true);
       })
       .catch((error) => {
+        reject(error.message);
         console.error(error);
       });
   });
