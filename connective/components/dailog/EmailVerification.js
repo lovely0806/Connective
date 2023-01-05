@@ -7,6 +7,7 @@ const EmailVerification = ({
   otpNotMatchError,
   setOtpNotMatchError,
 }) => {
+  console.log("otpNotMatchError", otpNotMatchError);
   const [inputValue, setInputValue] = useState(1);
   const [otpError, setOtpError] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -45,11 +46,10 @@ const EmailVerification = ({
     setOtpError(null);
     setOtpNotMatchError(null);
     setButtonDisabled(true);
-    const randomOtp = Math.floor(1000 + Math.random() * 9000);
     const verifiedEmail = await axios({
       method: "post",
       url: "/api/auth/resendCode",
-      data: { code: randomOtp, email },
+      data: { email },
     });
     if (
       verifiedEmail?.data?.error === "You can send another code in 15 minutes"

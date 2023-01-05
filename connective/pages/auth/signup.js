@@ -34,7 +34,7 @@ export default function SignUp() {
           url: "/api/auth/verifyEmail",
           data: { code: otpCode, email },
         });
-        if (!verifiedEmail.data.success) {
+        if (!verifiedEmail.data.success && verifiedEmail?.data?.error) {
           if (verifiedEmail.data.error === "Incorrect verification code")
             setOtpError("Incorrect verification code");
         } else {
@@ -115,11 +115,10 @@ export default function SignUp() {
       data: { username: name, email, password },
     })
       .then(async (res) => {
-        const randomOtp = Math.floor(1000 + Math.random() * 9000);
         await axios({
           method: "post",
           url: "/api/auth/sendVerificationCode",
-          data: { code: randomOtp, email },
+          data: { email },
         })
           .then(async (data) => {
             if (data) setSignUpSuccess(true);
