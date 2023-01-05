@@ -89,7 +89,7 @@ export default function SignIn({ user }) {
         if (e.response.data.error == "Email not verified") {
           setEmailError("Email not verified");
           setEmailNotVerified(true);
-          const randomOtp = Math.floor(1000 + Math.random() * 9000);
+          
           await axios({
             method: "post",
             url: "/api/auth/sendVerificationCode",
