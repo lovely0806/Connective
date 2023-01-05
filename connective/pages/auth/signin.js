@@ -93,7 +93,7 @@ export default function SignIn({ user }) {
           await axios({
             method: "post",
             url: "/api/auth/sendVerificationCode",
-            data: { code: randomOtp, email },
+            data: { email },
           });
         }
         if (

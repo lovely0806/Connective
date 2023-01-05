@@ -6,13 +6,13 @@ const moment = require("moment");
 export default async function handler(req, res) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
-    const { code, email } = req.body;
+    const { email } = req.body;
+    const code = Math.floor(1000 + Math.random() * 9000);
     const [result] = await connection
       .promise()
       .query(`SELECT * FROM Users WHERE email='${email}'`);
     if (result.length) {
       const user = result[0];
-      console.log("==============user", user);
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastCodeSentTime = user.last_code_sent_time;
         console.log("lastCodeSentTime", lastCodeSentTime);

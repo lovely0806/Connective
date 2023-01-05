@@ -46,11 +46,10 @@ const EmailVerification = ({
     setOtpError(null);
     setOtpNotMatchError(null);
     setButtonDisabled(true);
-    const randomOtp = Math.floor(1000 + Math.random() * 9000);
     const verifiedEmail = await axios({
       method: "post",
       url: "/api/auth/resendCode",
-      data: { code: randomOtp, email },
+      data: { email },
     });
     if (
       verifiedEmail?.data?.error === "You can send another code in 15 minutes"
