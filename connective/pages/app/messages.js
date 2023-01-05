@@ -250,8 +250,9 @@ export default function Messages({ user }) {
     let temp = [];
     data.forEach((item) => {
       let tempItem = item.filter((a) => a.id != user.id)[0];
-      if (temp.filter((a) => a.id == tempItem.id).length == 0)
-        temp.push(tempItem);
+      if(tempItem != undefined)
+        if (temp.filter((a) => a.id == tempItem.id).length == 0)
+          temp.push(tempItem);
     });
     let temp2 = [...temp];
     temp2?.map(async (item, index) =>{
