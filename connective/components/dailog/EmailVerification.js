@@ -7,6 +7,7 @@ const EmailVerification = ({
   otpNotMatchError,
   setOtpNotMatchError,
 }) => {
+  console.log("otpNotMatchError", otpNotMatchError);
   const [inputValue, setInputValue] = useState(1);
   const [otpError, setOtpError] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(false);

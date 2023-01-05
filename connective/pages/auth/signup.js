@@ -34,7 +34,7 @@ export default function SignUp() {
           url: "/api/auth/verifyEmail",
           data: { code: otpCode, email },
         });
-        if (!verifiedEmail.data.success) {
+        if (!verifiedEmail.data.success && verifiedEmail?.data?.error) {
           if (verifiedEmail.data.error === "Incorrect verification code")
             setOtpError("Incorrect verification code");
         } else {
