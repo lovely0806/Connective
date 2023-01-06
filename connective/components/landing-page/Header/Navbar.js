@@ -13,7 +13,7 @@ const Navbar = () => {
         priority
       />
 
-      <div  className="flex items-center gap-12 text-xs font-semibold 2bp:gap-6">
+      <div  className="flex items-center gap-12 text-xs font-semibold 2bp:gap-6 navbar-items">
         <Link href=".">Home</Link>
         <Link href="/#offers">How it Work?</Link>
         <Link href="/#services">Services</Link>

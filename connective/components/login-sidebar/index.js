@@ -3,9 +3,9 @@ import bgImg from "../../public/assets/Right.png";
 
 const LoginSidebar = () => {
   return (
-    <div  className="relative min-w-[620px] my-[32px] mr-[32px] 2bp:min-w-[520px]">
+    <div  className="relative min-w-[620px] my-[32px] mr-[32px] 2bp:min-w-fit !max-h-[calc(100vh-64px)]">
       <Image
-         className="w-fit rounded-[16px] min-h-0 min-w-0 max-h-0 max-w-0 z-[-5]"
+         className="w-fit rounded-[16px] min-h-0 min-w-0 !max-h-[100vw] max-w-0 z-[-5] signin-image"
         src={bgImg}
         alt="bg"
         priority
