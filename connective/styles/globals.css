@@ -218,3 +218,9 @@ button:disabled {
   border-radius: 100vh;
   cursor: pointer;
 }
+.navbar-items a:hover{
+  color: rgba(255, 255, 255, 0.75);
+}
+span:has(.signin-image) > span > img{
+  max-height: calc(100vh - 64px) !important;
+}
