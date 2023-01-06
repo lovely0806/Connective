@@ -17,22 +17,31 @@ const ListCard = ({ item, preview, user }) => {
   const getProfilePicture = async () => {
     let type = await Util.accountType(user.id);
     if (type == "Individual") {
-      await axios.get("/api/profiles/individual").then((res) => {
-        if (typeof res.data != "undefined") {
-          console.log(res.data);
-          setProfilePicture(res.data.profile_picture);
-          setUsername(res.data.name);
-        }
-      });
+      try{
+        await axios.get("/api/profiles/individual").then((res) => {
+          if (typeof res.data != "undefined") {
+            console.log(res.data);
+            setProfilePicture(res.data.profile_picture);
+            setUsername(res.data.name);
+          }
+        });
+      }catch(e){
+        console.log(e);
+      }
     }
     if (type == "Business") {
-      await axios.get("/api/profiles/business").then((res) => {
-        if (typeof res.data != "undefined") {
-          console.log(res.data);
-          setProfilePicture(res.data.logo);
-          setUsername(res.data.name);
-        }
-      });
+      try{
+        await axios.get("/api/profiles/business").then((res) => {
+          if (typeof res.data != "undefined") {
+            console.log(res.data);
+            setProfilePicture(res.data.logo);
+            setUsername(res.data.name);
+          }
+        });
+      }catch(e){
+        console.log(e);
+      }
+      
     }
   };
 

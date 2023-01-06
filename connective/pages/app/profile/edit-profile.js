@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { withIronSession } from "next-iron-session";
 import Sidebar from "../../../components/sidebar";
 import EditBusinessProfile from "../../../components/edit-profile/business";
@@ -9,10 +10,15 @@ import Head from 'next/head'
 
 export default function EditProfile({ user }) {
   const [accountType, setAccountType] = useState();
+  const router = useRouter();
 
   const getAccountType = async () => {
-    setAccountType(await Util.accountType(user.id));
+    if(user)
+      setAccountType(await Util.accountType(user.id));
   };
+  useEffect(() => {
+    if(typeof user == 'undefined') router.push('/auth/signin')
+  }, [user]);
   useEffect(() => {
     getAccountType();
   }, []);

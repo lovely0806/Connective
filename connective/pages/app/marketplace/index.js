@@ -28,10 +28,15 @@ export default function Dashboard({ user }) {
   ];
 
   const getLists = async () => {
-    let { data } = await axios.get("/api/lists");
-    console.log(data);
-    setLists(data);
-    setLoading(false);
+    try{
+      let { data } = await axios.get("/api/lists");
+      console.log(data);
+      setLists(data);
+      setLoading(false);
+    }catch(e){
+      console.log(e);
+    }
+    
   };
 
   const updateFilter = (e) => {

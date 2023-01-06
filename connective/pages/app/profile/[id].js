@@ -18,9 +18,10 @@ export default function Profile({ user }) {
     setAccountType(await Util.accountType(id));
   };
   useEffect(() => {
-    if(typeof(user) == "undefined") router.push("/auth/signin")
+    if(typeof(user) == "undefined") router.push("/auth/signin");
+    if(user && user.id != id) router.push("/auth/signin");
     getAccountType();
-  }, []);
+  }, [user]);
 
   return (
     <main  className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">

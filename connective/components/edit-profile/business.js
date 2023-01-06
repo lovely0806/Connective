@@ -32,25 +32,30 @@ export default function EditProfile({ user }) {
   }, []);
 
   const getProfile = async () => {
-    await axios.get("/api/profiles/business").then((res) => {
-      if (typeof res.data != "undefined") {
-        console.log("res.data", res.data);
-        setUserId(res.data.user_id);
-        setName(res.data.company_name);
-        setDescription(res.data.description);
-        setLocation(res.data.location);
-        setUrl(res.data.website);
-        const selectedIndustry = industryOptions.find(
-          (industry) => industry.value == res.data.industry
-        );
-        setIndustry(selectedIndustry.value);
-        setIndustryName(selectedIndustry.label);
-        setSize(res.data.size);
-        setSrc(res.data.logo);
-        setStatus(res.data.status);
-        setLoaded(true);
-      }
-    });
+    try{
+      await axios.get("/api/profiles/business").then((res) => {
+        if (typeof res.data != "undefined") {
+          console.log("res.data", res.data);
+          setUserId(res.data.user_id);
+          setName(res.data.company_name);
+          setDescription(res.data.description);
+          setLocation(res.data.location);
+          setUrl(res.data.website);
+          const selectedIndustry = industryOptions.find(
+            (industry) => industry.value == res.data.industry
+          );
+          setIndustry(selectedIndustry.value);
+          setIndustryName(selectedIndustry.label);
+          setSize(res.data.size);
+          setSrc(res.data.logo);
+          setStatus(res.data.status);
+          setLoaded(true);
+        }
+      });
+    }catch(e){
+      console.log(e);
+    }
+    
   };
 
   const statusOptions = [

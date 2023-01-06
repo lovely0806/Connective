@@ -12,6 +12,7 @@ const nextConfig = {
     EMAIL_USER: process.env.EMAIL_USER,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
+    GOOGLE_ID:process.env.GOOGLE_ID,
   },
 };
 

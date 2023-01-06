@@ -24,17 +24,22 @@ export default function BusinessProfile({ user, id }) {
   }, [user]);
 
   const getProfile = async () => {
-    await axios.get(`/api/profiles/business?id=${id}`).then((res) => {
-      if (typeof res.data != "undefined") {
-        setData(res.data);
-        console.log(res.data);
-        setLoaded(true);
-        const selectedIndustry = industryOptions.find(
-          (industry) => industry.value == res.data.industry
-        );
-        setIndustry(selectedIndustry.label);
-      }
-    });
+    try{
+      await axios.get(`/api/profiles/business?id=${id}`).then((res) => {
+        if (typeof res.data != "undefined") {
+          setData(res.data);
+          console.log(res.data);
+          setLoaded(true);
+          const selectedIndustry = industryOptions.find(
+            (industry) => industry.value == res.data.industry
+          );
+          setIndustry(selectedIndustry.label);
+        }
+      });
+    }catch(e){
+      console.log(e);
+    }
+    
   };
 
   return (

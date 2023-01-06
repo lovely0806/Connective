@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useRef} from "react";
+import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
 import { withIronSession } from "next-iron-session";
 import Select from "react-select";
@@ -37,6 +38,8 @@ export default function Messages({ user}) {
   // following the API or data you're working with.
   const [itemOffset, setItemOffset] = useState(0);
 
+  const router = useRouter();
+
   // Simulate fetching items from another resources.
   // (This could be items from props; or items loaded in a local state
   // from an API endpoint with useEffect and useState)
@@ -62,6 +65,13 @@ export default function Messages({ user}) {
     console.log(data);
     console.log(Date.now() - start);
   };
+
+  useEffect(() => {
+    console.log("user------------", user);
+    if (typeof user == "undefined") {
+      router.push("/auth/signin")
+    }
+  }, [user]);
 
   useEffect(() => {
     setFilteredUsers(
