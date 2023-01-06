@@ -25,7 +25,7 @@ const Message = ({text, sent}) => {
   }
 }
 
-const Conversations = ({selectedUser, setSelectedUser, conversations, array1}) => {
+const Conversations = ({selectedUser, setSelectedUser, conversations, unreadMessagesCount}) => {
   const [filter, setFilter] = useState("")
   const [filteredConversations, setFilteredConversations] = useState([])
   
@@ -55,9 +55,9 @@ const Conversations = ({selectedUser, setSelectedUser, conversations, array1}) =
                           // console.log(item, item.unread)
                         }
                         {
-                          array1[item.id] > 0 ?
+                          unreadMessagesCount[item.id] > 0 ?
                           <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
-                            {array1[item.id]}
+                            {unreadMessagesCount[item.id]}
                           </span>
                           : null
                         }
@@ -237,7 +237,7 @@ export default function Messages({ user }) {
   }, [selectedUser]);
 
   const [conversations, setConversations] = useState([]);
-  const [array1, setArray1] = useState([]);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
 
   let sum = 0;
   const getUsers = async () => {
@@ -250,17 +250,18 @@ export default function Messages({ user }) {
     let temp = [];
     data.forEach((item) => {
       let tempItem = item.filter((a) => a.id != user.id)[0];
-      if (temp.filter((a) => a.id == tempItem.id).length == 0)
-        temp.push(tempItem);
+      if(tempItem != undefined)
+        if (temp.filter((a) => a.id == tempItem.id).length == 0)
+          temp.push(tempItem);
     });
     let temp2 = [...temp];
     temp2?.map(async (item, index) =>{
       let x = await getUnreadMessages(item.id);
         item.unread = x;
-        array1[item.id] = x;
+        unreadMessagesCount[item.id] = x;
       });
     setConversations(temp2);
-    sum = (array1?.reduce((a,v) =>  a + v, 0 ));
+    sum = (unreadMessagesCount?.reduce((a,v) =>  a + v, 0 ));
   };
 
   const getUnreadMessages = async (id) => {
@@ -287,7 +288,7 @@ export default function Messages({ user }) {
       <div  className="bg-white h-full overflow-clip mt-5 flex flex-row">
         <Conversations
           sum = {sum}
-          array1 = {array1}
+          unreadMessagesCount = {unreadMessagesCount}
           selectedUser={selectedUser}
           conversations={conversations}
           setSelectedUser={setSelectedUser}

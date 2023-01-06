@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const [result] = await connection
       .promise()
       .query(`SELECT * FROM Users WHERE email='${email}'`);
-    console.log("result", result);
+
     if (result.length) {
       const user = result[0];
       if (user.verify_email_otp === code) {
@@ -16,7 +16,21 @@ export default async function handler(req, res) {
           .query(
             `UPDATE Users SET verify_email_otp = null, email_verified = true WHERE email='${email}';`
           );
-        res.status(200).json({ success: true });
+        const [isBusinessProfile] = await connection
+          .promise()
+          .query(`SELECT COUNT(id) FROM Business WHERE user_id='${user.id}';`);
+        const [isIndividualProfile] = await connection
+          .promise()
+          .query(
+            `SELECT COUNT(id) FROM Individual WHERE user_id='${user.id}';`
+          );
+        return res.status(201).json({
+          success:
+            isBusinessProfile[0]["count(id)"] ||
+            isIndividualProfile[0]["count(id)"]
+              ? true
+              : false,
+        });
       } else {
         res
           .status(200)

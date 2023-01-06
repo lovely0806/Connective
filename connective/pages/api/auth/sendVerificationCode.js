@@ -5,7 +5,9 @@ sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 export default async function handler(req, res) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
-    const { code, email } = req.body;
+    const { email } = req.body;
+    const code = Math.floor(1000 + Math.random() * 9000);
+
     const [result] = await connection
       .promise()
       .query(`SELECT * FROM Users WHERE email='${email}'`);

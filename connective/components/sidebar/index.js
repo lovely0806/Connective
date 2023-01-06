@@ -40,7 +40,7 @@ const Sidebar = ({user}) => {
   };
 
   const [sum, setSum] = useState();
-  const [array1, setArray1] = useState([]);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
   const getConversations = async () => {
     try{
       const { data } = await axios.get("/api/messages/conversations");

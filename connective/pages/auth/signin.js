@@ -10,7 +10,7 @@ import Image from "next/image";
 import googleIcon from "../../public/assets/google-icon.svg";
 import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
-import Head from 'next/head'
+import Head from "next/head";
 import EmailVerification from "components/dailog/EmailVerification";
 import { GoogleLogin } from 'react-google-login';
 import nextConfig from '../../next.config';
@@ -23,7 +23,7 @@ export default function SignIn({ user }) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [emailNotVerified, setEmailNotVerified] = useState(null);
   const [otpCode, setOtpCode] = useState(null);
   const [otpError, setOtpError] = useState(null);
 
@@ -37,14 +37,14 @@ export default function SignIn({ user }) {
   }, [user]);
 
   useEffect(() => {
-    if (otpCode && emailNotVerified) {
-      async function verifyEmail() {
+    async function verifyEmail() {
+      if (otpCode && emailNotVerified) {
         const verifiedEmail = await axios({
           method: "post",
           url: "/api/auth/verifyEmail",
           data: { code: otpCode, email },
         });
-        if (!verifiedEmail.data.success) {
+        if (!verifiedEmail.data.success && verifiedEmail?.data?.error) {
           if (verifiedEmail.data.error === "Incorrect verification code") {
             setOtpError("Incorrect verification code");
           } else {
@@ -53,30 +53,14 @@ export default function SignIn({ user }) {
         } else {
           setOtpError(null);
           setEmailError(null);
-          setEmailNotVerified(false);
+          setEmailNotVerified(null);
+          verifiedEmail.data.success
+            ? router.push("/app/discover")
+            : router.push("/onboarding/create-profile");
         }
       }
-      verifyEmail();
     }
-  }, [otpCode, emailNotVerified]);
-
-  useEffect(() => {
-    if (!emailNotVerified) {
-      async function verifyEmail() {
-        const verifiedEmail = await axios({
-          method: "post",
-          url: "/api/auth/verifyEmail",
-          data: { code: otpCode, email },
-        });
-        if (!verifiedEmail.data.success) {
-          if (verifiedEmail.data.error === "Incorrect verification code")
-            setOtpError("Incorrect verification code");
-        } else {
-          setEmailNotVerified(false);
-        }
-      }
-      verifyEmail();
-    }
+    verifyEmail();
   }, [otpCode, emailNotVerified]);
 
   const submitAccount = async () => {
@@ -101,16 +85,21 @@ export default function SignIn({ user }) {
     })
       .then((res) => {
         if (res.status == 201) {
-          console.log(res.data);
           res.data
             ? router.push("/app/discover")
             : router.push("/onboarding/create-profile");
         }
       })
-      .catch((e) => {
+      .catch(async (e) => {
         if (e.response.data.error == "Email not verified") {
           setEmailError("Email not verified");
           setEmailNotVerified(true);
+          
+          await axios({
+            method: "post",
+            url: "/api/auth/sendVerificationCode",
+            data: { email },
+          });
         }
         if (
           e.response.status == 403 ||
