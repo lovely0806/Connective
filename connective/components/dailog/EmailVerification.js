@@ -7,8 +7,7 @@ const EmailVerification = ({
   otpNotMatchError,
   setOtpNotMatchError,
 }) => {
-  console.log("otpNotMatchError", otpNotMatchError);
-  const [inputValue, setInputValue] = useState(1);
+  const [focus, setFocus] = useState(0);
   const [otpError, setOtpError] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -29,17 +28,40 @@ const EmailVerification = ({
   }, [otpNotMatchError]);
 
   useEffect(() => {
-    document.querySelector(`input[id=code_1]`)?.focus();
-  }, []);
+    document.querySelector(`input[id=code_${focus}]`)?.focus();
+  }, [focus]);
 
   const handleOnChangeNumber = (e, index) => {
-    setButtonDisabled(false);
     const value = e.target.value;
+    let focusValue = focus;
     let updateOtp = otp;
-    updateOtp[index] = value;
+    if (e.target.value == "") {
+      updateOtp[index] = "";
+      focusValue = index - 1;
+    } else {
+      if (e.target.value.length == 1) {
+        updateOtp[index] = value.charAt(0);
+        focusValue = index + 1;
+      } else if (e.target.value.length == 2) {
+        updateOtp[index] = value.charAt(0);
+        updateOtp[index + 1] = value.charAt(1);
+        focusValue = index + 2;
+      } else if (e.target.value.length == 3) {
+        updateOtp[index] = value.charAt(0);
+        updateOtp[index + 1] = value.charAt(1);
+        updateOtp[index + 2] = value.charAt(2);
+        focusValue = index + 3;
+      } else if (e.target.value.length == 4) {
+        updateOtp[index] = value.charAt(0);
+        updateOtp[index + 1] = value.charAt(1);
+        updateOtp[index + 2] = value.charAt(2);
+        updateOtp[index + 3] = value.charAt(3);
+        focusValue = index + 3;
+      }
+    }
+    setButtonDisabled(false);
     setOtp(updateOtp);
-    document.querySelector(`input[id=code_${inputValue + 1}]`)?.focus();
-    setInputValue(inputValue + 1);
+    setFocus(focusValue);
   };
 
   const handleResendCode = async () => {
@@ -103,12 +125,13 @@ const EmailVerification = ({
                         return (
                           <input
                             key={number}
+                            value={otp[index]}
                             type="text"
-                            id={`code_${number}`}
+                            id={`code_${index}`}
                             name={`code${number}`}
                             className="w-1/5 inline-block mr-4 py-3 px-4 block border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm text-center"
                             required
-                            maxLength={1}
+                            maxLength={4}
                             onChange={(e) => handleOnChangeNumber(e, index)}
                             pattern="\d*"
                           />

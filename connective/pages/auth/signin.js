@@ -267,18 +267,18 @@ export default function SignIn({ user }) {
           </p>
         </div>
       </div>
-      {emailNotVerified ? (
-        <>
-          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
-            <EmailVerification
-              code={setOtpCode}
-              email={email}
-              otpNotMatchError={otpError}
-              setOtpNotMatchError={setOtpError}
-            />
-          </div>
-        </>
-      ) : null}
+      {/* {emailNotVerified ? (
+        <> */}
+      <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+        <EmailVerification
+          code={setOtpCode}
+          email={email}
+          otpNotMatchError={otpError}
+          setOtpNotMatchError={setOtpError}
+        />
+      </div>
+      {/* </>
+      ) : null} */}
     </main>
   );
 }
