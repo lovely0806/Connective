@@ -12,10 +12,8 @@ import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
 import Head from "next/head";
 import EmailVerification from "components/dailog/EmailVerification";
-import { GoogleLogin } from 'react-google-login';
-import nextConfig from '../../next.config';
-
-
+import { GoogleLogin } from "react-google-login";
+import nextConfig from "../../next.config";
 
 export default function SignIn({ user }) {
   const [email, setEmail] = useState("");
@@ -94,7 +92,7 @@ export default function SignIn({ user }) {
         if (e.response.data.error == "Email not verified") {
           setEmailError("Email not verified");
           setEmailNotVerified(true);
-          
+
           await axios({
             method: "post",
             url: "/api/auth/sendVerificationCode",
@@ -110,12 +108,11 @@ export default function SignIn({ user }) {
   };
 
   const onGoogleSuccess = (res) => {
-    console.log('[Login Success] currentUser:', res.profileObj);
-
-  }
+    console.log("[Login Success] currentUser:", res.profileObj);
+  };
   const onGoogleFailure = (res) => {
-    console.log('[login failed] res:', res);
-  }
+    console.log("[login failed] res:", res);
+  };
 
   const showPasswordHandler = () => {
     setShowPassword((prevState) => !prevState);
@@ -147,7 +144,6 @@ export default function SignIn({ user }) {
             <p className="font-bold text-[32px] leading-[39px] text-[#0D1011]">
               Sign in
             </p>
-            
 
             <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-20">
               Welcome back! Please enter your details
@@ -242,22 +238,22 @@ export default function SignIn({ user }) {
             Log in
           </button>
           <GoogleLogin
-           clientId={clientId}
-           buttonText="Log in with Google"
-           onSuccess={onGoogleSuccess}
-           onFailure={onGoogleFailure}
-           cookiePolicy={'single_host_origin'}
-           isSignedIn={true}
-           render={renderProps => (
-            <button 
-             onClick={renderProps.onClick} 
-             disabled={renderProps.disabled}
-             className="w-[100%] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px] mb-2"
-             >
-            Log in with Google
-            </button>
-          )}
-           />
+            clientId={clientId}
+            buttonText="Log in with Google"
+            onSuccess={onGoogleSuccess}
+            onFailure={onGoogleFailure}
+            cookiePolicy={"single_host_origin"}
+            isSignedIn={true}
+            render={(renderProps) => (
+              <button
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+                className="w-[100%] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px] mb-2"
+              >
+                Log in with Google
+              </button>
+            )}
+          />
 
           <p className="mt-[24px] font-[Poppins] font-normal text-[12px] leading-[18px] text-center text-[#414141] 1bp:text-[16px]">
             Dont have an account?{" "}
@@ -267,25 +263,24 @@ export default function SignIn({ user }) {
           </p>
         </div>
       </div>
-      {/* {emailNotVerified ? (
-        <> */}
-      <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
-        <EmailVerification
-          code={setOtpCode}
-          email={email}
-          otpNotMatchError={otpError}
-          setOtpNotMatchError={setOtpError}
-        />
-      </div>
-      {/* </>
-      ) : null} */}
+      {emailNotVerified ? (
+        <>
+          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+            <EmailVerification
+              code={setOtpCode}
+              email={email}
+              otpNotMatchError={otpError}
+              setOtpNotMatchError={setOtpError}
+            />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
 
 export const getServerSideProps = withIronSession(
   async ({ req, res }) => {
-    
     const user = req.session.get("user");
 
     if (!user) {
