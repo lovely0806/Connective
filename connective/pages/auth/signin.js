@@ -26,7 +26,7 @@ export default function SignIn({ user }) {
   const [otpError, setOtpError] = useState(null);
 
   const router = useRouter();
-  const clientId = nextConfig.env.GOOGLE_ID;
+  const clientId = "106261913144-qa5mgoaoi0v40eigop73gnqglmnkj7sp.apps.googleusercontent.com";
 
   useEffect(() => {
     if (typeof user != "undefined") {
@@ -175,7 +175,7 @@ export default function SignIn({ user }) {
             </div> */}
           </div>
 
-          <div className="relative flex flex-col gap-5 mt-10 items-center">
+          <div className="relative flex flex-col items-center gap-5 mt-10">
             <InputField
               name={"E-mail"}
               placeholder={"Enter your email"}
@@ -213,7 +213,7 @@ export default function SignIn({ user }) {
             </div>
           </div>
 
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
               <input
                 className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
@@ -265,7 +265,7 @@ export default function SignIn({ user }) {
       </div>
       {emailNotVerified ? (
         <>
-          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+          <div className="fixed z-10 flex items-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
             <EmailVerification
               code={setOtpCode}
               email={email}
@@ -279,23 +279,23 @@ export default function SignIn({ user }) {
   );
 }
 
-export const getServerSideProps = withIronSession(
-  async ({ req, res }) => {
-    const user = req.session.get("user");
+// export const getServerSideProps = withIronSession(
+//   async ({ req, res }) => {
+//     const user = req.session.get("user");
 
-    if (!user) {
-      return { props: {} };
-    }
+//     if (!user) {
+//       return { props: {} };
+//     }
 
-    return {
-      props: { user },
-    };
-  },
-  {
-    cookieName: "Connective",
-    cookieOptions: {
-      secure: process.env.NODE_ENV == "production" ? true : false,
-    },
-    password: process.env.APPLICATION_SECRET,
-  }
-);
+//     return {
+//       props: { user },
+//     };
+//   },
+//   {
+//     cookieName: "Connective",
+//     cookieOptions: {
+//       secure: process.env.NODE_ENV == "production" ? true : false,
+//     },
+//     password: process.env.APPLICATION_SECRET,
+//   }
+// );
