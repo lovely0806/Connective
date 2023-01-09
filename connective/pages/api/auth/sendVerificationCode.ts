@@ -1,23 +1,16 @@
-const mysql = require("mysql2");
 import sgMail from "@sendgrid/mail";
+import { DAO } from "../../../lib/dao";
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
-
-    const [result] = await connection
-      .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}'`);
-    if (result.length) {
-      await sendEmail(code, email);
-      await connection
-        .promise()
-        .query(
-          `UPDATE Users SET verify_email_otp = '${code}' WHERE email='${email}';`
-        );
+    
+    let user = await DAO.Users.getByEmail(email)
+    if (user) {
+      await sendEmail(code.toString(), email);
+      await DAO.Users.setOtpCode(code.toString(), email)
     }
     res.status(200).json({ success: true });
   } catch (e) {
@@ -26,7 +19,7 @@ export default async function handler(req, res) {
   }
 }
 
-async function sendEmail(code, email) {
+async function sendEmail(code: string, email: string) {
   return new Promise((resolve, reject) => {
     console.log("Sending an email to " + email);
     const template = `<p>Hello There,</p>
@@ -48,7 +41,7 @@ async function sendEmail(code, email) {
       .send(msg)
       .then(() => {
         console.log(`Email sent successfully to ${email}`);
-        resolve();
+        resolve(true);
       })
       .catch((error) => {
         console.error(error);

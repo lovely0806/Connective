@@ -1,18 +1,14 @@
-const mysql = require("mysql2");
+import { DAO } from "../../../lib/dao";
 import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
-const moment = require("moment");
+import moment from "moment";
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
-    const [result] = await connection
-      .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}'`);
-    if (result.length) {
-      const user = result[0];
+    let user = await DAO.Users.getByEmail(email)
+    if (user) {
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastCodeSentTime = user.last_code_sent_time;
         console.log("lastCodeSentTime", lastCodeSentTime);
@@ -25,17 +21,12 @@ export default async function handler(req, res) {
           });
         }
       }
-      await sendEmail(code, email);
-      const sendCodeAttemp = user.send_code_attempt
+      await sendEmail(code.toString(), email);
+      const sendCodeAttempt = user.send_code_attempt
         ? Number(user.send_code_attempt) + 1
         : 1;
-      await connection
-        .promise()
-        .query(
-          `UPDATE Users SET verify_email_otp = '${code}', send_code_attempt = ${sendCodeAttemp}, last_code_sent_time = "${moment().format(
-            "YYYY/MM/DD HH:mm:ss"
-          )}" WHERE email='${email}';`
-        );
+
+      await DAO.Users.updateOtpCode(code.toString(), sendCodeAttempt, email)
     }
     res.status(200).json({ success: true });
   } catch (e) {
@@ -44,7 +35,7 @@ export default async function handler(req, res) {
   }
 }
 
-async function sendEmail(code, email) {
+async function sendEmail(code: string, email: string) {
   return new Promise((resolve, reject) => {
     console.log("Sending an email to " + email);
     const template = `<p>Hello There,</p>
