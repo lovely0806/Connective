@@ -6,7 +6,7 @@ export default withIronSession(
   async (req, res) => {
     if (req.method == "POST") {
       const { email, password } = req.body;
-
+ 
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results, fields, err] = await connection
         .promise()
