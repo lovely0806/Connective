@@ -60,7 +60,7 @@ export namespace DAO {
             await connection.promise().query(`UPDATE Users SET verify_email_otp = ?, send_code_attempt = ?, last_code_sent_time = ? WHERE email=?;`, 
                 [code, sendCodeAttempt, moment().format("YYYY/MM/DD HH:mm:ss"), email]);
         }
-    }
+    } 
 
     /**
      * Contains functions for interacting with Businesses in the database
