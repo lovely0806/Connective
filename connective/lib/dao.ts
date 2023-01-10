@@ -61,7 +61,7 @@ export namespace DAO {
                 [code, sendCodeAttempt, moment().format("YYYY/MM/DD HH:mm:ss"), email]);
         }
     } 
-
+ 
     /**
      * Contains functions for interacting with Businesses in the database
      */
