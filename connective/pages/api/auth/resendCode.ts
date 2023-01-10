@@ -2,8 +2,9 @@ import { DAO } from "../../../lib/dao";
 import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 import moment from "moment";
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);

@@ -1,9 +1,11 @@
 import { withIronSession } from "next-iron-session";
 import { DAO } from "../../../lib/dao";
+import type { NextApiRequest, NextApiResponse } from 'next'
+
 var bcrypt = require("bcryptjs");
 
 export default withIronSession(
-  async (req, res) => {
+  async (req: any, res: NextApiResponse) => {
     if (req.method == "POST") {
       const { email, password } = req.body;
 
@@ -31,7 +33,7 @@ export default withIronSession(
         
         return res
           .status(201)
-          .send(await DAO.Business.isBusiness(user.id.toString()) || await DAO.Individual.isIndividual(user.id.toString()));
+          .send(await DAO.Business.isBusiness(user.id) || await DAO.Individual.isIndividual(user.id));
       }
 
       return res.status(403).send("");

@@ -1,7 +1,8 @@
 const mysql = require("mysql2")
 import {withIronSession} from "next-iron-session"
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-export async function handler(req, res) {
+export async function handler(req: any, res: NextApiResponse) {
     try {
         let user = req.session.get().user;
         if(typeof(user) == "undefined") {

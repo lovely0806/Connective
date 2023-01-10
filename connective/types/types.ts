@@ -1,5 +1,5 @@
 export type User = {
-    id: string,
+    id: number,
     username: string,
     password_hash: string,
     email: string,
@@ -24,4 +24,31 @@ export type Message = {
 	read: boolean,
 	notified: boolean,
 	timestamp: string,
+}
+
+export type Business = {
+    id: number,
+	user_id: number,
+	company_name: string,
+	description: string,
+	logo: string,
+	website: string,
+	location: string,
+	industry: string,
+	size: string,
+	profileViews: number,
+	listViews: number,
+	status: string,
+}
+
+export type Individual = {
+    id: number,
+	user_id: number,
+	name: string,
+	bio: string,
+	profile_picture: string,
+	location: string,
+	profileViews: number,
+	listViews: number,
+	status: string,
 }

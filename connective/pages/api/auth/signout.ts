@@ -1,6 +1,7 @@
 import { withIronSession } from "next-iron-session";
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-function handler(req, res, session) {
+function handler(req: any, res: NextApiResponse) {
   req.session.destroy();
   res.send("Logged out");
 }

@@ -1,7 +1,8 @@
-const mysql = require("mysql2")
 import {withIronSession} from "next-iron-session"
+import { DAO } from "../../../../lib/dao"
+import {NextApiResponse} from 'next';
 
-export async function handler(req, res) {
+export async function handler(req: any, res: NextApiResponse) {
     const {id} = req.query
     try {
         let user = req.session.get().user
@@ -9,9 +10,7 @@ export async function handler(req, res) {
             return res.status(500).json({success: false, error: "Not signed in"})
         }
         if(req.method == "GET") { //Returns callers account
-            const connection = mysql.createConnection(process.env.DATABASE_URL)
-            var [results, fields, err] = await connection.promise().query(`SELECT * FROM Business WHERE user_id='${id}';`)
-            res.status(200).json(results[0])
+            res.status(200).json(await DAO.Individual.getByUserId(id))
         }
     } catch(e) {
         console.log(e)

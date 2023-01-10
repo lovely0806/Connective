@@ -1,9 +1,10 @@
 import {DAO} from "../../../lib/dao";
+import type { NextApiRequest, NextApiResponse } from 'next'
 var bcrypt = require("bcryptjs");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: NextApiResponse) {
   try {
     const { username, email, password } = req.body;
 

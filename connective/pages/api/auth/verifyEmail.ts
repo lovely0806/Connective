@@ -1,6 +1,7 @@
 import { DAO } from "../../../lib/dao";
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: NextApiResponse) {
   try {
     const { code, email } = req.body;
     let user = await DAO.Users.getByEmail(email)
@@ -8,7 +9,7 @@ export default async function handler(req, res) {
     if (user) {
       if (user.verify_email_otp === code) {
         await DAO.Users.updateVerificationStatus(true, email)
-        return res.status(201).json();
+        return res.status(201).json(true);
       } else {
         res
           .status(200)
