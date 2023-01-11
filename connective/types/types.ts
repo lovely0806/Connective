@@ -1,3 +1,15 @@
+//Users shown on the discover page
+export type DiscoverUser = {
+	id: number,
+	show_on_discover: boolean,
+	email: string,
+	industry: number,
+	username: string,
+	logo: string,
+	description: string,
+	status: string
+}
+
 export type User = {
     id: number,
     username: string,
@@ -34,7 +46,7 @@ export type Business = {
 	logo: string,
 	website: string,
 	location: string,
-	industry: string,
+	industry: number,
 	size: string,
 	profileViews: number,
 	listViews: number,

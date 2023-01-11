@@ -1,3 +1,4 @@
+/**Deprecated */
 const mysql = require("mysql2");
 import { withIronSession } from "next-iron-session";
 

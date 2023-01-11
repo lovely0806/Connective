@@ -1,7 +1,8 @@
-const mysql = require("mysql2");
 import { withIronSession } from "next-iron-session";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { DAO } from "../../../lib/dao";
 
-export async function handler(req, res) {
+export async function handler(req: any, res: NextApiResponse) {
   try {
     let user = req.session.get().user;
     if (typeof user == "undefined") {
@@ -12,10 +13,8 @@ export async function handler(req, res) {
       if (typeof id == "undefined") id = user.id;
 
       //Returns callers account
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [results, fields, err] = await connection
-        .promise()
-        .query(`SELECT * FROM Business WHERE user_id='${id}';`);
+      var business = await DAO.Business.getByUserId(id)
+      /*
       var [listResults, listFields, listErr] = await connection
         .promise()
         .query(
@@ -34,22 +33,14 @@ export async function handler(req, res) {
         }).length;
       });
 
-      results[0].lists = listResults;
-      res.status(200).json(results[0]);
+      business.lists = listResults;
+      */
+      res.status(200).json(business);
     }
     if (req.method == "POST") {
       const { name, description, pfp, url, location, industry, size, status } =
         req.body;
-
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      await connection.promise().execute(`
-                INSERT INTO Business (
-                    user_id, company_name, description, logo, website, location, industry, size, status
-                ) VALUES (
-                    '${user.id}', '${name}', '${description}', '${pfp}', '${url}', '${location}', '${industry}', '${size}', '${status}'
-                );`);
-
-      connection.end();
+      await DAO.Business.add(user.id, name, description, pfp, url, location, industry, size, status)
       res.status(200).json({ success: true });
     }
     if (req.method == "PATCH") {
@@ -67,16 +58,9 @@ export async function handler(req, res) {
         pfpChanged,
         status,
       } = req.body;
-      console.log(status);
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      await connection.promise().execute(`
-                  UPDATE Business
-                  SET company_name = '${name}', ${
-        pfpChanged ? "logo =" + `'${pfp}',` : ""
-      } description = '${description}', location = '${location}', industry = '${industry}', size = '${size}', website = '${url}', status = '${status}' WHERE user_id = '${
-        user.id
-      }';`);
-      connection.end();
+
+      await DAO.Business.update(user.id, name, pfpChanged, pfp, description, location, industry, size, url, status)
+      
       res.status(200).json({ success: true });
     }
   } catch (e) {

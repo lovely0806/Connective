@@ -1,9 +1,9 @@
 import moment from "moment";
 import mysql, { OkPacket, ResultSetHeader } from "mysql2"
-import {Message, User} from "../types/types"
+import {Message, User, DiscoverUser} from "../types/types"
 
 export namespace DAO {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
+    const connection = mysql.createConnection(process.env.DATABASE_URL || "");
 
     /**
      * Contains functions for interacting with Users in the database
@@ -15,7 +15,8 @@ export namespace DAO {
          * @returns {User} The user object
          */
         static async getByEmail(email: string): Promise<User> {
-            var [results] = await connection.promise().query(`SELECT * FROM Users WHERE email=?;`, [email]);
+            var query = `SELECT * FROM Users WHERE email=?;`
+            var [results] = await connection.promise().query(query, [email]);
             return results[0]
         }
 
@@ -28,7 +29,8 @@ export namespace DAO {
          * @returns {number | boolean} The users insert id, or false if the insert failed
          */
         static async add(username: string, password_hash: string, email: string, stripeID: string): Promise<number | boolean> {
-            var [result] = await connection.promise().execute<OkPacket>(`INSERT INTO Users (username, password_hash, email, stripeID) VALUES (?,?,?,?);`, [username, password_hash, email, stripeID]);
+            var query = `INSERT INTO Users (username, password_hash, email, stripeID) VALUES (?,?,?,?);`
+            var [result] = await connection.promise().execute<OkPacket>(query, [username, password_hash, email, stripeID]);
             return result.insertId
         }
 
@@ -38,7 +40,8 @@ export namespace DAO {
          * @param {string} email The users email
          */
         static async updateVerificationStatus(status: boolean, email: string) {
-            await connection.promise().execute(`UPDATE Users SET verify_email_otp = null, email_verified = ? WHERE email=?;`, [status == true ? "true" : "false", email]);
+            var query = `UPDATE Users SET verify_email_otp = null, email_verified = ? WHERE email=?;`
+            await connection.promise().execute(query, [status == true ? "true" : "false", email]);
         }
 
         /**
@@ -47,7 +50,8 @@ export namespace DAO {
          * @param {string} email The users email
          */
         static async setOtpCode(code: string, email: string) {
-            await connection.promise().execute(`UPDATE Users SET verify_email_otp = ? WHERE email=?;`, [code, email]);
+            var query = `UPDATE Users SET verify_email_otp = ? WHERE email=?;`
+            await connection.promise().execute(query, [code, email]);
         }
 
         /**
@@ -57,10 +61,23 @@ export namespace DAO {
          * @param {string} email The users email
          */
         static async updateOtpCode(code: string, sendCodeAttempt: number, email: string) {
-            await connection.promise().query(`UPDATE Users SET verify_email_otp = ?, send_code_attempt = ?, last_code_sent_time = ? WHERE email=?;`, 
-                [code, sendCodeAttempt, moment().format("YYYY/MM/DD HH:mm:ss"), email]);
+            var query = `UPDATE Users SET verify_email_otp = ?, send_code_attempt = ?, last_code_sent_time = ? WHERE email=?;`
+            await connection.promise().query(query, [code, sendCodeAttempt, moment().format("YYYY/MM/DD HH:mm:ss"), email]);
         }
     } 
+
+    export class Discover {
+        /**
+         * 
+         * @returns {DiscoverUser[]} All users who are displayed on the discover page
+         */
+        static async getAll(): Promise<DiscoverUser[]> {
+            var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, '' as industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`
+            var [results] = await connection.promise().query(query);
+
+            return results as DiscoverUser[]
+        }
+    }
  
     /**
      * Contains functions for interacting with Businesses in the database
@@ -72,7 +89,8 @@ export namespace DAO {
          * @returns {boolean} True if the user is a business
          */
         static async isBusiness(id: number): Promise<boolean> {
-            let [res] = await connection.promise().query(`SELECT COUNT(id) FROM Business WHERE user_id=?;`, [id]);
+            var query = `SELECT COUNT(id) FROM Business WHERE user_id=?;`
+            let [res] = await connection.promise().query(query, [id]);
             return res[0]["count(id)"] > 0
         }
 
@@ -82,8 +100,60 @@ export namespace DAO {
          * @returns {Business} A Business object representing the business
          */
         static async getByUserId(userId: number): Promise<Business> {
-            var [result] = await connection.promise().query(`SELECT * FROM Business WHERE user_id=?;`, [userId])
+            var query = `SELECT * FROM Business WHERE user_id=?;`
+            var [result] = await connection.promise().query(query, [userId])
             return result[0]
+        }
+
+        /**
+         * Adds a new business to the database
+         * @param {number} userId The businesses user id
+         * @param {string} name The businesses name
+         * @param {string} description The businesses description
+         * @param {string} pfp A link to the businesses profile picture
+         * @param {string} url The businesses site url
+         * @param {string} location 
+         * @param {string} industry
+         * @param {string} size
+         * @param {string} status
+         * @returns 
+         */
+        static async add(userId: number, name: string, description: string, pfp: string, url: string, location: string, industry: string, size: string, status: string): Promise<number> {
+            var query = `INSERT INTO Business (
+                            user_id, company_name, description, logo, website, location, industry, size, status
+                        ) VALUES (
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?
+                        );`
+            var [result] = await connection.promise().execute<OkPacket>(query, [userId, name, description, pfp, url, location, industry, size, status]);
+
+            return result.insertId
+        }
+
+        /**
+         * Updates the information for the given business
+         * @param {number} userId The businesses user id
+         * @param {string} name The new name for the businesses
+         * @param {boolean} pfpChanged Weather or not there is a profile picture
+         * @param {string} pfp The profile picture for the businesses
+         * @param {string} description The new description for the business
+         * @param {string} location The new location of the business
+         * @param {number} industry The new industry of the business (a number relating to a specific label)
+         * @param {string} size The size of the business
+         * @param {string} url The new site url of the business
+         * @param {string} status The new status for the business
+         */
+        static async update(userId: number, name: string, pfpChanged: boolean, pfp: string, description: string, location: string, industry: number, size: string, url: string, status: string) {
+            var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`
+            await connection.promise().execute(query, [name, pfpChanged ? "logo =" + `'${pfp}',` : "", description, location, industry, size, url, status, userId]);
+        }
+
+        /**
+         * Increments the number of views for the given business by their user id
+         * @param userId The users ID
+         */
+        static async incrementProfileViews(userId: number) {
+            var query = "UPDATE Business SET profileViews = profileViews + 1 WHERE user_id=?;"
+            await connection.promise().execute(query, [userId])
         }
     }
 
@@ -97,7 +167,8 @@ export namespace DAO {
          * @returns {boolean} True if the user is an individual
          */
         static async isIndividual(id: number): Promise<boolean> {
-            let [res] = await connection.promise().query(`SELECT COUNT(id) FROM Individual WHERE user_id=?;`, [id]);
+            var query = `SELECT COUNT(id) FROM Individual WHERE user_id=?;`
+            let [res] = await connection.promise().query(query, [id]);
             return res[0]["count(id)"] > 0
         }
 
@@ -107,8 +178,18 @@ export namespace DAO {
          * @returns {Individual} An Indivual object representing the individual
          */
         static async getByUserId(userId: number): Promise<Individual> {
-            var [result] = await connection.promise().query(`SELECT * FROM Individual WHERE user_id=?;`, [userId])
+            var query = `SELECT * FROM Individual WHERE user_id=?;`
+            var [result] = await connection.promise().query(query, [userId])
             return result[0]
+        }
+
+        /**
+         * Increments the number of views for the given individual by their user id
+         * @param userId The users ID
+         */
+        static async incrementProfileViews(userId: number) {
+            var query = "UPDATE Individual SET profileViews = profileViews + 1 WHERE user_id=?;"
+            await connection.promise().execute(query, [userId])
         }
     }
 
@@ -123,8 +204,8 @@ export namespace DAO {
          * @returns {Message[]} An array of Message objects representing the conversation
          */
         static async getByOtherUser(userId: number, otherId: number): Promise<Message[]> {
-            var [results] = await connection.promise().query(`SELECT * FROM messages WHERE sender=? and receiver=? UNION ALL SELECT * FROM messages WHERE receiver=? and sender=?;`,
-            [userId, otherId, userId, otherId]);
+            var query = `SELECT * FROM messages WHERE sender=? and receiver=? UNION ALL SELECT * FROM messages WHERE receiver=? and sender=?;`
+            var [results] = await connection.promise().query(query, [userId, otherId, userId, otherId]);
 
             return results as Message[]
         }
@@ -137,9 +218,8 @@ export namespace DAO {
          * @returns {number} The messages insert id
          */
         static async add(senderId: number, receiverId: number, text: string): Promise<number> {
-            var [result] = await connection.promise().query<OkPacket>(
-                `INSERT INTO messages (`+'`sender`'+`, `+'`receiver`'+`, `+'`text`'+`, `+'`read`'+`, `+'`notified`'+`) VALUES (?, ?, ?, '0', '0')`, 
-                [senderId, receiverId, text]);
+            var query = `INSERT INTO messages (`+'`sender`'+`, `+'`receiver`'+`, `+'`text`'+`, `+'`read`'+`, `+'`notified`'+`) VALUES (?, ?, ?, '0', '0')`
+            var [result] = await connection.promise().query<OkPacket>(query, [senderId, receiverId, text]);
 
             return result.insertId
         }
@@ -150,13 +230,11 @@ export namespace DAO {
          * @returns An array of conversations
          */
         static async getConversations(userId: number) {
-            var [results] = await connection.promise().query<OkPacket[]>(
-                `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`,
-              [userId, userId]);
+            var query1 = `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`
+            var [results] = await connection.promise().query<OkPacket[]>(query1, [userId, userId]);
 
-            var [profiles] = await connection
-                .promise()
-                .query<OkPacket[]>(`SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo FROM Users JOIN Individual on Users.id = Individual.user_id;`)
+            var query2 = `SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo FROM Users JOIN Individual on Users.id = Individual.user_id;`
+            var [profiles] = await connection.promise().query<OkPacket[]>(query2)
             
             let temp = []
             //Refactor this
@@ -177,7 +255,8 @@ export namespace DAO {
          * @returns {{id: number, email: string}[]} All unread and unnotified messages
          */
         static async getUnnotified(): Promise<{id: number, email: string}[]> {
-            var [messages] = await connection.promise().query("SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;")
+            var query = "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;"
+            var [messages] = await connection.promise().query(query)
             
             return messages as {id: number, email: string}[]
         }

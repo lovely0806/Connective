@@ -19,7 +19,7 @@ export async function handler(req: any, res: NextApiResponse) {
 }
 
 export default withIronSession(handler, {
-    password: process.env.APPLICATION_SECRET,
+    password: process.env.APPLICATION_SECRET || "",
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {

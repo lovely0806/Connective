@@ -1,5 +1,6 @@
 const mysql = require("mysql2")
 import {withIronSession} from "next-iron-session"
+import { DAO } from '../../../lib/dao';
 
 export async function handler(req, res) {
     try {
@@ -8,12 +9,9 @@ export async function handler(req, res) {
         }
         if(req.method == "POST") {
             const {id, type} = req.body 
-            const connection = mysql.createConnection(process.env.DATABASE_URL)
             
-            let query
-            if(type == "business") query = `UPDATE Business SET profileViews = profileViews + 1 WHERE user_id='${id}';`
-            else query = `UPDATE Individual SET profileViews = profileViews + 1 WHERE user_id='${id}';`
-            await connection.promise().query(query)
+            if(type == "business") await DAO.Business.incrementProfileViews(id)
+            else await DAO.Individual.incrementProfileViews(id)
 
             res.status(200).json({success: true})
         }
