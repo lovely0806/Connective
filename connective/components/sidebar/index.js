@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
-const SidebarItem = ({ text,text2, route, icon, onClick, target }) => {
+const SidebarItem = ({ text, text2, route, icon, onClick, target }) => {
   const router = useRouter();
   let selected = router.route == route;
   if (typeof onClick == "undefined") {
@@ -14,25 +14,25 @@ const SidebarItem = ({ text,text2, route, icon, onClick, target }) => {
   }
   if (typeof target != "undefined") {
     onClick = () => {
-      window.open(route, '_blank')
-    }
+      window.open(route, "_blank");
+    };
   }
 
   return (
     <div
       onClick={onClick}
-       className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/50 ${
+      className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/50 ${
         selected ? "bg-[#051533]" : ""
       } ${text == "Sign Out" ? "mt-auto" : ""}`}
     >
-      <img  className="w-[2vh] h-[2vh] my-auto" src={icon} />
+      <img className="w-[2vh] h-[2vh] my-auto" src={icon} />
       <p>{text}</p>
       <p>{text2}</p>
     </div>
   );
 };
 
-const Sidebar = ({user}) => {
+const Sidebar = ({ user }) => {
   const router = useRouter();
   const signout = async () => {
     await axios.get("/api/auth/signout");
@@ -42,7 +42,7 @@ const Sidebar = ({user}) => {
   const [sum, setSum] = useState();
   const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
   const getConversations = async () => {
-    try{
+    try {
       const { data } = await axios.get("/api/messages/conversations");
       let temp = [];
       data.forEach((item) => {
@@ -51,25 +51,25 @@ const Sidebar = ({user}) => {
           temp.push(tempItem);
       });
       let temp2 = [...temp];
-      temp2?.map(async (item, index) =>{
+      temp2?.map(async (item, index) => {
         let x = await getUnreadMessages(item.id);
-          item.unread = x;
-          array1[item.id] = x;
-        });
-      setSum(array1?.reduce((a,v) =>  a + v, 0 ));
-      console.log(sum)
-    }catch(e){
+        item.unread = x;
+        array1[item.id] = x;
+      });
+      setSum(array1?.reduce((a, v) => a + v, 0));
+      console.log(sum);
+    } catch (e) {
       console.log(e);
     }
-    
   };
+
   const getUnreadMessages = async (id) => {
-    const {data} = await axios.get("/api/messages/" + id)
-    const unReadMesssages =(data.filter(message => {
-      return message.read != '1' && message.receiver == user.id
-    }).length);
+    const { data } = await axios.get("/api/messages/" + id);
+    const unReadMesssages = data.filter((message) => {
+      return message.read != "1" && message.receiver == user.id;
+    }).length;
     return unReadMesssages;
-}
+  };
   useEffect(() => {
     getConversations();
 
@@ -81,18 +81,18 @@ const Sidebar = ({user}) => {
   }, []);
 
   return (
-    <div  className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
+    <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
       <Link href="/">
-        <div  className="flex flex-row cursor-pointer items-center gap-2 mb-9">
+        <div className="flex flex-row cursor-pointer items-center gap-2 mb-9">
           <Image
-             className="w-[2vh] h-[4vh]"
+            className="w-[2vh] h-[4vh]"
             src="/assets/logo-1.svg"
             width="70px"
             height="75px"
             priority
           />
           <Image
-             className="w-[5vh] h-[1.5vh]"
+            className="w-[5vh] h-[1.5vh]"
             src="/assets/logo-2.svg"
             width="196px"
             height="36px"
@@ -101,11 +101,11 @@ const Sidebar = ({user}) => {
         </div>
       </Link>
 
-      <div  className="mb-3">
-        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div className="mb-3">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
-        {/* 
+        {/*
         <SidebarItem
           text="Dashboard"
           icon="/assets/navbar/DashboardIcon.svg"
@@ -115,11 +115,11 @@ const Sidebar = ({user}) => {
         <SidebarItem
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
-          route={`/app/profile/[id]`}
+          route={`/app/profile/${user?.id ? user.id : 0}`}
         ></SidebarItem>
       </div>
 
-{/* 
+      {/*
       <div  className="mb-3">
         <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
@@ -157,8 +157,8 @@ const Sidebar = ({user}) => {
         ></SidebarItem>
       </div>
 */}
-      <div  className="mb-3">
-        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div className="mb-3">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Chat
         </p>
         <SidebarItem
@@ -167,15 +167,15 @@ const Sidebar = ({user}) => {
           route="/app/discover"
         ></SidebarItem>
         <SidebarItem
-          text='Messages'
+          text="Messages"
           text2={sum > 0 ? sum : null}
           icon="/assets/navbar/messages.png"
           route="/app/messages"
         ></SidebarItem>
       </div>
 
-      <div  className="mb-3">
-        <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
+      <div className="mb-3">
+        <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           Support
         </p>
         {/* <SidebarItem
@@ -206,8 +206,6 @@ const Sidebar = ({user}) => {
       </Link>
     </div>
   );
-
-  
 };
 
 export default Sidebar;
