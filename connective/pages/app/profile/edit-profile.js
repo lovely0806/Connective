@@ -6,30 +6,30 @@ import Sidebar from "../../../components/sidebar";
 import EditBusinessProfile from "../../../components/edit-profile/business";
 import EditIndividualProfile from "../../../components/edit-profile/individual";
 import Util from "../../../util";
-import Head from 'next/head'
+import Head from "next/head";
 
 export default function EditProfile({ user }) {
   const [accountType, setAccountType] = useState();
   const router = useRouter();
 
   const getAccountType = async () => {
-    if(user)
-      setAccountType(await Util.accountType(user.id));
+    if (user) setAccountType(await Util.accountType(user.id));
   };
   useEffect(() => {
-    if(typeof user == 'undefined') router.push('/auth/signin')
+    if (typeof user == "undefined") router.push("/auth/signin");
   }, [user]);
   useEffect(() => {
     getAccountType();
   }, []);
 
   return (
-    <main  className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
+    <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
       <Head>
         <title>Edit Profile - Conenctive</title>
       </Head>
-      <Sidebar></Sidebar>
-      <div  className="h-screen w-screen overflow-y-scroll">
+
+      <Sidebar user={user}></Sidebar>
+      <div className="h-screen w-screen overflow-y-scroll">
         {accountType == "Business" && (
           <EditBusinessProfile user={user}></EditBusinessProfile>
         )}

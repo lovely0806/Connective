@@ -45,7 +45,6 @@ const Sidebar = ({ user }) => {
     try {
       const { data } = await axios.get("/api/messages/conversations");
       let temp = [];
-      // let array1 = [];
       data.forEach((item) => {
         let tempItem = item.filter((a) => a.id != user.id)[0];
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
@@ -116,7 +115,7 @@ const Sidebar = ({ user }) => {
         <SidebarItem
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
-          route={`/app/profile/${user.id}`}
+          route={`/app/profile/${user?.id ? user.id : 0}`}
         ></SidebarItem>
       </div>
 
