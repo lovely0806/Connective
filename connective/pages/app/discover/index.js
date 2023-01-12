@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
 import { withIronSession } from "next-iron-session";
@@ -10,30 +10,20 @@ import DiscoverList from "components/discover/list";
 import { data } from "autoprefixer";
 import { industryOptions } from "common/selectOptions";
 import { Recache } from "recache-client";
-import Head from 'next/head'
-import ReactPaginate from 'react-paginate';
+import Head from "next/head";
+import ReactPaginate from "react-paginate";
 
 function Items({ currentItems }) {
-  return (
-    <>
-      {currentItems &&
-        currentItems.map((item) => (
-          <div>
-            {item}
-          </div>
-        ))}
-    </>
-  );
+  return <>{currentItems && currentItems.map((item) => <div>{item}</div>)}</>;
 }
 
-
-export default function Messages({ user}) {
+export default function Messages({ user }) {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("");
   const [category, setCategory] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [page, setPage] = useState(0);
-  const discoverRef = useRef(null)
+  const discoverRef = useRef(null);
   // Here we use item offsets; we could also use page offsets
   // following the API or data you're working with.
   const [itemOffset, setItemOffset] = useState(0);
@@ -67,9 +57,8 @@ export default function Messages({ user}) {
   };
 
   useEffect(() => {
-    console.log("user------------", user);
     if (typeof user == "undefined") {
-      router.push("/auth/signin")
+      router.push("/auth/signin");
     }
   }, [user]);
 
@@ -136,53 +125,54 @@ export default function Messages({ user}) {
             pageCount={pageCount}
             previousLabel="< previous"
             renderOnZeroPageCount={null}
-            breakClassName={'page-item'}
-            breakLinkClassName={'page-link'}
-            containerClassName={'pagination'}
-            pageClassName={'page-item'}
-            pageLinkClassName={'page-link'}
-            previousClassName={'page-item'}
-            previousLinkClassName={'page-link'}
-            nextClassName={'page-item'}
-            nextLinkClassName={'page-link'}
-            activeClassName={'active'}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
           />
-          <Items currentItems={currentItems.map((item) => {
-            return (
-              <DiscoverList
-                id={item.id}
-                title={item.username}
-                description={item.description}
-                imgURL={item.logo}
-                status={item?.status ? item.status : null}
-              />
-            );
-          })} />
+          <Items
+            currentItems={currentItems.map((item) => {
+              return (
+                <DiscoverList
+                  id={item.id}
+                  title={item.username}
+                  description={item.description}
+                  imgURL={item.logo}
+                  status={item?.status ? item.status : null}
+                />
+              );
+            })}
+          />
           <ReactPaginate
             forcePage={page}
             breakLabel="..."
             nextLabel="next >"
-            onPageChange={function(page){
+            onPageChange={function (page) {
               handlePageClick(page);
-              discoverRef.current.scrollIntoView({behavior: "smooth"});
-           }}
+              discoverRef.current.scrollIntoView({ behavior: "smooth" });
+            }}
             pageRangeDisplayed={5}
             pageCount={pageCount}
             previousLabel="< previous"
             renderOnZeroPageCount={null}
-            breakClassName={'page-item'}
-            breakLinkClassName={'page-link'}
-            containerClassName={'pagination'}
-            pageClassName={'page-item'}
-            pageLinkClassName={'page-link'}
-            previousClassName={'page-item'}
-            previousLinkClassName={'page-link'}
-            nextClassName={'page-item'}
-            nextLinkClassName={'page-link'}
-            activeClassName={'active'}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
           />
         </div>
-
       </div>
     </Layout>
   );
