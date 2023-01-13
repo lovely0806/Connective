@@ -36,15 +36,16 @@ export async function handler(req, res) {
       res.status(200).json(results[0]);
     }
     if (req.method == "POST") {
-      const { name, bio, pfp, location, status } = req.body;
+      const { name, bio, pfp, location, status, industry, occupation } = req.body;
+      console.log(req.body)
 
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       await connection.promise().execute(
         `
                 INSERT INTO Individual (
-                    user_id, name, profile_picture, bio, location, status
-                ) VALUES (?, ?, ?, ?, ?, ?);`,
-        [user.id, name, pfp, bio, location, status]
+                    user_id, name, profile_picture, bio, location, status, industry, occupation
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+        [user.id, name, pfp, bio, location, status, industry, occupation]
       );
 
       connection.end();
