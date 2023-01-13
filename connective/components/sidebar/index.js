@@ -39,7 +39,7 @@ const Sidebar = ({ user }) => {
   const signout = async () => {
     await axios.get("/api/auth/signout");
     router.push("/");
-  };
+  }; 
 
   const [sum, setSum] = useState();
   const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
