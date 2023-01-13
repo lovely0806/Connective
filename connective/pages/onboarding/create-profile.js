@@ -7,12 +7,12 @@ import { withIronSession } from "next-iron-session";
 import OnBoardingProfile from "../../components/onboarding-createProfile";
 import ProfileTypeSelector from "../../components/onboarding/profile-type-selector";
 import FileUpload from "../../components/file-upload";
-import Select from "react-select";
+import { SelectField } from "components/select-field/selectField";
 import Util from "../../util";
 import Link from "next/link";
 import logo from "../../public/assets/logo.svg";
 import Image from "next/image";
-import { industryOptions } from "common/selectOptions";
+import {industries} from "common/selectOptions"
 import Head from 'next/head'
 
 export default function CreateProfile({ user }) {
@@ -25,13 +25,16 @@ export default function CreateProfile({ user }) {
   const [pfp, setPfp] = useState("");
   const [src, setSrc] = useState("");
   const [type, setType] = useState("business");
-  const [industry, setIndustry] = useState("");
+  const [industry, setIndustry] = useState();
   const [industryError, setIndustryError] = useState("");
   const [size, setSize] = useState("");
   const [status, setStatus] = useState("");
   const [statusError, setStatusError] = useState("");
   const [sizeError, setSizeError] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [occupations, setOccupations] = useState()
+  const [occupation, setOccupation] = useState("")
+  const [occupationError, setOccupationError] = useState("");
 
   // useEffect(() => {
   //     forwardIfProfileSetup()
@@ -57,6 +60,12 @@ export default function CreateProfile({ user }) {
     },
   ];
 
+  function getIndustryOptions() {
+    return industries.map((industry) => { 
+      return {value: industry.id, label: industry.name}
+    })
+  }
+
   const router = useRouter();
 
   useEffect(() => {
@@ -64,6 +73,16 @@ export default function CreateProfile({ user }) {
 
     setSrc(URL.createObjectURL(pfp));
   }, [pfp]);
+
+  useEffect(() => {
+    if(industry != null) {
+      setOccupations(industries.filter(_industry => _industry.id == industry)[0]
+        .occupations.map((occupation) => {
+          return {value: occupation.id, label: occupation.name}
+        })
+      )
+    }
+  }, [industry])
 
   // async function forwardIfProfileSetup() {
   //     if(await Util.profileConfigured(user.id)) {
@@ -328,53 +347,45 @@ export default function CreateProfile({ user }) {
             </div>
 
             <div className="flex flex-row justify-between gap-[24px]">
-              <div className="w-full">
-                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
-                  Industry
-                </p>
-                <Select
-                  className="w-full text-[12px] font-[Poppins]"
-                  onChange={(e) => {
-                    setIndustry(e.value);
-                  }}
-                  options={industryOptions}
-                  placeholder="Choose your industry"
-                ></Select>
-                <p className="text-red-500 font-bold text-[12px]">
-                  {industryError}
-                </p>
-              </div>
-              <div className="w-full customSelect">
-                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
-                  Size
-                </p>
-                <Select
-                  className="w-full text-[12px] font-[Poppins]"
-                  onChange={(e) => {
-                    setSize(e.value);
-                  }}
-                  options={sizeOptions}
-                  placeholder="Choose your company size"
-                ></Select>
-                <p className="text-red-500 font-bold text-[12px]">
-                  {sizeError}
-                </p>
-              </div>
-              <div className="w-full customSelect">
-                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
-                  Status
-                </p>
-                <Select
-                  className="w-full text-[12px] font-[Poppins]"
-                  onChange={(e) => {
-                    setStatus(e.value);
-                  }}
-                  options={statusOptions}
-                  placeholder="Choose your Status"
-                ></Select>
-                <p className="text-red-500 font-bold text-[12px]">
-                  {statusError}
-                </p>
+              <div className="flex flex-col w-full gap-3">
+                <div className="flex flex-row w-full gap-10">
+                    <SelectField title="Industry" 
+                                 placeholder="Choose your industry"
+                                 options={industries.map((industry) => { 
+                                  return {value: industry.id, label: industry.name}
+                                 })}
+                                 onChange={(e) => {
+                                  setIndustry(e.value);
+                                 }}
+                                 errorText={industryError}>
+                    </SelectField>
+                    <SelectField title="Occupation" 
+                                 placeholder="Choose your occupation"
+                                 options={occupations}
+                                 onChange={(e) => {
+                                  setOccupation(e.value);
+                                 }}
+                                 errorText={industryError}>
+                    </SelectField>
+                </div>
+                <div className="flex flex-row w-full gap-10">
+                  <SelectField title="Size" 
+                                 placeholder="Choose your company size"
+                                 options={sizeOptions}
+                                 onChange={(e) => {
+                                  setSize(e.value)
+                                 }}
+                                 errorText={sizeError}>
+                  </SelectField>
+                  <SelectField title="Status" 
+                                 placeholder="Choose your status"
+                                 options={statusOptions}
+                                 onChange={(e) => {
+                                  setStatus(e.value);
+                                 }}
+                                 errorText={statusError}>
+                  </SelectField>
+                </div>
               </div>
             </div>
           </div>
@@ -411,22 +422,14 @@ export default function CreateProfile({ user }) {
               placeholder={"Enter your location"}
               updateValue={setLocation}
             ></InputField>
-            <div className="w-full customSelect">
-              <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
-                Status
-              </p>
-              <Select
-                className="w-full text-[12px] font-[Poppins]"
-                onChange={(e) => {
-                  setStatus(e.value);
-                }}
-                options={statusOptions}
-                placeholder="Choose your Status"
-              ></Select>
-              <p className="text-red-500 font-bold text-[12px]">
-                {statusError}
-              </p>
-            </div>
+            <SelectField  title="Status" 
+                          placeholder="Choose your status"
+                          options={statusOptions}
+                          onChange={(e) => {
+                            setStatus(e.value);
+                          }}
+                          errorText={statusError}>
+            </SelectField>
           </div>
         )}
 
@@ -466,5 +469,3 @@ export const getServerSideProps = withIronSession(
     password: process.env.APPLICATION_SECRET,
   }
 );
-
-// #061A40
