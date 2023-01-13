@@ -54,9 +54,9 @@ const Sidebar = ({ user }) => {
       temp2?.map(async (item, index) => {
         let x = await getUnreadMessages(item.id);
         item.unread = x;
-        array1[item.id] = x;
+        unreadMessagesCount[item.id] = x;
       });
-      setSum(array1?.reduce((a, v) => a + v, 0));
+      setSum(unreadMessagesCount?.reduce((a, v) => a + v, 0));
       console.log(sum);
     } catch (e) {
       console.log(e);
