@@ -5,7 +5,7 @@ var bcrypt = require("bcryptjs");
 export default withIronSession(
   async (req, res) => {
     if (req.method == "POST") {
-      const { email, password } = req.body;
+      const { email, password, rememberme } = req.body;
  
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results, fields, err] = await connection
@@ -31,7 +31,7 @@ export default withIronSession(
       }
 
       if (bcrypt.compareSync(password, results[0].password_hash.toString())) {
-        req.session.set("user", { email, id: results[0].id });
+        req.session.set("user", { email, id: results[0].id, rememberme });
         console.log(req.session.get("user"));
         await req.session.save();
         let [isBusinessProfile] = await connection
