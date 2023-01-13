@@ -158,31 +158,6 @@ export default function SignIn({ user }) {
             <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-20">
               Welcome back! Please enter your details
             </p>
-
-            {/* <div
-               className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
-              onClick=""
-            >
-              <Image
-                 className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
-                src={googleIcon}
-                alt="Google"
-                width="16.67px"
-                height="16.67px"
-              />
-              <p  className="font-normal text-[12px] leading-[18px] text-[#0D1011] font-[Poppins] 1bp:text-[14px]">
-                Login with with Google
-              </p>
-            </div>
-            <div  className="flex flex-row items-center gap-[12px] mt-[24px]">
-              <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-              <div>
-                <p  className="font-normal text-[12px] leading-[18px] text-[#414141] font-[Poppins] 1bp:text-[14px]">
-                  or
-                </p>
-              </div>
-              <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-            </div> */}
           </div>
 
           <div className="relative flex flex-col items-center gap-5 mt-10">
@@ -231,7 +206,7 @@ export default function SignIn({ user }) {
                 className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
                 type="checkbox"
                 id="checkbox"
-                value={rememberme}
+                checked={rememberme}
                 onChange={(e) => setRememberMe(e.target.checked)}
               ></input>
               <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
