@@ -13,28 +13,25 @@ import Link from "next/link";
 import logo from "../../public/assets/logo.svg";
 import Image from "next/image";
 import {industries} from "common/selectOptions"
+import {business as ValidateBusiness, individual as ValidateIndividual} from "../../util/validation/onboarding"
 import Head from 'next/head'
+import { string } from "yup/lib/locale";
 
 export default function CreateProfile({ user }) {
   const [name, setName] = useState("");
-  const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
   const [url, setUrl] = useState("");
   const [location, setLocation] = useState("");
   const [pfp, setPfp] = useState("");
   const [src, setSrc] = useState("");
   const [type, setType] = useState("business");
-  const [industry, setIndustry] = useState();
-  const [industryError, setIndustryError] = useState("");
+  const [industry, setIndustry] = useState("");
   const [size, setSize] = useState("");
   const [status, setStatus] = useState("");
-  const [statusError, setStatusError] = useState("");
-  const [sizeError, setSizeError] = useState("");
   const [processing, setProcessing] = useState(false);
   const [occupations, setOccupations] = useState()
   const [occupation, setOccupation] = useState("")
-  const [occupationError, setOccupationError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState(false)
 
   // useEffect(() => {
   //     forwardIfProfileSetup()
@@ -84,6 +81,10 @@ export default function CreateProfile({ user }) {
     }
   }, [industry])
 
+  useEffect(() => {
+    setFieldErrors(false)
+  }, [type])
+
   // async function forwardIfProfileSetup() {
   //     if(await Util.profileConfigured(user.id)) {
   //         console.log("Forwarding")
@@ -100,64 +101,12 @@ export default function CreateProfile({ user }) {
     if (processing) return;
     setProcessing(true);
 
-    if (name == "") {
-      setNameError("You must enter a name.");
-      setIndustryError("");
-      setSizeError("");
-      setDescriptionError("");
-      setProcessing(false);
-      return;
+    let res = ValidateBusiness(name, size, industry, occupation, description, status)
+    if(!res.success) {
+      setFieldErrors(res)
+      setProcessing(false)
+      return
     }
-    if (size == "") {
-      setSizeError("You must select your company size.");
-      setIndustryError("");
-      setNameError("");
-      setDescriptionError("");
-      setProcessing(false);
-      return;
-    }
-    if (industry == "") {
-      setIndustryError("You must select your company size.");
-      setSizeError("");
-      setNameError("");
-      setDescriptionError("");
-      setProcessing(false);
-      return;
-    }
-    if (description.length > 500) {
-      setDescriptionError("Description must be less than 300 characters");
-      setIndustryError("");
-      setSizeError("");
-      setNameError("");
-      setProcessing(false);
-      return;
-    }
-    if (description == "") {
-      setDescriptionError("You must enter a description.");
-      setIndustryError("");
-      setSizeError("");
-      setNameError("");
-      setProcessing(false);
-      return;
-    }
-
-    if (status == "") {
-      setStatusError("You must select a status.");
-      setIndustryError("");
-      setSizeError("");
-      setNameError("");
-      setProcessing(false);
-      return;
-    }
-
-    setNameError("");
-    setSizeError("");
-    setIndustryError("");
-    setDescriptionError("");
-    setIndustryError("");
-    setSizeError("");
-    setStatusError("");
-    setNameError("");
 
     let hasPfp = false;
     if (pfp != "" && typeof pfp != "undefined") {
@@ -179,6 +128,7 @@ export default function CreateProfile({ user }) {
         location,
         url,
         industry,
+        occupation,
         size,
         status,
       })
@@ -203,35 +153,12 @@ export default function CreateProfile({ user }) {
     if (processing) return;
     setProcessing(true);
 
-    if (name == "") {
-      setNameError("You must enter a name.");
-      setDescriptionError("");
-      setProcessing(false);
-      return;
+    let res = ValidateIndividual(name, description, industry, occupation, status)
+    if(!res.success) {
+      setFieldErrors(res)
+      setProcessing(false)
+      return
     }
-
-    if (description.length > 500) {
-      setDescriptionError("Bio must be less than 300 characters");
-      setNameError("");
-      setProcessing(false);
-      return;
-    }
-    if (description == "") {
-      setDescriptionError("You must enter a bio.");
-      setNameError("");
-      setProcessing(false);
-      return;
-    }
-
-    if (status == "") {
-      setStatusError("You must select a status.");
-      setNameError("");
-      setProcessing(false);
-      return;
-    }
-
-    setNameError("");
-    setDescriptionError("");
 
     let hasPfp = false;
     if (pfp != "" && typeof pfp != "undefined") {
@@ -252,11 +179,13 @@ export default function CreateProfile({ user }) {
         bio: description,
         location,
         status,
+        industry,
+        occupation
       })
       .then((res) => {
         if (res.status == 200) {
           console.log("success");
-          router.push("/app/marketplace");
+          router.push(`/app/profile/${user.id}`);
         }
       })
       .catch((e) => {
@@ -296,7 +225,7 @@ export default function CreateProfile({ user }) {
         </div>
 
         <p className="font-[Poppins font-normal text-[16px] leading-[24px] text-[#0D1011] text-center mb-[20px]">
-          Choose that best describes you
+          Choose which best describes you
         </p>
 
         <ProfileTypeSelector
@@ -310,13 +239,13 @@ export default function CreateProfile({ user }) {
               name={"Name"}
               placeholder={"Enter company name"}
               updateValue={setName}
-              errorText={nameError}
+              errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "name")[0]?.error : ""}
             ></InputField>
             <InputField
               name={"Description"}
               placeholder={"Enter company description"}
               updateValue={setDescription}
-              errorText={descriptionError}
+              errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "description")[0]?.error : ""}
               textarea={true}
             ></InputField>
             <div className="relative">
@@ -357,7 +286,7 @@ export default function CreateProfile({ user }) {
                                  onChange={(e) => {
                                   setIndustry(e.value);
                                  }}
-                                 errorText={industryError}>
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "industry")[0]?.error : ""}>
                     </SelectField>
                     <SelectField title="Occupation" 
                                  placeholder="Choose your occupation"
@@ -365,7 +294,7 @@ export default function CreateProfile({ user }) {
                                  onChange={(e) => {
                                   setOccupation(e.value);
                                  }}
-                                 errorText={industryError}>
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "occupation")[0]?.error : ""}>
                     </SelectField>
                 </div>
                 <div className="flex flex-row w-full gap-10">
@@ -375,7 +304,7 @@ export default function CreateProfile({ user }) {
                                  onChange={(e) => {
                                   setSize(e.value)
                                  }}
-                                 errorText={sizeError}>
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "size")[0]?.error : ""}>
                   </SelectField>
                   <SelectField title="Status" 
                                  placeholder="Choose your status"
@@ -383,7 +312,7 @@ export default function CreateProfile({ user }) {
                                  onChange={(e) => {
                                   setStatus(e.value);
                                  }}
-                                 errorText={statusError}>
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "status")[0]?.error : ""}>
                   </SelectField>
                 </div>
               </div>
@@ -395,13 +324,13 @@ export default function CreateProfile({ user }) {
               name={"Name"}
               placeholder={"Enter your name"}
               updateValue={setName}
-              errorText={nameError}
+              errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "name")[0]?.error : ""}
             ></InputField>
             <InputField
               name={"Bio"}
               placeholder={"Enter your bio"}
               updateValue={setDescription}
-              errorText={descriptionError}
+              errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "description")[0]?.error : ""}
               textarea={true}
             ></InputField>
             <div className="relative">
@@ -422,14 +351,35 @@ export default function CreateProfile({ user }) {
               placeholder={"Enter your location"}
               updateValue={setLocation}
             ></InputField>
-            <SelectField  title="Status" 
-                          placeholder="Choose your status"
-                          options={statusOptions}
-                          onChange={(e) => {
-                            setStatus(e.value);
-                          }}
-                          errorText={statusError}>
-            </SelectField>
+            <div className="flex flex-row w-full gap-10">
+                    <SelectField title="Industry" 
+                                 placeholder="Choose your industry"
+                                 options={industries.map((industry) => { 
+                                  return {value: industry.id, label: industry.name}
+                                 })}
+                                 onChange={(e) => {
+                                  setIndustry(e.value);
+                                 }}
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "industry")[0]?.error : ""}>
+                    </SelectField>
+                    <SelectField title="Occupation" 
+                                 placeholder="Choose your occupation"
+                                 options={occupations}
+                                 onChange={(e) => {
+                                  setOccupation(e.value);
+                                 }}
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "occupation")[0]?.error : ""}>
+                    </SelectField>
+                    <SelectField title="Status" 
+                                 placeholder="Choose your status"
+                                 options={statusOptions}
+                                 onChange={(e) => {
+                                  setStatus(e.value);
+                                 }}
+                                 errorText={fieldErrors ? fieldErrors.fields.filter(field => field.name == "status")[0]?.error : ""}>
+                    </SelectField>
+                </div>
+            
           </div>
         )}
 
