@@ -54,7 +54,10 @@ const Sidebar = ({ user }) => {
       temp2?.map(async (item, index) => {
         let x = await getUnreadMessages(item.id);
         item.unread = x;
-        array1[item.id] = x;
+        let array1=[];
+        if(item?.id){
+          array1[item.id] = x;
+        }
       });
       setSum(array1?.reduce((a, v) => a + v, 0));
       console.log(sum);
@@ -74,7 +77,7 @@ const Sidebar = ({ user }) => {
     getConversations();
 
     let intervalId = setInterval(() => {
-      getConversations();
+      // getConversations();
     }, 5000);
 
     return () => clearInterval(intervalId);

@@ -9,15 +9,16 @@ export async function handler(req, res) {
         }
         if (req.method == "POST") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
-            const IDs = req.body.data.map( message =>{
-                console.log(message.id)
-                return message.id
-            })
+            const { sender, receiver } = req.body.data
+            console.log({sender,receiver});
+            if(sender && receiver){
                 var [results] = await connection
               .promise()
               .query(
-                'UPDATE messages SET `read`="1" WHERE id IN ('+IDs.join(", ")+');'
-              );
+                'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',[sender,receiver]
+              )
+
+            }
             
             res.status(200).json({success: true});
         }

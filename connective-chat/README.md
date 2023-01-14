@@ -4,7 +4,8 @@ Powered by Express.js
 # Development
 - Copy .env.example as .env and setup environment variables
 - `docker-compose -f docker-compose.dev.yml up -d --build`
-- Connect client on `:3000`
+- Connect client on `:3001`
 
 # Production
 - Same steps as development but change the `docker-compose.dev.yml` to `docker-compose.yml`
+- Connect client on `:3000`

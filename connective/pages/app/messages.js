@@ -8,7 +8,11 @@ import { useRouter } from "next/router";
 import Api from "services/api"
 import Avatar from "components/avatar";
 import Head from 'next/head'
+import { io } from "socket.io-client";
+import { Events } from "common/events";
 
+
+let socketIO;
 const Message = ({text, sent}) => {
   if(sent) {
       return (
@@ -73,9 +77,16 @@ const Conversations = ({selectedUser, setSelectedUser, conversations, unreadMess
 
 const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getConversations}) => {
   const [messages, setMessages] = useState([])
+  const [isNewMessageArrived,setIsNewMessageArrived] = useState(false);
+  const [showError,setShowError] =useState(false);
+  const timeoutRef = useRef();
   const [userOptions, setUserOptions] = useState([])
   const [text, setText] = useState("")
   let prevMessages = 0
+
+  const scrollWindow=()=>{
+    document.getElementById("messages-container").scroll({ top: document.getElementById("messages-container").scrollHeight, behavior: "smooth"})
+  }
 
   useEffect(() => {
       let temp = []
@@ -85,45 +96,83 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       setUserOptions(temp)
   }, [users])
 
+
+  
+  useEffect(()=>{
+    if(user && selectedUser){
+      if(!socketIO){
+        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST)
+        socketIO.on(Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),(msg)=>{
+          console.log('from socket',{msg});
+          setMessages((prevMsgs)=>{
+            const msgs = [...prevMsgs]
+            msgs.push(msg)
+            return msgs
+          })
+          setIsNewMessageArrived(true);
+          readMessages({sender:selectedUser.id, receiver:user.id})
+        })
+      }
+    }
+  },[user,selectedUser]);
+
+  useEffect(()=>{
+    if(isNewMessageArrived){
+      scrollWindow()
+      setIsNewMessageArrived(false);
+    }
+  },[isNewMessageArrived])  
+
   useEffect(() => {
-      if(selectedUser != null)
-          getMessages()
-      else setMessages([])
+      if(selectedUser != null){
+        getMessages();
+      } else {
+        setMessages([])
+      }
 
-      let intervalId = setInterval(() => {
-          if(selectedUser != null)
-              getMessages()
-      }, 1000)
-
-      return () => clearInterval(intervalId)
   }, [selectedUser])
+
+  useEffect(()=>{
+      if(showError){
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          setShowError(false)
+        }, 1500);
+      }
+  },[showError])
 
   const sendMessage = async() => {
     if(document.getElementById("message-input").value != ""){
-      await axios.post("/api/messages/" + selectedUser.id, {text})
-      document.getElementById("message-input").value = ""
-
-      //Re-fetch the list of conversations if the message was sent to a new conversation
-      console.log(conversations.filter(a => a.id == selectedUser.id))
-      if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
-          getConversations()
+      try {
+        if(socketIO.connected){
+          await axios.post("/api/messages/" + selectedUser.id, {text})
+          socketIO.emit(Events.SEND_MESSAGE,{receiver:selectedUser.id, sender:user.id, text})
+          document.getElementById("message-input").value = ""
+    
+          //Re-fetch the list of conversations if the message was sent to a new conversation
+          console.log(conversations.filter(a => a.id == selectedUser.id))
+          if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
+              getConversations()
+          }
+          setMessages([...messages, {sender: user.id, text}])
+          setIsNewMessageArrived(true);
+        } else {
+          setShowError(true)
+        }
+      } catch (e) {
+        setShowError(true);
       }
-      setMessages([...messages, {sender: user.id, text}])
     }
       
   }
   const getMessages = async () => {
       let temp = messages
       const {data} = await axios.get("/api/messages/" + selectedUser.id)
-      if(data.length > prevMessages) {
-          document.getElementById("messages-container").scroll({ top: document.getElementById("messages-container").scrollHeight, behavior: "smooth"})
-      }
       prevMessages = data.length
       setMessages(data)
-      console.log(data);
-      const unReadMesssages = data.filter(message => {
-        return message.read != '1' && message.receiver == user.id && message.sender == selectedUser.id
-      })
+      setIsNewMessageArrived(true);
+      console.log('message data from api',{data});
+      
       const emailz = await axios('/api/messages/unread-messages-mailer', {
         header: {
           'Content-Type': 'application/json',
@@ -133,17 +182,20 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
 
       // console.log(emailz);
 
-
-      await readMessages(unReadMesssages)
+      await readMessages({sender:selectedUser.id, receiver:user.id})
   }
   
-  const readMessages = async (unReadMesssages) => {
+  const readMessages = async ({sender,receiver}) => {
+    const data = {
+      sender,
+      receiver
+    }
     await axios.post('/api/messages/read-message', {
       header: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      data: unReadMesssages
+      data
     });
   };
 
@@ -184,6 +236,7 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
                   <button id="message-submit-button" className="w-fit px-10" onClick={sendMessage}>Send</button>
               </div>
           )}
+          {showError && <div className="ml-3 text-sm font-normal text-red-400 mb-4">Error connecting to server!</div>}
       </div>
   )
 }
@@ -245,6 +298,7 @@ export default function Messages({ user }) {
     setUsers(data);
     newUser && setSelectedUser(data.filter((item) => item.id == newUser)[0]);
   };
+  
   const getConversations = async () => {
     const { data } = await axios.get("/api/messages/conversations");
     let temp = [];
@@ -275,12 +329,6 @@ export default function Messages({ user }) {
   useEffect(() => {
     getUsers();
     getConversations();
-
-    let intervalId = setInterval(() => {
-      getConversations();
-    }, 5000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   return (
