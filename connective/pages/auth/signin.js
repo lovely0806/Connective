@@ -231,7 +231,7 @@ export default function SignIn({ user }) {
                 className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
                 type="checkbox"
                 id="checkbox"
-                value={rememberme}
+                checked={rememberme}
                 onChange={(e) => setRememberMe(e.target.checked)}
               ></input>
               <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
