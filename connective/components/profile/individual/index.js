@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ButtonDark from "../../button-dark";
 import ListCard from "../../marketplace/ListCard";
-import Avatar from "components/avatar";
+import Avatar from "components/avatar"; 
 
 export default function IndividualProfile({ user, id }) {
   const router = useRouter();
