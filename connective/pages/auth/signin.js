@@ -12,6 +12,7 @@ import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
 import Head from "next/head";
 import EmailVerification from "components/dailog/EmailVerification";
+import ResetPassword from "components/dailog/ResetPassword";
 import { GoogleLogin } from "react-google-login";
 import nextConfig from "../../next.config";
 
@@ -21,8 +22,10 @@ export default function SignIn({ user }) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
   const [emailNotVerified, setEmailNotVerified] = useState(null);
   const [otpCode, setOtpCode] = useState(null);
+  const [otpCodeforResetPassword, setOtpCodeforResetPassword] = useState(null);
   const [otpError, setOtpError] = useState(null);
 
   const router = useRouter();
@@ -107,9 +110,38 @@ export default function SignIn({ user }) {
       });
   };
 
+  const forgotPassword = async () => {
+    if (email == "") {
+      setEmailError("You must enter an email.");
+      setPasswordError("");
+      return;
+    }
+
+    setPasswordError("");
+    setEmailError("");
+
+    await axios({
+      method: "post",
+      url: "/api/auth/sendPasswordResetEmail",
+      data: { email },
+    })
+      .then(async (data) => {
+        console.log(data);
+        if (data) setResetPassword(true);
+      })
+      .catch(async (e) => {
+        if (
+          e.response.status == 500 ||
+          e.response.data.error == "Account does not exist"
+        )
+          setEmailError("Incorrect email");
+      });
+  };
+
   const onGoogleSuccess = (res) => {
     console.log("[Login Success] currentUser:", res.profileObj);
   };
+
   const onGoogleFailure = (res) => {
     console.log("[login failed] res:", res);
   };
@@ -150,11 +182,11 @@ export default function SignIn({ user }) {
             </p>
 
             {/* <div
-               className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
+              className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
               onClick=""
             >
               <Image
-                 className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
+                className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
                 src={googleIcon}
                 alt="Google"
                 width="16.67px"
@@ -224,11 +256,11 @@ export default function SignIn({ user }) {
                 Remember my information
               </p>
             </div>
-            <Link href=".">
+            <span onClick={forgotPassword}>
               <p className="font-Poppins font-normal text-[12px] leading-[18px] text-[#061A40] cursor-pointer 1bp:text-[16px]">
                 Forgot your password?
               </p>
-            </Link>
+            </span>
           </div>
 
           <button
@@ -271,6 +303,15 @@ export default function SignIn({ user }) {
               email={email}
               otpNotMatchError={otpError}
               setOtpNotMatchError={setOtpError}
+            />
+          </div>
+        </>
+      ) : null}
+      {resetPassword ? (
+        <>
+          <div className="fixed z-10 flex items-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
+            <ResetPassword
+              email={email}
             />
           </div>
         </>
