@@ -79,6 +79,7 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
   const [messages, setMessages] = useState([])
   const [isNewMessageArrived,setIsNewMessageArrived] = useState(false);
   const [showError,setShowError] =useState(false);
+  const [socketToken, setSocketToken] = useState('')
   const timeoutRef = useRef();
   const [userOptions, setUserOptions] = useState([])
   const [text, setText] = useState("")
@@ -96,12 +97,33 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       setUserOptions(temp)
   }, [users])
 
+  useEffect(()=>{
+    if(user?.id && !socketToken){
+      (async()=>{
+        try {
+          const { data: { key } } = await axios.get(`${process.env.NEXT_PUBLIC_SOCKET_HOST}/socket/connection/key/${user.id}`,
+          { withCredentials: true })
+          setSocketToken(key)
+        } catch (error) {
+          setShowError(true);
+        }
+      })()
+    }
+  },[user, socketToken])
+
 
   
   useEffect(()=>{
-    if(user && selectedUser){
+    if (user && selectedUser && socketToken){
       if(!socketIO){
-        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST)
+        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST,{ query: { token:socketToken }, })
+        
+        socketIO.on(Events.DISCONNECT, () => {
+          setShowError(true);
+          socketIO = null;
+          setSocketToken('');
+        });
+
         socketIO.on(Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),(msg)=>{
           console.log('from socket',{msg});
           setMessages((prevMsgs)=>{
@@ -114,7 +136,7 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
         })
       }
     }
-  },[user,selectedUser]);
+  },[user, selectedUser, socketToken]);
 
   useEffect(()=>{
     if(isNewMessageArrived){
