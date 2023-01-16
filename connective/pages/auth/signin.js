@@ -27,6 +27,7 @@ export default function SignIn({ user }) {
   const [otpCode, setOtpCode] = useState(null);
   const [otpCodeforResetPassword, setOtpCodeforResetPassword] = useState(null);
   const [otpError, setOtpError] = useState(null);
+  const [rememberme, setRememberMe] = useState(false);
 
   const router = useRouter();
   const clientId = "106261913144-qa5mgoaoi0v40eigop73gnqglmnkj7sp.apps.googleusercontent.com";
@@ -34,6 +35,11 @@ export default function SignIn({ user }) {
   useEffect(() => {
     if (typeof user != "undefined") {
       //router.push("/onboarding/create-profile")
+    }
+    if(user && user.rememberme){
+      setEmail(user.email);
+      setPassword('********');
+      setRememberMe(user.rememberme)
     }
   }, [user]);
 
@@ -65,6 +71,10 @@ export default function SignIn({ user }) {
   }, [otpCode, emailNotVerified]);
 
   const submitAccount = async () => {
+    if(user && user.rememberme){
+      router.push("/app/discover");
+      return
+    }
     if (email == "") {
       setEmailError("You must enter an email.");
       setPasswordError("");
@@ -82,7 +92,7 @@ export default function SignIn({ user }) {
     await axios({
       method: "post",
       url: "/api/auth/sessions",
-      data: { email, password },
+      data: { email, password, rememberme },
     })
       .then((res) => {
         if (res.status == 201) {
@@ -213,6 +223,7 @@ export default function SignIn({ user }) {
               placeholder={"Enter your email"}
               updateValue={setEmail}
               errorText={emailError}
+              value={email}
             ></InputField>
 
             <InputField
@@ -221,6 +232,7 @@ export default function SignIn({ user }) {
               password={!showPassword ? true : false}
               updateValue={setPassword}
               errorText={passwordError}
+              value={password}
             ></InputField>
             <div
               className="absolute right-[14px] bottom-[5px] cursor-pointer"
@@ -251,6 +263,8 @@ export default function SignIn({ user }) {
                 className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
                 type="checkbox"
                 id="checkbox"
+                checked={rememberme}
+                onChange={(e) => setRememberMe(e.target.checked)}
               ></input>
               <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
                 Remember my information
@@ -320,23 +334,23 @@ export default function SignIn({ user }) {
   );
 }
 
-// export const getServerSideProps = withIronSession(
-//   async ({ req, res }) => {
-//     const user = req.session.get("user");
+export const getServerSideProps = withIronSession(
+  async ({ req, res }) => {
+    const user = req.session.get("user");
 
-//     if (!user) {
-//       return { props: {} };
-//     }
+    if (!user) {
+      return { props: {} };
+    }
 
-//     return {
-//       props: { user },
-//     };
-//   },
-//   {
-//     cookieName: "Connective",
-//     cookieOptions: {
-//       secure: process.env.NODE_ENV == "production" ? true : false,
-//     },
-//     password: process.env.APPLICATION_SECRET,
-//   }
-// );
+    return {
+      props: { user },
+    };
+  },
+  {
+    cookieName: "Connective",
+    cookieOptions: {
+      secure: process.env.NODE_ENV == "production" ? true : false,
+    },
+    password: process.env.APPLICATION_SECRET,
+  }
+);
