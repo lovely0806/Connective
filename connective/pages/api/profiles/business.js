@@ -38,15 +38,15 @@ export async function handler(req, res) {
       res.status(200).json(results[0]);
     }
     if (req.method == "POST") {
-      const { name, description, pfp, url, location, industry, size, status } =
+      const { name, description, pfp, url, location, industry, occupation, size, status } =
         req.body;
 
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       await connection.promise().execute(`
                 INSERT INTO Business (
-                    user_id, company_name, description, logo, website, location, industry, size, status
+                    user_id, company_name, description, logo, website, location, industry, occupation, size, status
                 ) VALUES (
-                    '${user.id}', '${name}', '${description}', '${pfp}', '${url}', '${location}', '${industry}', '${size}', '${status}'
+                    '${user.id}', '${name}', '${description}', '${pfp}', '${url}', '${location}', '${industry}', '${occupation}', '${size}', '${status}'
                 );`);
 
       connection.end();

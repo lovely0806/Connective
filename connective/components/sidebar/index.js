@@ -4,9 +4,10 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
-const SidebarItem = ({ text, text2, route, icon, onClick, target }) => {
+const SidebarItem = ({ text, text2, route, icon, onClick, target, selected }) => {
   const router = useRouter();
-  let selected = router.route == route;
+
+  console.log(router.pathname)
   if (typeof onClick == "undefined") {
     onClick = () => {
       router.push(route);
@@ -34,10 +35,11 @@ const SidebarItem = ({ text, text2, route, icon, onClick, target }) => {
 
 const Sidebar = ({ user }) => {
   const router = useRouter();
+  const currentRoute = router.pathname;
   const signout = async () => {
     await axios.get("/api/auth/signout");
     router.push("/");
-  };
+  }; 
 
   const [sum, setSum] = useState();
   const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
@@ -58,8 +60,9 @@ const Sidebar = ({ user }) => {
         if(item?.id){
           array1[item.id] = x;
         }
+        unreadMessagesCount[item.id] = x;
       });
-      setSum(array1?.reduce((a, v) => a + v, 0));
+      setSum(unreadMessagesCount?.reduce((a, v) => a + v, 0));
       console.log(sum);
     } catch (e) {
       console.log(e);
@@ -119,6 +122,7 @@ const Sidebar = ({ user }) => {
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
           route={`/app/profile/${user?.id ? user.id : 0}`}
+          selected={currentRoute.startsWith('/app/profile')}
         ></SidebarItem>
       </div>
 
@@ -168,12 +172,14 @@ const Sidebar = ({ user }) => {
           text="Discover"
           icon="/assets/navbar/compass.svg"
           route="/app/discover"
+          selected={currentRoute == "/app/discover"}
         ></SidebarItem>
         <SidebarItem
           text="Messages"
           text2={sum > 0 ? sum : null}
           icon="/assets/navbar/messages.png"
           route="/app/messages"
+          selected={currentRoute == "/app/messages"}
         ></SidebarItem>
       </div>
 

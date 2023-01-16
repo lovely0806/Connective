@@ -24,6 +24,7 @@ export default function SignIn({ user }) {
   const [emailNotVerified, setEmailNotVerified] = useState(null);
   const [otpCode, setOtpCode] = useState(null);
   const [otpError, setOtpError] = useState(null);
+  const [rememberme, setRememberMe] = useState(false);
 
   const router = useRouter();
   const clientId = "106261913144-qa5mgoaoi0v40eigop73gnqglmnkj7sp.apps.googleusercontent.com";
@@ -31,6 +32,11 @@ export default function SignIn({ user }) {
   useEffect(() => {
     if (typeof user != "undefined") {
       //router.push("/onboarding/create-profile")
+    }
+    if(user && user.rememberme){
+      setEmail(user.email);
+      setPassword('********');
+      setRememberMe(user.rememberme)
     }
   }, [user]);
 
@@ -62,6 +68,10 @@ export default function SignIn({ user }) {
   }, [otpCode, emailNotVerified]);
 
   const submitAccount = async () => {
+    if(user && user.rememberme){
+      router.push("/app/discover");
+      return
+    }
     if (email == "") {
       setEmailError("You must enter an email.");
       setPasswordError("");
@@ -79,7 +89,7 @@ export default function SignIn({ user }) {
     await axios({
       method: "post",
       url: "/api/auth/sessions",
-      data: { email, password },
+      data: { email, password, rememberme },
     })
       .then((res) => {
         if (res.status == 201) {
@@ -148,31 +158,6 @@ export default function SignIn({ user }) {
             <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-20">
               Welcome back! Please enter your details
             </p>
-
-            {/* <div
-               className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
-              onClick=""
-            >
-              <Image
-                 className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
-                src={googleIcon}
-                alt="Google"
-                width="16.67px"
-                height="16.67px"
-              />
-              <p  className="font-normal text-[12px] leading-[18px] text-[#0D1011] font-[Poppins] 1bp:text-[14px]">
-                Login with with Google
-              </p>
-            </div>
-            <div  className="flex flex-row items-center gap-[12px] mt-[24px]">
-              <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-              <div>
-                <p  className="font-normal text-[12px] leading-[18px] text-[#414141] font-[Poppins] 1bp:text-[14px]">
-                  or
-                </p>
-              </div>
-              <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-            </div> */}
           </div>
 
           <div className="relative flex flex-col items-center gap-5 mt-10">
@@ -181,6 +166,7 @@ export default function SignIn({ user }) {
               placeholder={"Enter your email"}
               updateValue={setEmail}
               errorText={emailError}
+              value={email}
             ></InputField>
 
             <InputField
@@ -189,6 +175,7 @@ export default function SignIn({ user }) {
               password={!showPassword ? true : false}
               updateValue={setPassword}
               errorText={passwordError}
+              value={password}
             ></InputField>
             <div
               className="absolute right-[14px] bottom-[5px] cursor-pointer"
@@ -219,6 +206,8 @@ export default function SignIn({ user }) {
                 className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
                 type="checkbox"
                 id="checkbox"
+                checked={rememberme}
+                onChange={(e) => setRememberMe(e.target.checked)}
               ></input>
               <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
                 Remember my information
@@ -279,23 +268,23 @@ export default function SignIn({ user }) {
   );
 }
 
-// export const getServerSideProps = withIronSession(
-//   async ({ req, res }) => {
-//     const user = req.session.get("user");
+export const getServerSideProps = withIronSession(
+  async ({ req, res }) => {
+    const user = req.session.get("user");
 
-//     if (!user) {
-//       return { props: {} };
-//     }
+    if (!user) {
+      return { props: {} };
+    }
 
-//     return {
-//       props: { user },
-//     };
-//   },
-//   {
-//     cookieName: "Connective",
-//     cookieOptions: {
-//       secure: process.env.NODE_ENV == "production" ? true : false,
-//     },
-//     password: process.env.APPLICATION_SECRET,
-//   }
-// );
+    return {
+      props: { user },
+    };
+  },
+  {
+    cookieName: "Connective",
+    cookieOptions: {
+      secure: process.env.NODE_ENV == "production" ? true : false,
+    },
+    password: process.env.APPLICATION_SECRET,
+  }
+);

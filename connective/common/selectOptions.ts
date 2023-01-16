@@ -1,3 +1,97 @@
+import {Industry, Occupation} from "../types/types"
+
+const events: Industry = {
+    id: 0,
+    name: "Event Management / Planning",
+    occupations: [
+        {
+            id: 0,
+            name: "DJ"
+        },
+        {
+            id: 1,
+            name: "Photographer"
+        },
+        {
+            id: 2,
+            name: "Videographer"
+        },
+        {
+            id: 3,
+            name: "Wedding Band"
+        },
+        {
+            id: 4,
+            name: "Caterer"
+        },
+        {
+            id: 5,
+            name: "Venue Manager"
+        },
+        {
+            id: 6,
+            name: "Event Planner"
+        },
+        {
+            id: -1,
+            name: "Other"
+        }
+    ]
+}
+
+const web: Industry = {
+    id: 1,
+    name: "Web Design / Development / Marketing",
+    occupations: [
+        {
+            id: 8,
+            name: "Developer"
+        },
+        {
+            id: 9,
+            name: "Dev Studio"
+        },
+        {
+            id: 10,
+            name: "Designer"
+        },
+        {
+            id: 11,
+            name: "Design Studio"
+        },
+        {
+            id: 12,
+            name: "Marketer"
+        },
+        {
+            id: 13,
+            name: "Marketing Studio"
+        },
+        {
+            id: -1,
+            name: "Other"
+        }
+    ]
+}
+
+const other: Industry = {
+    id: 3,
+    name: "Other",
+    occupations: [
+        {
+            id: -1,
+            name: "Other"
+        }
+    ]
+}
+
+export const industries: Industry[] = [
+    events,
+    web,
+    other
+]
+
+/*
 exports.categoryOptions = [
     {value: "0", label: "All"},
     {value: '1', label: 'Arts and Culture'},
@@ -115,3 +209,5 @@ exports.industryOptions = [
     { value: 86, label: 'Video' },
     { value: 87, label: 'Other'}
 ]
+*/
+
