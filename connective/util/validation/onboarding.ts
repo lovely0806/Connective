@@ -18,10 +18,10 @@ export function business(name: string, size: string, industry: string, occupatio
   if (size == "") {
     res.invalidateField("size", "You must select your company size.")
   }
-  if (industry == "") {
+  if (industry === "") {
     res.invalidateField("industry", "You must select an industry.")
   }
-  if(occupation == "") {
+  if(occupation === "") {
     res.invalidateField("occupation", "You must select an occupation.")
   }
   if (description.length > 500) {
@@ -51,10 +51,10 @@ export function individual(name: string, description: string, industry: string, 
   if (name == "") {
     res.invalidateField("name", "You must enter a name.")
   }
-  if (industry == "") {
+  if (industry === "") {
     res.invalidateField("industry", "You must select an industry.")
   }
-  if (occupation == "") {
+  if (occupation === "") {
     res.invalidateField("occupation", "You must select an occupation.")
   }
   if (description.length > 500) {
