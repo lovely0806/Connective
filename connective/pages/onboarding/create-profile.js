@@ -55,6 +55,10 @@ export default function CreateProfile({ user }) {
       value: "Looking to get client for a commission.",
       label: "Looking to get client for a commission.",
     },
+    {
+      value: "Looking to expand my network",
+      label: "Looking to expand my network",
+    },
   ];
 
   function getIndustryOptions() {
