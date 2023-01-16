@@ -2,9 +2,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ButtonDark from "../../button-dark";
-import ListCard from "../../marketplace/ListCard";
+import ListCard from "../../marketplace/ListCard"; 
 import Avatar from "components/avatar";
-import { industryOptions } from "common/selectOptions";
+import { industries } from "common/selectOptions";
 
 export default function BusinessProfile({ user, id }) {
   const router = useRouter();
@@ -30,10 +30,10 @@ export default function BusinessProfile({ user, id }) {
           setData(res.data);
           console.log(res.data);
           setLoaded(true);
-          const selectedIndustry = industryOptions.find(
-            (industry) => industry.value == res.data.industry
+          const selectedIndustry = industries.find(
+            (industry) => industry.id == res.data.industry
           );
-          setIndustry(selectedIndustry.label);
+          setIndustry(selectedIndustry.name);
         }
       });
     }catch(e){
