@@ -63,8 +63,13 @@ export default function ResetPassword() {
             router.push('/auth/signin');
           }
         })
-        .catch(async (e) => {
-          console.log(e);
+        .catch(async (err) => {
+          if (err?.response.data.error === "The link is incorrect.") {
+            router.push("/auth/signin");
+          } else if (err?.response.data.error === "The link has expired.") {
+            setLinkExpired(true);
+            setLinkVerified(false);
+          }
         });
     }
   }
