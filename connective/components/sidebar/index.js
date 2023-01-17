@@ -7,7 +7,7 @@ import Image from "next/image";
 const SidebarItem = ({ text, text2, route, icon, onClick, target, selected }) => {
   const router = useRouter();
 
-  console.log(router.pathname)
+  //console.log(router.pathname)
   if (typeof onClick == "undefined") {
     onClick = () => {
       router.push(route);
@@ -59,7 +59,7 @@ const Sidebar = ({ user }) => {
         unreadMessagesCount[item.id] = x;
       });
       setSum(unreadMessagesCount?.reduce((a, v) => a + v, 0));
-      console.log(sum);
+      //console.log(sum);
     } catch (e) {
       console.log(e);
     }

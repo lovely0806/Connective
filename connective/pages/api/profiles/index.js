@@ -10,15 +10,16 @@ export async function handler(req, res) {
 
     if (req.method == "GET") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
+      /*
       var [userIndustry] = await connection.promise().query(`SELECT Business.industry FROM Users JOIN Business on Users.id = Business.user_id where Users.id = ? UNION ALL SELECT Individual.industry FROM Users JOIN Individual on Users.id = Individual.user_id where Users.id = ?;`,
                             [user.id, user.id])
       userIndustry = userIndustry[0].industry
+      */
 
       var [results] = await connection
         .promise()
         .query(
-          `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id WHERE Business.industry = ? UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id WHERE Individual.industry = ?;`,
-          [userIndustry, userIndustry]);
+          `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`);
       res.status(200).json(results);
     }
   } catch (e) {

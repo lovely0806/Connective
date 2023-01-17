@@ -13,6 +13,7 @@ export async function handler(req, res) {
                 console.log(message.id)
                 return message.id
             })
+            console.log(IDs)
                 var [results] = await connection
               .promise()
               .query(
