@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-const EmailVerification = ({ email }) => {
-  const [otpError, setOtpError] = useState(null);
+type Props = {
+  email: string;
+  setResetPassword: (value: boolean) => void;
+};
+
+const EmailVerification = ({ email, setResetPassword } : Props) => {
+  const [otpError, setOtpError] = useState<string>("");
   const router = useRouter();
 
   const handleResendEmail = async () => {
@@ -21,8 +26,8 @@ const EmailVerification = ({ email }) => {
     return;
   };
 
-  const toSignInPage = () => {
-    router.push("/auth/signin");
+  const toSignInPage = (): void => {
+    setResetPassword(false);
   };
 
   return (

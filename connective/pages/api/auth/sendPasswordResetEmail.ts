@@ -1,3 +1,4 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { withIronSession } from "next-iron-session";
 import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
@@ -6,7 +7,7 @@ const moment = require("moment");
 const uuid = require("uuid");
 
 export default withIronSession(
-  async (req, res) => {
+  async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method == "POST") {
       const { email } = req.body;
 
@@ -24,8 +25,6 @@ export default withIronSession(
 
       if (results.length) {
         const user = results[0];
-        console.log("session results", user);
-        console.log("session user", user);
         if (!user.email_verified) {
           return res
             .status(500)
@@ -59,7 +58,7 @@ export default withIronSession(
   }
 );
 
-async function sendEmail(link, email) {
+async function sendEmail(link: string, email: string) {
   return new Promise((resolve, reject) => {
     console.log("Sending an email to " + email);
     const template = `<p>Hello There,</p>

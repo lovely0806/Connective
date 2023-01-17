@@ -326,6 +326,7 @@ export default function SignIn({ user }) {
           <div className="fixed z-10 flex items-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
             <ResetPassword
               email={email}
+              setResetPassword={setResetPassword}
             />
           </div>
         </>

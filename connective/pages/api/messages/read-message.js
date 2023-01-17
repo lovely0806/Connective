@@ -14,11 +14,11 @@ export async function handler(req, res) {
                 return message.id
             })
                 var [results] = await connection
-              .promise()
-              .query(
+                .promise()
+                .query(
                 'UPDATE messages SET `read`="1" WHERE id IN ('+IDs.join(", ")+');'
-              );
-            
+                );
+
             res.status(200).json({success: true});
         }
     } catch(e) {
@@ -33,7 +33,7 @@ export default withIronSession(handler, {
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
     },
 });
 

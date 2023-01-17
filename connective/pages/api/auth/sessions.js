@@ -21,8 +21,6 @@ export default withIronSession(
 
       if (results.length) {
         const user = results[0];
-        console.log("session results", user);
-        console.log("session user", user);
         if (!user.email_verified) {
           return res
             .status(500)

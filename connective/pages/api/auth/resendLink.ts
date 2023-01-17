@@ -15,7 +15,6 @@ export default async function handler(req, res) {
       const user = result[0];
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastLinkSentTime = user.verification_timestamp;
-        console.log("lastLinkSentTime", lastLinkSentTime);
         const diff = moment().diff(lastLinkSentTime, "minutes");
 
         if (diff < 15) {
