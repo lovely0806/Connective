@@ -20,20 +20,22 @@ export default function ResetPassword() {
   useEffect(() => {
     async function verifyLink() {
       if (email && token) {
-        const verifiedLink = await axios({
+        await axios({
           method: "post",
           url: "/api/auth/verifyLink",
           data: { email, token },
-        });
-        if (!verifiedLink.data.success && verifiedLink?.data?.error === "The link is incorrect") {
-          router.push("/auth/signin");
-        } else if (!verifiedLink.data.success && verifiedLink?.data?.error === "The link has expired") {
-          setLinkExpired(true);
-          setLinkVerified(false);
-        } else if (verifiedLink.data.success) {
+        }).then((res) => {
           setLinkExpired(false);
           setLinkVerified(true);
-        }
+        }).catch((err) => {
+          console.log(err);
+          if (err?.response.data.error === "The link is incorrect.") {
+            router.push("/auth/signin");
+          } else if (err?.response.data.error === "The link has expired.") {
+            setLinkExpired(true);
+            setLinkVerified(false);
+          }
+        })
       }
     }
     verifyLink();

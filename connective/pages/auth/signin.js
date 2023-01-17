@@ -311,7 +311,7 @@ export default function SignIn({ user }) {
       </div>
       {emailNotVerified ? (
         <>
-          <div className="fixed z-10 flex items-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
+          <div className="fixed z-10 flex items-center justify-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
             <EmailVerification
               code={setOtpCode}
               email={email}
@@ -323,7 +323,7 @@ export default function SignIn({ user }) {
       ) : null}
       {resetPassword ? (
         <>
-          <div className="fixed z-10 flex items-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
+          <div className="fixed z-10 flex items-center justify-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
             <ResetPassword
               email={email}
               setResetPassword={setResetPassword}

@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (result.length == 0) {
       return res.status(403).json({
-        success: false, error: "The link is incorrect"
+        success: false, error: "The link is incorrect."
       })
     }
 

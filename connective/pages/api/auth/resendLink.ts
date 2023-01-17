@@ -30,9 +30,8 @@ export default async function handler(req, res) {
 
       await sendEmail(link, email);
 
-      const sendCodeAttemp = user.send_code_attempt
-        ? Number(user.send_code_attempt) + 1
-        : 1;
+      const sendCodeAttemp = user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
+      // const sendCodeAttemp = 1;
 
       await connection
         .promise()
