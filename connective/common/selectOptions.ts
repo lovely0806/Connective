@@ -85,10 +85,22 @@ const other: Industry = {
     ]
 }
 
+const SAAS: Industry = {
+    id: 4,
+    name: "SAAS",
+    occupations: [
+        {
+            id: -1,
+            name: "Other"
+        }
+    ]
+}
+
 export const industries: Industry[] = [
     events,
     web,
-    other
+    SAAS,
+    other,
 ]
 
 /*
