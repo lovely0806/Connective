@@ -50,6 +50,7 @@ export default function Messages({ user }) {
   const getUsers = async () => {
     let start = Date.now();
     const { data } = await Recache.cached(137, axios.get, ["/api/profiles"]);
+    let elapsed = Date.now() - start;
     //const {data} = await axios.get("/api/profiles")
     setUsers(data.filter((a) => a.show_on_discover));
   };
