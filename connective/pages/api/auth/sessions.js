@@ -10,7 +10,7 @@ export default withIronSession(
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       var [results, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Users WHERE email='${email}';`);
+        .query(`SELECT * FROM Users WHERE email='${email}';`); 
 
       if (results.length == 0) {
         console.log("No account");
