@@ -56,7 +56,7 @@ export default function ResetPassword() {
       await axios({
         method: "post",
         url: "/api/auth/resetPassword",
-        data: { email, password },
+        data: { email, password, token },
       })
         .then(async (res) => {
           if (res.data.success === true) {
