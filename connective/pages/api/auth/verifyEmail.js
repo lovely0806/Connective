@@ -25,18 +25,16 @@ export default async function handler(req, res) {
             `SELECT COUNT(id) FROM Individual WHERE user_id='${user.id}';`
           );
         return res.status(201).json({
-          success:
-            isBusinessProfile[0]["count(id)"] ||
-            isIndividualProfile[0]["count(id)"]
-              ? true
-              : false,
+          success: true
         });
       } else {
+        console.log("Incorrect verification code")
         res
           .status(200)
           .json({ success: false, error: "Incorrect verification code" });
       }
     } else {
+      console.log("User not found")
       res.status(200).json({ success: false, error: "User not found" });
     }
   } catch (e) {
