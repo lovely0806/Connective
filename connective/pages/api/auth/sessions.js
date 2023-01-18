@@ -36,12 +36,6 @@ export default withIronSession(
         req.session.set("user", { email, id: results[0].id, rememberme });
         console.log(req.session.get("user"));
         await req.session.save();
-        .query(`SELECT * FROM Users WHERE email='${email}';`);
- 
-      if (
-        results.length &&
-        bcrypt.compareSync(accessToken, results[0].password_hash.toString())
-      ) {
         let [isBusinessProfile] = await connection
           .promise()
           .query(
