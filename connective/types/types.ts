@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //Users shown on the discover page
 export type DiscoverUser = {
 	id: number,
@@ -64,7 +63,8 @@ export type Individual = {
 	profileViews: number,
 	listViews: number,
 	status: string,
-=======
+}
+
 export type Occupation = {
     id: number,
     name: string
@@ -101,5 +101,4 @@ export class ValidationResponse {
       field.error = error
       this.success = false
     }
->>>>>>> master
 }

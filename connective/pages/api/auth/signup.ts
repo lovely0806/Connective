@@ -20,16 +20,7 @@ export default async function handler(req: any, res: NextApiResponse) {
       // stripe_account.id
       // add stripe_account.id to the User database # FieldName: stripeID
 
-<<<<<<< HEAD:connective/pages/api/auth/signup.ts
       await DAO.Users.add(username, hash, email, stripe_account.id)
-=======
-      connection.execute(
-        `INSERT INTO Users (username, password_hash, email, stripeID, signup_timestamp) VALUES ('${username}', '${hash}', '${email}', '${stripe_account.id}', "${moment().format(
-          "YYYY/MM/DD HH:mm:ss"
-        )}");`
-      );
-      connection.end();
->>>>>>> master:connective/pages/api/auth/signup.js
       res.status(200).json({ success: true });
     }
   } catch (e) {

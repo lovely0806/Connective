@@ -1,7 +1,6 @@
 import { withIronSession } from "next-iron-session";
-import type { NextApiRequest, NextApiResponse } from 'next'
 
-function handler(req: any, res: NextApiResponse) {
+function handler(req, res) {
   req.session.destroy();
   res.send("session destroyed");
 }

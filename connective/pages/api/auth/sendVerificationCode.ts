@@ -7,27 +7,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
-<<<<<<< HEAD:connective/pages/api/auth/sendVerificationCode.ts
     
     let user = await DAO.Users.getByEmail(email)
     if (user) {
       await sendEmail(code.toString(), email);
       await DAO.Users.setOtpCode(code.toString(), email)
-=======
-
-    const [result] = await connection
-      .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}'`);
-    if (result.length) {
-      await sendEmail(code, email);
-      await connection
-        .promise()
-        .query(
-          `UPDATE Users SET verify_email_otp = '${code}' WHERE email='${email}';`
-        );
-    } else {
-      console.log("No user found")
->>>>>>> master:connective/pages/api/auth/sendVerificationCode.js
     }
     res.status(200).json({ success: true });
   } catch (e) {
