@@ -1,8 +1,7 @@
 import { withIronSession } from "next-iron-session";
-
 const mysql = require("mysql2");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
- 
+
 export async function handler(req, res) {
   try {
     const host = req.headers.host;
@@ -10,6 +9,9 @@ export async function handler(req, res) {
     if (req.method === "POST") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       let user = req.session.get().user;
+      if (typeof user == "undefined") {
+        return res.status(403).json({ success: false, error: "Not signed in" });
+      }
       if (typeof user == "undefined") {
         return res.status(500).json({ success: false, error: "Not signed in" });
       }
@@ -20,14 +22,13 @@ export async function handler(req, res) {
       connection.close();
       if (result.length > 0) {
         // fetch stripeID from the db;
-        
         const accountLink = await stripe.accountLinks.create({
           account: result[0].stripeID,
           refresh_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.refreshURL,
           return_url: process.env.NODE_ENV === "test" ? 'http:' : 'https:' + '//' + host + process.env.returnURL,
           type: "account_onboarding",
         });
-         return res.status(200).json({success: true, accountLink: accountLink.url})
+        return res.status(200).json({success: true, accountLink: accountLink.url})
       } else {
         return res.json({ error: "User not found", success: false });
       }

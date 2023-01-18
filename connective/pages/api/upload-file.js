@@ -4,10 +4,10 @@ const AWS = require('aws-sdk')
 export async function handler(req, res) {
     try {
         if(typeof(req.session.get().user) == "undefined") {
-            return res.status(500).json({success: false, error: "Not signed in"})
+            return res.status(403).json({success: false, error: "Not signed in"})
         }
         if(req.method == "POST") {
-            const {name, type} = req.body 
+            const {name, type} = req.body
 
             const s3 = new AWS.S3({
                 accessKeyId: process.env.AWS_ID,
@@ -32,14 +32,14 @@ export async function handler(req, res) {
         console.log(e)
         return res.status(500).json({success: false, error: e})
     }
-} 
+}
 
 export default withIronSession(handler, {
     password: process.env.APPLICATION_SECRET,
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
     },
 });
 

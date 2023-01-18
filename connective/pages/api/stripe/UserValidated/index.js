@@ -8,6 +8,9 @@ export async function handler(req, res) {
   try {
     if (req.method === "GET") {
       let user = req.session.get().user
+      if (typeof user == "undefined") {
+        return res.status(403).json({ success: false, error: "Not signed in" });
+      }
       let id = req.query.id
       if(typeof(id) == "undefined") id = user.id
 
