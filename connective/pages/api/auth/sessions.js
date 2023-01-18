@@ -14,7 +14,6 @@ export default withIronSession(
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       const [results, fields, err] = await connection
         .promise()
-<<<<<<< HEAD
         .query(`SELECT * FROM Users WHERE email='${email}';`); 
 
       if (results.length == 0) {
@@ -37,14 +36,12 @@ export default withIronSession(
         req.session.set("user", { email, id: results[0].id, rememberme });
         console.log(req.session.get("user"));
         await req.session.save();
-=======
         .query(`SELECT * FROM Users WHERE email='${email}';`);
  
       if (
         results.length &&
         bcrypt.compareSync(accessToken, results[0].password_hash.toString())
       ) {
->>>>>>> 44049553681de1a8f34176ac553c483a1697b475
         let [isBusinessProfile] = await connection
           .promise()
           .query(
