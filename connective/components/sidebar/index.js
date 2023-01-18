@@ -3,11 +3,12 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
 
-const SidebarItem = ({ text, text2, route, icon, onClick, target, selected }) => {
+const SidebarItem = ({ text, text2, route, icon, onClick, target }) => {
   const router = useRouter();
 
-  //console.log(router.pathname)
+  let selected = router.route == route;
   if (typeof onClick == "undefined") {
     onClick = () => {
       router.push(route);
@@ -22,7 +23,7 @@ const SidebarItem = ({ text, text2, route, icon, onClick, target, selected }) =>
   return (
     <div
       onClick={onClick}
-      className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/50 ${
+      className={`flex flex-row gap-5 cursor-pointer text-[1.65vh] 2xl:text-[1.4vh] pl-6 py-[1.25vh] 2xl:py-[1.5vh] w-full transition-all hover:bg-[#051533]/10 ${
         selected ? "bg-[#051533]" : ""
       } ${text == "Sign Out" ? "mt-auto" : ""}`}
     >
@@ -35,14 +36,23 @@ const SidebarItem = ({ text, text2, route, icon, onClick, target, selected }) =>
 
 const Sidebar = ({ user }) => {
   const router = useRouter();
-  const currentRoute = router.pathname;
+  const { data: session } = useSession();
+
   const signout = async () => {
-    await axios.get("/api/auth/signout");
-    router.push("/");
-  }; 
+    try {
+      await axios.get("/api/auth/destroysession");
+      if (session) {
+        await signOut();
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      router.push("/");
+    }
+  };
 
   const [sum, setSum] = useState();
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
+  const [array1, setArray1] = useState([]);
   const getConversations = async () => {
     try {
       const { data } = await axios.get("/api/messages/conversations");
@@ -56,15 +66,14 @@ const Sidebar = ({ user }) => {
       temp2?.map(async (item, index) => {
         let x = await getUnreadMessages(item.id);
         item.unread = x;
-        unreadMessagesCount[item.id] = x;
+        array1[item.id] = x;
       });
-      setSum(unreadMessagesCount?.reduce((a, v) => a + v, 0));
-      //console.log(sum);
+      setSum(array1?.reduce((a, v) => a + v, 0));
+      console.log(sum);
     } catch (e) {
       console.log(e);
     }
   };
-
   const getUnreadMessages = async (id) => {
     const { data } = await axios.get("/api/messages/" + id);
     const unReadMesssages = data.filter((message) => {
@@ -107,7 +116,7 @@ const Sidebar = ({ user }) => {
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
-        {/*
+        {/* 
         <SidebarItem
           text="Dashboard"
           icon="/assets/navbar/DashboardIcon.svg"
@@ -118,11 +127,10 @@ const Sidebar = ({ user }) => {
           text="Profile"
           icon="/assets/navbar/ProfileIcon.svg"
           route={`/app/profile/${user?.id ? user.id : 0}`}
-          selected={currentRoute.startsWith('/app/profile')}
         ></SidebarItem>
       </div>
 
-      {/*
+      {/* 
       <div  className="mb-3">
         <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
@@ -168,14 +176,12 @@ const Sidebar = ({ user }) => {
           text="Discover"
           icon="/assets/navbar/compass.svg"
           route="/app/discover"
-          selected={currentRoute == "/app/discover"}
         ></SidebarItem>
         <SidebarItem
           text="Messages"
           text2={sum > 0 ? sum : null}
           icon="/assets/navbar/messages.png"
           route="/app/messages"
-          selected={currentRoute == "/app/messages"}
         ></SidebarItem>
       </div>
 
@@ -202,13 +208,13 @@ const Sidebar = ({ user }) => {
         ></SidebarItem>
       </div>
 
-      <Link href="http://www.connective-app.xyz/">
-        <SidebarItem
-          text="Sign Out"
-          icon="/assets/navbar/SignOutIcon.svg"
-          onClick={signout}
-        ></SidebarItem>
-      </Link>
+      {/* <Link href="http://www.connective-app.xyz/"> */}
+      <SidebarItem
+        text="Sign Out"
+        icon="/assets/navbar/SignOutIcon.svg"
+        onClick={signout}
+      ></SidebarItem>
+      {/* </Link> */}
     </div>
   );
 };
