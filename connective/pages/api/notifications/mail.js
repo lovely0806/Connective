@@ -1,10 +1,9 @@
 import { info } from 'autoprefixer'
 import {mailOptions, transporter} from 'services/nodemailer'
-const handler = async (req, res) =>{
 
+const handler = async (req, res) =>{
     const data = req.body.data
     if(req.method === 'POST') {
-        
         try {
             if(data.email)
             {
@@ -25,19 +24,16 @@ const handler = async (req, res) =>{
             }
             else
             {
-
-               await mailer(data)
+                await mailer(data)
             }
-            
             res.status(200).json({success: true})
         } catch (error) {
             res.status(422).json({success: false, message: error.message})
-    
         }
     }
- }
- async function mailer(data){
+}
 
+async function mailer(data){
     await transporter.sendMail({
         ...mailOptions,
         subject: data.subject,
@@ -46,4 +42,4 @@ const handler = async (req, res) =>{
     })
 }
 
- export default handler
+export default handler

@@ -14,12 +14,37 @@ export default withIronSession(
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       const [results, fields, err] = await connection
         .promise()
+<<<<<<< HEAD
+        .query(`SELECT * FROM Users WHERE email='${email}';`); 
+
+      if (results.length == 0) {
+        console.log("No account");
+        return res
+          .status(500)
+          .json({ success: false, error: "Account does not exist" });
+      }
+
+      if (results.length) {
+        const user = results[0];
+        if (!user.email_verified) {
+          return res
+            .status(500)
+            .json({ success: false, error: "Email not verified" });
+        }
+      }
+
+      if (bcrypt.compareSync(password, results[0].password_hash.toString())) {
+        req.session.set("user", { email, id: results[0].id, rememberme });
+        console.log(req.session.get("user"));
+        await req.session.save();
+=======
         .query(`SELECT * FROM Users WHERE email='${email}';`);
  
       if (
         results.length &&
         bcrypt.compareSync(accessToken, results[0].password_hash.toString())
       ) {
+>>>>>>> 44049553681de1a8f34176ac553c483a1697b475
         let [isBusinessProfile] = await connection
           .promise()
           .query(
