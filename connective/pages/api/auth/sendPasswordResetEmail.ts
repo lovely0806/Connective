@@ -42,7 +42,7 @@ export default withIronSession(
           )}" WHERE email='${email}';`
         );
 
-      const link = `http://localhost:3000/auth/resetpassword/${email}/${token}`;
+      const link = `http://${req.headers.host}/auth/resetpassword/${email}/${token}`;
 
       await sendEmail(link, email);
 
