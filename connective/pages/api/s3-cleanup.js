@@ -6,7 +6,7 @@ const mysql = require("mysql2");
 export async function handler(req, res) {
   try {
     if (typeof req.session.get().user == "undefined") {
-      return res.status(500).json({ success: false, error: "Not signed in" });
+      return res.status(403).json({ success: false, error: "Not signed in" });
     }
 
     if (req.method == "GET") {

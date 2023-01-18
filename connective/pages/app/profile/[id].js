@@ -5,31 +5,30 @@ import Sidebar from "../../../components/sidebar";
 import BusinessProfile from "../../../components/profile/business";
 import IndividualProfile from "../../../components/profile/individual";
 import Util from "../../../util";
-import {useRouter} from "next/router"
-import Head from 'next/head'
+import { useRouter } from "next/router";
+import Head from "next/head";
 
- 
 export default function Profile({ user }) {
   const [accountType, setAccountType] = useState();
-  const router = useRouter()
-  const {id} = router.query
+  const router = useRouter();
+  const { id } = router.query;
 
   const getAccountType = async () => {
     setAccountType(await Util.accountType(id));
   };
+
   useEffect(() => {
-    if(typeof(user) == "undefined") router.push("/auth/signin");
-    if(user && user.id != id) router.push("/auth/signin");
+    if (typeof user == "undefined") router.push("/auth/signin");
     getAccountType();
   }, [user]);
 
   return (
-    <main  className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
+    <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
       <Head>
         <title>Profile - Conenctive</title>
       </Head>
       <Sidebar user={user}></Sidebar>
-      <div  className="h-screen w-screen overflow-y-scroll">
+      <div className="h-screen w-screen overflow-y-scroll">
         {accountType == "Business" && (
           <BusinessProfile user={user} id={id}></BusinessProfile>
         )}

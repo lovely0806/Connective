@@ -23,6 +23,6 @@ export default withIronSession(handler, {
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
     },
 });

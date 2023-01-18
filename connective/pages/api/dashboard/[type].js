@@ -6,7 +6,7 @@ export async function handler(req, res) {
     try {
         let user = req.session.get().user
         if(typeof(user) == "undefined") {
-            return res.status(500).json({success: false, error: "Not signed in"})
+            return res.status(403).json({success: false, error: "Not signed in"})
         }
         if(req.method == "GET") { //Returns callers account
             const connection = mysql.createConnection(process.env.DATABASE_URL)
@@ -63,6 +63,6 @@ export default withIronSession(handler, {
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
     },
 });

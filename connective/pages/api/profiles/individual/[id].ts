@@ -7,7 +7,7 @@ export async function handler(req: any, res: NextApiResponse) {
     try {
         let user = req.session.get().user
         if(typeof(user) == "undefined") {
-            return res.status(500).json({success: false, error: "Not signed in"})
+            return res.status(403).json({success: false, error: "Not signed in"})
         }
         if(req.method == "GET") { //Returns callers account
             res.status(200).json(await DAO.Individual.getByUserId(id))
@@ -23,6 +23,6 @@ export default withIronSession(handler, {
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
     },
 });

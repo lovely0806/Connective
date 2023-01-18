@@ -1,48 +1,43 @@
 import InputField from "../../components/input-field";
-import Logo from "../../components/logo";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { withIronSession } from "next-iron-session";
-import OnboardingSidebar from "../../components/onboarding-sidebar";
 import Link from "next/link";
 import Image from "next/image";
-import googleIcon from "../../public/assets/google-icon.svg";
 import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
 import Head from "next/head";
 import EmailVerification from "components/dailog/EmailVerification";
+import ResetPassword from "components/dailog/ResetPassword";
 import { GoogleLogin } from "react-google-login";
 import nextConfig from "../../next.config";
+import GoogleSsoDivider from "../../components/divider/orDivider";
+import GoogleAuthButton from "../../components/button/GoogleAuthButton";
 
-export default function SignIn({ user }) {
+export default function SignIn() {
+  const router = useRouter();
+  const { error } = router.query;
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
   const [emailNotVerified, setEmailNotVerified] = useState(null);
   const [otpCode, setOtpCode] = useState(null);
+  const [otpCodeforResetPassword, setOtpCodeforResetPassword] = useState(null);
   const [otpError, setOtpError] = useState(null);
 
-  const router = useRouter();
-  const clientId = "106261913144-qa5mgoaoi0v40eigop73gnqglmnkj7sp.apps.googleusercontent.com";
-
   useEffect(() => {
-    if (typeof user != "undefined") {
-      //router.push("/onboarding/create-profile")
-    }
-  }, [user]);
-
-  useEffect(() => {
-    async function verifyEmail() {
-      if (otpCode && emailNotVerified) {
+    if (otpCode && emailNotVerified) {
+      async function verifyEmail() {
         const verifiedEmail = await axios({
           method: "post",
           url: "/api/auth/verifyEmail",
           data: { code: otpCode, email },
         });
-        if (!verifiedEmail.data.success && verifiedEmail?.data?.error) {
+        if (!verifiedEmail.data.success) {
           if (verifiedEmail.data.error === "Incorrect verification code") {
             setOtpError("Incorrect verification code");
           } else {
@@ -51,15 +46,37 @@ export default function SignIn({ user }) {
         } else {
           setOtpError(null);
           setEmailError(null);
-          setEmailNotVerified(null);
-          verifiedEmail.data.success
-            ? router.push("/app/discover")
-            : router.push("/onboarding/create-profile");
+          setEmailNotVerified(false);
         }
       }
+      verifyEmail();
     }
-    verifyEmail();
   }, [otpCode, emailNotVerified]);
+
+  useEffect(() => {
+    if (!emailNotVerified) {
+      async function verifyEmail() {
+        const verifiedEmail = await axios({
+          method: "post",
+          url: "/api/auth/verifyEmail",
+          data: { code: otpCode, email },
+        });
+        if (!verifiedEmail.data.success) {
+          if (verifiedEmail.data.error === "Incorrect verification code")
+            setOtpError("Incorrect verification code");
+        } else {
+          setEmailNotVerified(false);
+        }
+      }
+      verifyEmail();
+    }
+  }, [otpCode, emailNotVerified]);
+
+  useEffect(() => {
+    if (error) {
+      setPasswordError("You didn't sign up with Google SSO.");
+    }
+  }, [error]);
 
   const submitAccount = async () => {
     if (email == "") {
@@ -83,21 +100,16 @@ export default function SignIn({ user }) {
     })
       .then((res) => {
         if (res.status == 201) {
+          console.log(res.data);
           res.data
             ? router.push("/app/discover")
             : router.push("/onboarding/create-profile");
         }
       })
-      .catch(async (e) => {
+      .catch((e) => {
         if (e.response.data.error == "Email not verified") {
           setEmailError("Email not verified");
           setEmailNotVerified(true);
-
-          await axios({
-            method: "post",
-            url: "/api/auth/sendVerificationCode",
-            data: { email },
-          });
         }
         if (
           e.response.status == 403 ||
@@ -107,9 +119,38 @@ export default function SignIn({ user }) {
       });
   };
 
+  const forgotPassword = async () => {
+    if (email == "") {
+      setEmailError("You must enter an email.");
+      setPasswordError("");
+      return;
+    }
+
+    setPasswordError("");
+    setEmailError("");
+
+    await axios({
+      method: "post",
+      url: "/api/auth/sendPasswordResetEmail",
+      data: { email },
+    })
+      .then(async (data) => {
+        console.log(data);
+        if (data) setResetPassword(true);
+      })
+      .catch(async (e) => {
+        if (
+          e.response.status == 500 ||
+          e.response.data.error == "Account does not exist"
+        )
+          setEmailError("Incorrect email");
+      });
+  };
+
   const onGoogleSuccess = (res) => {
     console.log("[Login Success] currentUser:", res.profileObj);
   };
+
   const onGoogleFailure = (res) => {
     console.log("[login failed] res:", res);
   };
@@ -128,7 +169,7 @@ export default function SignIn({ user }) {
       <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px] ml-[64px]">
         <div className="cursor-pointer">
           <Link href="https://www.connective-app.xyz">
-            <div className="mb-[60px]">
+            <div className="mb-[40px]">
               <Image
                 src={logo}
                 alt="Connective logo"
@@ -145,16 +186,16 @@ export default function SignIn({ user }) {
               Sign in
             </p>
 
-            <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-20">
+            <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-10">
               Welcome back! Please enter your details
             </p>
 
             {/* <div
-               className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
+              className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
               onClick=""
             >
               <Image
-                 className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
+                className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
                 src={googleIcon}
                 alt="Google"
                 width="16.67px"
@@ -175,7 +216,10 @@ export default function SignIn({ user }) {
             </div> */}
           </div>
 
-          <div className="relative flex flex-col items-center gap-5 mt-10">
+          <GoogleAuthButton isSignUp={false} />
+          <GoogleSsoDivider />
+
+          <div className="relative flex flex-col gap-5 mt-10 items-center">
             <InputField
               name={"E-mail"}
               placeholder={"Enter your email"}
@@ -213,7 +257,7 @@ export default function SignIn({ user }) {
             </div>
           </div>
 
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row justify-between items-center">
             <div className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
               <input
                 className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
@@ -224,36 +268,19 @@ export default function SignIn({ user }) {
                 Remember my information
               </p>
             </div>
-            <Link href=".">
+            <span onClick={forgotPassword}>
               <p className="font-Poppins font-normal text-[12px] leading-[18px] text-[#061A40] cursor-pointer 1bp:text-[16px]">
                 Forgot your password?
               </p>
-            </Link>
+            </span>
           </div>
 
           <button
             onClick={submitAccount}
-            className="w-[100%] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px] mb-2"
+            className="w-[100%] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
           >
             Log in
           </button>
-          <GoogleLogin
-            clientId={clientId}
-            buttonText="Log in with Google"
-            onSuccess={onGoogleSuccess}
-            onFailure={onGoogleFailure}
-            cookiePolicy={"single_host_origin"}
-            isSignedIn={true}
-            render={(renderProps) => (
-              <button
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-                className="w-[100%] h-[47px] bg-[#061A40] font-semibold font-[Poppins] text-[#F2F4F5] text-[12px] leading-[18px] text-center rounded-[8px] shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px] mb-2"
-              >
-                Log in with Google
-              </button>
-            )}
-          />
 
           <p className="mt-[24px] font-[Poppins] font-normal text-[12px] leading-[18px] text-center text-[#414141] 1bp:text-[16px]">
             Dont have an account?{" "}
@@ -265,7 +292,7 @@ export default function SignIn({ user }) {
       </div>
       {emailNotVerified ? (
         <>
-          <div className="fixed z-10 flex items-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
+          <div className="fixed z-10 flex items-center justify-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
             <EmailVerification
               code={setOtpCode}
               email={email}
@@ -275,27 +302,37 @@ export default function SignIn({ user }) {
           </div>
         </>
       ) : null}
+      {resetPassword ? (
+        <>
+          <div className="fixed z-10 flex items-center justify-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
+            <ResetPassword
+              email={email}
+              setResetPassword={setResetPassword}
+            />
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
 
-// export const getServerSideProps = withIronSession(
-//   async ({ req, res }) => {
-//     const user = req.session.get("user");
+export const getServerSideProps = withIronSession(
+  async ({ req, res }) => {
+    const user = req.session.get("user");
 
-//     if (!user) {
-//       return { props: {} };
-//     }
+    if (!user) {
+      return { props: {} };
+    }
 
-//     return {
-//       props: { user },
-//     };
-//   },
-//   {
-//     cookieName: "Connective",
-//     cookieOptions: {
-//       secure: process.env.NODE_ENV == "production" ? true : false,
-//     },
-//     password: process.env.APPLICATION_SECRET,
-//   }
-// );
+    return {
+      props: { user },
+    };
+  },
+  {
+    cookieName: "Connective",
+    cookieOptions: {
+      secure: process.env.NODE_ENV == "production" ? true : false,
+    },
+    password: process.env.APPLICATION_SECRET,
+  }
+);

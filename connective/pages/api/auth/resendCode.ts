@@ -12,7 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (user) {
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastCodeSentTime = user.last_code_sent_time;
-        console.log("lastCodeSentTime", lastCodeSentTime);
         const diff = moment().diff(lastCodeSentTime, "minutes");
 
         if (diff < 15) {

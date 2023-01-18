@@ -6,7 +6,7 @@ export async function handler(req: any, res: NextApiResponse) {
     try {
         let user = req.session.get().user;
         if(typeof(user) == "undefined") {
-            return res.status(500).json({success: false, error: "Not signed in"})
+            return res.status(403).json({success: false, error: "Not signed in"})
         }
         if (req.method == "POST") {
             const connection = mysql.createConnection(process.env.DATABASE_URL);
@@ -14,12 +14,13 @@ export async function handler(req: any, res: NextApiResponse) {
                 console.log(message.id)
                 return message.id
             })
+            console.log(IDs)
                 var [results] = await connection
-              .promise()
-              .query(
+                .promise()
+                .query(
                 'UPDATE messages SET `read`="1" WHERE id IN ('+IDs.join(", ")+');'
-              );
-            
+                );
+
             res.status(200).json({success: true});
         }
     } catch(e) {
@@ -34,7 +35,7 @@ export default withIronSession(handler, {
     cookieName: "Connective",
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
     },
 });
 

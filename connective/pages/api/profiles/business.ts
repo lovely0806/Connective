@@ -6,7 +6,7 @@ export async function handler(req: any, res: NextApiResponse) {
   try {
     let user = req.session.get().user;
     if (typeof user == "undefined") {
-      return res.status(500).json({ success: false, error: "Not signed in" });
+      return res.status(403).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "GET") {
       let { id } = req.query;
@@ -38,9 +38,22 @@ export async function handler(req: any, res: NextApiResponse) {
       res.status(200).json(business);
     }
     if (req.method == "POST") {
-      const { name, description, pfp, url, location, industry, size, status } =
+      const { name, description, pfp, url, location, industry, occupation, size, status } =
         req.body;
+<<<<<<< HEAD:connective/pages/api/profiles/business.ts
       await DAO.Business.add(user.id, name, description, pfp, url, location, industry, size, status)
+=======
+
+      const connection = mysql.createConnection(process.env.DATABASE_URL);
+      await connection.promise().execute(`
+                INSERT INTO Business (
+                    user_id, company_name, description, logo, website, location, industry, occupation, size, status
+                ) VALUES (
+                    '${user.id}', '${name}', '${description}', '${pfp}', '${url}', '${location}', '${industry}', '${occupation}', '${size}', '${status}'
+                );`);
+
+      connection.end();
+>>>>>>> master:connective/pages/api/profiles/business.js
       res.status(200).json({ success: true });
     }
     if (req.method == "PATCH") {
