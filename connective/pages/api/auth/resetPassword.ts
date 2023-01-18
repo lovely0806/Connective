@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .promise()
       .query(`SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`);
 
-    if (result.length == 0) {
+    if (result.length == 0 || token == "") {
       return res.status(403).json({
         success: false, error: "The link is incorrect."
       })
