@@ -1,14 +1,14 @@
 import InputField from "../../components/input-field";
-import Logo from "../../components/logo";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import OnboardingSidebar from "../../components/onboarding-sidebar";
 import Link from "next/link";
 import Image from "next/image";
-import googleIcon from "../../public/assets/google-icon.svg";
 import Head from "next/head";
 import EmailVerification from "../../components/dailog/EmailVerification";
+import GoogleSsoDivider from "../../components/divider/orDivider";
+import GoogleAuthButton from "../../components/button/GoogleAuthButton";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -34,7 +34,7 @@ export default function SignUp() {
           url: "/api/auth/verifyEmail",
           data: { code: otpCode, email },
         });
-        if (!verifiedEmail.data.success && verifiedEmail?.data?.error) {
+        if (!verifiedEmail.data.success) {
           if (verifiedEmail.data.error === "Incorrect verification code")
             setOtpError("Incorrect verification code");
         } else {
@@ -115,10 +115,11 @@ export default function SignUp() {
       data: { username: name, email, password },
     })
       .then(async (res) => {
+        const randomOtp = Math.floor(1000 + Math.random() * 9000);
         await axios({
           method: "post",
           url: "/api/auth/sendVerificationCode",
-          data: { email },
+          data: { code: randomOtp, email },
         })
           .then(async (data) => {
             if (data) setSignUpSuccess(true);
@@ -157,31 +158,9 @@ export default function SignUp() {
               <span className="font-bold cursor-pointer">Log In</span>
             </Link>
           </p>
-          {/* <div
-             className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
-            onClick=""
-          >
-            <Image
-               className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
-              src={googleIcon}
-              alt="Google"
-              width="16.67px"
-              height="16.67px"
-            />
-            <p  className="font-normal text-[12px] leading-[18px] text-[#0D1011] font-[Poppins] 1bp:text-[14px]">
-              Sign up with Google
-            </p>
-          </div>
-          <div  className="flex flex-row items-center gap-[12px] mt-[24px]">
-            <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-            <div>
-              <p  className="font-normal text-[12px] leading-[18px] text-[#414141] font-[Poppins] 1bp:text-[14px]">
-                or
-              </p>
-            </div>
-            <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
-          </div> */}
         </div>
+        <GoogleAuthButton isSignUp={true} />
+        <GoogleSsoDivider />
 
         <div className="flex flex-col gap-5 mt-[28px]">
           <InputField
