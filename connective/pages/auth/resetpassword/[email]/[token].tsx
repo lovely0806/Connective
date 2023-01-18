@@ -14,6 +14,7 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string>("");
+  const [linkError, setLinkError] = useState<string>("");
   const [passwordConfirmError, setPasswordConfirmError] = useState<string>("");
   const { email, token } = router.query;
 
@@ -28,12 +29,10 @@ export default function ResetPassword() {
           setLinkExpired(false);
           setLinkVerified(true);
         }).catch((err) => {
-          console.log(err);
-          if (err?.response.data.error === "The link is incorrect.") {
-            router.push("/auth/signin");
-          } else if (err?.response.data.error === "The link has expired.") {
+          if (err?.response.data.error) {
             setLinkExpired(true);
             setLinkVerified(false);
+            setLinkError(err?.response.data.error);
           }
         })
       }
@@ -51,7 +50,7 @@ export default function ResetPassword() {
 
   const submitNewPassword = async () => {
     if (password !== passwordConfirm) {
-      setPasswordConfirmError("doesn't match");
+      setPasswordConfirmError("Passwords must match");
     } else {
       await axios({
         method: "post",
@@ -64,11 +63,10 @@ export default function ResetPassword() {
           }
         })
         .catch(async (err) => {
-          if (err?.response.data.error === "The link is incorrect.") {
-            router.push("/auth/signin");
-          } else if (err?.response.data.error === "The link has expired.") {
+          if (err?.response.data.error) {
             setLinkExpired(true);
             setLinkVerified(false);
+            setLinkError(err?.response.data.error);
           }
         });
     }
@@ -89,7 +87,7 @@ export default function ResetPassword() {
             linkExpired && !linkVerified && (
               <div className="p-4 sm:p-7 text-center">
                 <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
-                  The link has expired.
+                  {linkError}
                 </h1>
                 <button
                   onClick={toSignIn}
