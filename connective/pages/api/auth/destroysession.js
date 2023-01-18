@@ -2,7 +2,7 @@ import { withIronSession } from "next-iron-session";
 
 function handler(req, res, session) {
   req.session.destroy();
-  res.send("Logged out");
+  res.send("session destroyed");
 }
 
 export default withIronSession(handler, {
