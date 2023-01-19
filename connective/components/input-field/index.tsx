@@ -7,8 +7,8 @@ type Props = {
   password?: boolean;
   textarea?: boolean;
   price?: boolean;
-  updateValue: (value: any) => void;
-  errorText: string;
+  updateValue: (value: string) => void;
+  errorText?: string;
   value?: string | number;
   disabled?: boolean;
 };
@@ -25,16 +25,13 @@ const InputField = ({
   disabled,
 }: Props) => {
   return (
-    <div  className="flex flex-col w-[100%]">
-      <p  className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+    <div className="flex flex-col w-[100%]">
+      <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
         {name}
       </p>
       {price && (
         <div className="relative flex items-center">
-          {/* <div  className="absolute h-full ml-4 flex">
-            <p  className="my-auto text-lg">$</p>
-          </div> */}
-          <div  className="absolute z-[10] pl-[12px] my-auto flex items-center">
+          <div className="absolute z-[10] pl-[12px] my-auto flex items-center">
             <Image
               src={dollarIcon}
               alt="Search icon"
@@ -80,7 +77,9 @@ const InputField = ({
         ></input>
       )}
 
-      <p  className="text-red-500 font-bold text-[12px]">{errorText}</p>
+      {errorText && (
+        <p className="text-red-500 font-bold text-[12px]">{errorText}</p>
+      )}
     </div>
   );
 };

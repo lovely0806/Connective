@@ -1,31 +1,32 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-const mysql = require("mysql2");
-const moment = require("moment");
+import type { NextApiRequest, NextApiResponse } from "next";
+import moment from "moment";
+import { DAO } from "../../../lib/dao";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { token, email } = req.body;
-    const [result] = await connection
-      .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`);
 
-    if (result.length == 0 || token == "") {
+    const user = await DAO.Users.getByEmailAndVerificationId(email, token);
+
+    if (!user || token == "") {
       return res.status(403).json({
-        success: false, error: "The link is incorrect."
-      })
+        success: false,
+        error: "The link is incorrect.",
+      });
     }
 
-    if (result.length) {
-      const user = result[0];
+    if (user) {
       if (user.verification_timestamp) {
         const diff = moment().diff(user.verification_timestamp, "minutes");
 
         if (diff > 15) {
           return res.status(403).json({
             success: false,
-            error: "The link has expired."
-          })
+            error: "The link has expired.",
+          });
         }
 
         res.status(200).json({ success: true });

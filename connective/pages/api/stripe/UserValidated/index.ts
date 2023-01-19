@@ -1,0 +1,51 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import { withIronSession } from "next-iron-session";
+import mysql from "mysql2";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null);
+
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    if (req.method === "GET") {
+      // @ts-ignore
+      let user = req.session.get().user;
+      if (typeof user == "undefined") {
+        return res.status(403).json({ success: false, error: "Not signed in" });
+      }
+      let id = req.query.id;
+      if (typeof id == "undefined") id = user.id;
+
+      const connection = mysql.createConnection(process.env.DATABASE_URL);
+      if (typeof user == "undefined") {
+        return res.status(500).json({ success: false, error: "Not signed in" });
+      }
+      var [result, fields] = await connection
+        .promise()
+        .query(`SELECT * FROM Users WHERE id='${id}';`);
+      // @ts-ignore
+      connection.close();
+      if (result[0]) {
+        const acc = await stripe.accounts.retrieve({
+          stripeAccount: result[0].stripeID,
+        });
+        return res.json({ success: true, verified: acc.charges_enabled });
+      } else {
+        return res.json({ error: "User not found", success: false });
+      }
+    } else {
+      return res.json({ error: "Only GET request is valid", success: false });
+    }
+  } catch {
+    return res.json({ error: "Server error", success: false });
+  }
+}
+
+export default withIronSession(handler, {
+  password: process.env.APPLICATION_SECRET,
+  cookieName: "Connective",
+  // if your localhost is served on http:// then disable the secure flag
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+  },
+});
