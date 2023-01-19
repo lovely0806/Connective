@@ -1,10 +1,10 @@
-version: '3.8'
+version: '3.3'
 services:
   connective-socket:
     container_name: connective-socket
     build:
       context: .
-      target: dev
+      dockerfile: dev.Dockerfile
     command: npm run start:dev
     ports:
       - "3000:3000"

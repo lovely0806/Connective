@@ -1,10 +1,9 @@
-version: '3.8'
+version: '3.3'
 services:
   connective-socket:
     container_name: connective-socket
     build:
       context: .
-      target: production
     command: pm2 start ./build/server.js --no-daemon
     env_file:
       - .env
@@ -13,6 +12,7 @@ services:
     build: ./nginx
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot

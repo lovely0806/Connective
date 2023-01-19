@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(connective-testing.dev)
+domains=("connective-testing.dev" "www.connective-testing.dev")
 rsa_key_size=4096
 data_path="./data/certbot"
 email="hasnain.y@yopmail.com" # Adding a valid address is strongly recommended
@@ -39,7 +39,7 @@ echo
 
 
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d nginx
+docker-compose up --force-recreate -d nginx connective-socket
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
@@ -77,4 +77,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec nginx nginx -s reload
+docker-compose exec connective-socket nginx -s reload
