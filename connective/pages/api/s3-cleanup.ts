@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import AWS from "aws-sdk";
-import mysql, { RowDataPacket } from "mysql2";
+import { DAO } from "../../lib/dao";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -11,22 +11,13 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (req.method == "GET") {
-      //Connect Database and fetch urls
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      let [lists, fields] = await connection
-        .promise()
-        .query(`SELECT url FROM Lists`);
-      const usedLists = (lists as Array<RowDataPacket>).map(
-        (elem: RowDataPacket) => {
-          return elem.url.replace(
-            "https://connective-data.s3.amazonaws.com/",
-            ""
-          );
-        }
-      );
-      console.log("Used Lists:", usedLists);
+      // Connect Database and fetch urls
+      const lists = await DAO.Lists.getUrls();
+      const usedLists = lists.map((url: string) => {
+        return url.replace("https://connective-data.s3.amazonaws.com/", "");
+      });
 
-      //Config s3 bucket
+      // Config s3 bucket
       const s3 = new AWS.S3({
         accessKeyId: process.env.AWS_ID,
         secretAccessKey: process.env.AWS_SECRET,
@@ -85,11 +76,3 @@ export default withIronSession(handler, {
     secure: process.env.NODE_ENV === "production",
   },
 });
-
-// export const config = {
-//   api: {
-//     bodyParser: {
-//       sizeLimit: "4mb",
-//     },
-//   },
-// };

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
-import mysql from "mysql2";
 import Stripe from "stripe";
+import { DAO } from "../../../../lib/dao";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null);
 
@@ -15,17 +15,12 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       }
       const listID = req.query.list_id;
       // fetch connected account ID from the database
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [result, fields] = await connection
-        .promise()
-        .query(
-          `SELECT Lists.price, Users.stripeID FROM Lists INNER JOIN Users ON Lists.creator = Users.id WHERE Lists.id="${listID}"`
-        );
+      const result = await DAO.Lists.getListStripePrice(Number(listID));
+
       // @ts-ignore
       connection.close();
-      if (result[0]) {
-        const listInformation = result[0];
-        console.log(listInformation);
+      if (result) {
+        const listInformation = result;
         const paymentIntent = await stripe.paymentIntents.create({
           amount: listInformation.price * 100,
           currency: "usd",

@@ -42,7 +42,6 @@ export default function EditProfile({ user }) {
         if (data.type == "IApiResponseError") {
           throw data;
         } else {
-          data.business = res.data;
           let business = data.business;
           setUserId(business.user_id.toString());
           setName(business.company_name);

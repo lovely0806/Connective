@@ -39,7 +39,6 @@ export default function EditProfile({ user }: Props) {
       if (data.type == "IApiResponseError") {
         throw data;
       } else {
-        data.individual = res.data;
         let individual = data.individual;
         setUserId(individual.user_id.toString());
         setSrc(individual.profile_picture);

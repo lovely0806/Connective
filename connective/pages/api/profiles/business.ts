@@ -19,7 +19,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       let { id } = req.query;
       if (typeof id == "undefined") id = user.id;
 
-      //Returns callers account
+      // Returns callers account
       var business = await DAO.Business.getByUserId(Number(id));
       /*
       var [listResults, listFields, listErr] = await connection
@@ -70,7 +70,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(200).json({ success: true });
     }
     if (req.method == "PATCH") {
-      //Implement
+      // Implement
     }
     if (req.method == "PUT") {
       const {

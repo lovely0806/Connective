@@ -1,6 +1,6 @@
 import { withIronSession } from "next-iron-session";
 import type { NextApiRequest, NextApiResponse } from "next";
-import mysql from "mysql2";
+import { DAO } from "../../../lib/dao";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -10,18 +10,11 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(403).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "POST") {
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      const IDs = req.body.data.map((message: { id: any; }) => {
+      const IDs = req.body.data.map((message: { id: number }) => {
         return message.id;
       });
       if (IDs.length > 0) {
-        var [results] = await connection
-          .promise()
-          .query(
-            'UPDATE messages SET `read`="1" WHERE id IN (' +
-              IDs.join(", ") +
-              ");"
-          );
+        await DAO.Messages.updateReadMessage(IDs);
       }
       res.status(200).json({ success: true });
     }

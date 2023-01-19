@@ -1,3 +1,5 @@
+import { int } from "aws-sdk/clients/datapipeline";
+
 export enum AccountType {
   BUSINESS = "business",
   INDIVIDUAL = "individual",
@@ -36,26 +38,21 @@ export type User = {
   status?: string;
 };
 
-export type PurchasedItem = {
+export type ListItem = {
+  id: number;
+  creator: number;
   title: string;
   description: string;
+  location: string;
+  list_obtained: string;
   price: number;
   url: string;
+  preview_url: string;
+  published: boolean;
   cover_url: string;
-};
-
-export type MarketplaceListCardItem = {
-  id: number;
-  title: string;
-  description: string;
-  price: string | number;
-  url: string;
-  cover_url: string;
-  buyers: number;
-  username?: string;
-  creator?: string;
-  logo?: string;
-  published?: boolean;
+  category: int;
+  created_at: string;
+  buyer_id?: number;
 };
 
 export type Message = {
@@ -66,6 +63,24 @@ export type Message = {
   read?: boolean;
   notified?: boolean;
   timestamp?: string;
+};
+
+export type UnreadNotification = {
+  id: number;
+  email: string;
+};
+
+export type Conversation = {
+  id: number;
+  email: string;
+  username: string;
+  location: string;
+  logo: string;
+};
+
+export type StripePrice = {
+  price: number;
+  stripeID: string;
 };
 
 export type Business = {
