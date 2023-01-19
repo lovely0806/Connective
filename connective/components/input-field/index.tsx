@@ -7,7 +7,7 @@ type Props = {
   password?: boolean;
   textarea?: boolean;
   price?: boolean;
-  updateValue: (value: any) => void;
+  updateValue: (value: string) => void;
   errorText?: string;
   value?: string | number;
   disabled?: boolean;

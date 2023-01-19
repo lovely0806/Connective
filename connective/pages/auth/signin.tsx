@@ -16,16 +16,17 @@ import ResetPassword from "./resetpassword/[email]/[token]";
 export default function SignIn() {
   const router = useRouter();
   const { error } = router.query;
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [resetPassword, setResetPassword] = useState(false);
-  const [emailNotVerified, setEmailNotVerified] = useState(null);
-  const [otpCode, setOtpCode] = useState(null);
-  const [otpCodeforResetPassword, setOtpCodeforResetPassword] = useState(null);
-  const [otpError, setOtpError] = useState(null);
+  const [email, setEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [resetPassword, setResetPassword] = useState<boolean>(false);
+  const [emailNotVerified, setEmailNotVerified] = useState<boolean>(false);
+  const [otpCode, setOtpCode] = useState<string>("");
+  const [otpCodeforResetPassword, setOtpCodeforResetPassword] =
+    useState<string>("");
+  const [otpError, setOtpError] = useState<string>("");
 
   const verifyEmail = async () => {
     const verifiedEmail = await axios({

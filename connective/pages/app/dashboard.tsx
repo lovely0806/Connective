@@ -51,7 +51,7 @@ const Divider = () => {
 
 export default function Dashboard({ user, buttonOnClick }) {
   const router = useRouter();
-  const [isVerified, setIsVerified] = useState(true);
+  const [isVerified, setIsVerified] = useState<boolean>(true);
   const [data, setData] = useState<any>();
 
   const getVerified = async () => {

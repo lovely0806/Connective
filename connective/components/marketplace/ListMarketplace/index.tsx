@@ -4,20 +4,20 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
-import { User } from "../../../types/types";
+import { MarketplaceListCardItem, User } from "../../../types/types";
 
 type Props = {
-  item: any;
+  item: MarketplaceListCardItem;
   preview: boolean;
   user: User;
 };
 
 const ListMarketplace = ({ item, preview, user }: Props) => {
   const router = useRouter();
-  const [truncatedTitle, setTruncatedTitle] = useState("");
-  const [truncatedDesc, setTruncatedDesc] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
-  const [username, setUsername] = useState("");
+  const [truncatedTitle, setTruncatedTitle] = useState<string>("");
+  const [truncatedDesc, setTruncatedDesc] = useState<string>("");
+  const [profilePicture, setProfilePicture] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
 
   const getProfilePicture = async () => {
     let type = await Util.accountType(user.id);
@@ -100,7 +100,7 @@ const ListMarketplace = ({ item, preview, user }: Props) => {
             <Image
               src={
                 item?.logo == ""
-                  ? `https://avatars.dicebear.com/api/micah/${item.creator}.svg`
+                  ? `https://avatars.dicebear.com/api/micah/${item?.creator}.svg`
                   : item.logo
               }
               className="rounded-full w-10 h-10 object-cover"
@@ -113,9 +113,7 @@ const ListMarketplace = ({ item, preview, user }: Props) => {
           </p>
         </div>
         <div className="flex flex-col text-right">
-          <p className="text-xl font-bold">
-            ${parseInt(item.price).toFixed(2)}
-          </p>
+          <p className="text-xl font-bold">${Number(item.price).toFixed(2)}</p>
           <p className="text-[#0D1011] text-xs">
             {preview ? 0 : item.buyers} {item.buyers == 1 ? "buyer" : "buyers"}
           </p>

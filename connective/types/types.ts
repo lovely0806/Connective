@@ -1,4 +1,8 @@
-//Users shown on the discover page
+export enum AccountType {
+  BUSINESS = "business",
+  INDIVIDUAL = "individual",
+}
+
 export type DiscoverUser = {
   id: number;
   show_on_discover: boolean;
@@ -26,6 +30,32 @@ export type User = {
   last_code_sent_time: string;
   is_signup_with_google: boolean;
   google_access_token: string;
+  industry?: string;
+  description?: string;
+  logo?: string;
+  status?: string;
+};
+
+export type PurchasedItem = {
+  title: string;
+  description: string;
+  price: number;
+  url: string;
+  cover_url: string;
+};
+
+export type MarketplaceListCardItem = {
+  id: number;
+  title: string;
+  description: string;
+  price: string | number;
+  url: string;
+  cover_url: string;
+  buyers: number;
+  username?: string;
+  creator?: string;
+  logo?: string;
+  published?: boolean;
 };
 
 export type Message = {
@@ -74,6 +104,11 @@ export type Industry = {
   id: number;
   name: string;
   occupations: Occupation[];
+};
+
+export type EmailContent = {
+  subject: string;
+  msg: string;
 };
 
 export interface IValidationItem {

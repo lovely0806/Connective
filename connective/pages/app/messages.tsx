@@ -5,6 +5,7 @@ import { withIronSession } from "next-iron-session";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Avatar from "../../components/avatar";
+import { User } from "../../types/types";
 
 const Message = ({ text, sent }) => {
   if (sent) {
@@ -29,8 +30,10 @@ const Conversations = ({
   conversations,
   unreadMessagesCount,
 }) => {
-  const [filter, setFilter] = useState("");
-  const [filteredConversations, setFilteredConversations] = useState([]);
+  const [filter, setFilter] = useState<string>("");
+  const [filteredConversations, setFilteredConversations] = useState<
+    Array<any>
+  >([]);
 
   useEffect(() => {
     setFilteredConversations([...conversations]);
@@ -105,14 +108,16 @@ const Chat = ({
   conversations,
   getConversations,
 }) => {
-  const [messages, setMessages] = useState([]);
-  const [userOptions, setUserOptions] = useState([]);
-  const [text, setText] = useState("");
+  const [messages, setMessages] = useState<Array<any>>([]);
+  const [userOptions, setUserOptions] = useState<
+    Array<{ value: number; label: string }>
+  >([]);
+  const [text, setText] = useState<string>("");
   let prevMessages = 0;
 
   useEffect(() => {
     let temp = [];
-    users.forEach((user: { id: any; username: string; email: string }) => {
+    users.forEach((user: User) => {
       temp.push({
         value: user.id,
         label: user.username + " (" + user.email + ")",
@@ -141,10 +146,10 @@ const Chat = ({
 
       //Re-fetch the list of conversations if the message was sent to a new conversation
       console.log(
-        conversations.filter((a: { id: any }) => a.id == selectedUser.id)
+        conversations.filter((a: { id: number }) => a.id == selectedUser.id)
       );
       if (
-        conversations.filter((a: { id: any }) => a.id == selectedUser.id)
+        conversations.filter((a: { id: number }) => a.id == selectedUser.id)
           .length == 0
       ) {
         getConversations();
@@ -163,16 +168,14 @@ const Chat = ({
     }
     prevMessages = data.length;
     setMessages(data);
-    console.log(data);
-    const unReadMesssages = data.filter(
-      (message: { read: string; receiver: any; sender: any }) => {
-        return (
-          message.read != "1" &&
-          message.receiver == user.id &&
-          message.sender == selectedUser.id
-        );
-      }
-    );
+
+    const unReadMesssages = data.filter((message: any) => {
+      return (
+        message.read != "1" &&
+        message.receiver == user.id &&
+        message.sender == selectedUser.id
+      );
+    });
     const emailz = await axios("/api/messages/unread-messages-mailer", {
       headers: {
         "Content-Type": "application/json",
@@ -183,7 +186,7 @@ const Chat = ({
     await readMessages(unReadMesssages);
   };
 
-  const readMessages = async (unReadMesssages: any) => {
+  const readMessages = async (unReadMesssages: Array<any>) => {
     await axios.post("/api/messages/read-message", {
       header: {
         "Content-Type": "application/json",
@@ -299,8 +302,8 @@ const UserDetails = ({ selectedUser }) => {
 export default function Messages({ user }) {
   const router = useRouter();
   const { newUser } = router.query;
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState();
+  const [users, setUsers] = useState<Array<User>>([]);
+  const [selectedUser, setSelectedUser] = useState<Array<User>>([]);
 
   // Automatically open latest (last opened) conversation when navigating to messages page
   useEffect(() => {
@@ -320,8 +323,10 @@ export default function Messages({ user }) {
     }
   }, [selectedUser]);
 
-  const [conversations, setConversations] = useState([]);
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
+  const [conversations, setConversations] = useState<Array<any>>([]);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState<Array<any>>(
+    []
+  );
 
   let sum = 0;
   const getUsers = async () => {
@@ -335,8 +340,8 @@ export default function Messages({ user }) {
   const getConversations = async () => {
     const { data } = await axios.get("/api/messages/conversations");
     let temp = [];
-    data.forEach((item: any[]) => {
-      let tempItem = item.filter((a: { id: any }) => a.id != user.id)[0];
+    data.forEach((item: Array<any>) => {
+      let tempItem = item.filter((a: any) => a.id != user.id)[0];
       if (tempItem != undefined)
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
@@ -353,11 +358,9 @@ export default function Messages({ user }) {
 
   const getUnreadMessages = async (id: string) => {
     const { data } = await axios.get("/api/messages/" + id);
-    const unReadMesssages = data.filter(
-      (message: { read: string; receiver: any }) => {
-        return message.read != "1" && message.receiver == user.id;
-      }
-    ).length;
+    const unReadMesssages = data.filter((message: any) => {
+      return message.read != "1" && message.receiver == user.id;
+    }).length;
     return unReadMesssages;
   };
 

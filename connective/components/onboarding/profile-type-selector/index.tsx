@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
+import { AccountType } from "../../../types/types";
 
 type Props = {
-  type: "business" | "individual";
-  setType: Dispatch<SetStateAction<"business" | "individual">>;
+  type: AccountType;
+  setType: Dispatch<SetStateAction<AccountType>>;
 };
 
 const ProfileTypeSelector = ({ type, setType }: Props) => {
@@ -17,12 +18,14 @@ const ProfileTypeSelector = ({ type, setType }: Props) => {
       <div className="w-[229px] rounded-lg">
         <div
           onClick={() => {
-            setType("business");
+            setType(AccountType.BUSINESS);
           }}
-          className={type == "business" ? selectedClass : unselectedClass}
+          className={
+            type == AccountType.BUSINESS ? selectedClass : unselectedClass
+          }
         >
           <div className="h-fit mt-[5px]">
-            {type == "business" ? (
+            {type == AccountType.BUSINESS ? (
               <Image
                 src="/assets/business-white.svg"
                 alt="Connective logo"
@@ -47,12 +50,14 @@ const ProfileTypeSelector = ({ type, setType }: Props) => {
       <div className="w-[229px] rounded-lg">
         <div
           onClick={() => {
-            setType("individual");
+            setType(AccountType.INDIVIDUAL);
           }}
-          className={type == "individual" ? selectedClass : unselectedClass}
+          className={
+            type == AccountType.INDIVIDUAL ? selectedClass : unselectedClass
+          }
         >
           <div className="h-fit mt-[5px]">
-            {type == "individual" ? (
+            {type == AccountType.INDIVIDUAL ? (
               <Image
                 src="/assets/person-white.svg"
                 alt="Connective logo"

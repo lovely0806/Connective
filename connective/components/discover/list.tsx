@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Avatar from "../avatar";
 
 type Props = {
-  id: string;
+  id: string | number;
   title: string;
   description: string;
   imgURL: string;

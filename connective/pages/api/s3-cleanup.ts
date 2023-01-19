@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import AWS from "aws-sdk";
-import mysql from "mysql2";
+import mysql, { RowDataPacket } from "mysql2";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -16,12 +16,14 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       let [lists, fields] = await connection
         .promise()
         .query(`SELECT url FROM Lists`);
-      const usedLists = (lists as Array<any>).map((elem: any) => {
-        return elem.url.replace(
-          "https://connective-data.s3.amazonaws.com/",
-          ""
-        );
-      });
+      const usedLists = (lists as Array<RowDataPacket>).map(
+        (elem: RowDataPacket) => {
+          return elem.url.replace(
+            "https://connective-data.s3.amazonaws.com/",
+            ""
+          );
+        }
+      );
       console.log("Used Lists:", usedLists);
 
       //Config s3 bucket

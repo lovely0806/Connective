@@ -9,8 +9,8 @@ type Props = {
 };
 
 const RequestModal = ({ onClick, close }: Props) => {
-  const [topic, setTopic] = useState("");
-  const [description, setDescription] = useState("");
+  const [topic, setTopic] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   const submit = async () => {
     await axios.post("/api/lists/requests-list", { topic, description });

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ReactNode } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout";
 import { withIronSession } from "next-iron-session";
@@ -11,26 +11,36 @@ import Head from "next/head";
 import ReactPaginate from "react-paginate";
 import { industries } from "../../../common/selectOptions";
 import DiscoverList from "../../../components/discover/list";
+import { Industry, User } from "../../../types/types";
 
-function Items({ currentItems }) {
+function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   return (
-    <>{currentItems && currentItems.map((item: any) => <div>{item}</div>)}</>
+    <>
+      {currentItems && currentItems.map((item: ReactNode) => <div>{item}</div>)}
+    </>
   );
 }
 
 export default function Messages({ user }) {
-  const [users, setUsers] = useState([]);
-  const [filter, setFilter] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [page, setPage] = useState(0);
-  const [defaultIndustry, setDefaultIndustry] = useState<any>();
-  const [selectedIndustry, setSelectedIndustry] = useState<any>();
+  const router = useRouter();
   const discoverRef = useRef(null);
+
+  const [users, setUsers] = useState<Array<User>>([]);
+  const [filter, setFilter] = useState<string>("");
+  const [filteredUsers, setFilteredUsers] = useState<Array<User>>([]);
+  const [page, setPage] = useState<number>(0);
+  const [defaultIndustry, setDefaultIndustry] = useState<{
+    value: string | number;
+    label: string;
+  }>();
+  const [selectedIndustry, setSelectedIndustry] = useState<{
+    value: string | number;
+    label: string;
+  }>();
+
   // Here we use item offsets; we could also use page offsets
   // following the API or data you're working with.
-  const [itemOffset, setItemOffset] = useState(0);
-
-  const router = useRouter();
+  const [itemOffset, setItemOffset] = useState<number>(0);
 
   // Simulate fetching items from another resources.
   // (This could be items from props; or items loaded in a local state

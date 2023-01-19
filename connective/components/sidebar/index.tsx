@@ -11,7 +11,7 @@ type Props = {
   route?: string | URL;
   icon: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  target?: any;
+  target?: string;
 };
 
 const SidebarItem = ({
@@ -73,7 +73,7 @@ const Sidebar = ({ user }) => {
     try {
       const { data } = await axios.get("/api/messages/conversations");
       let temp = [];
-      data.forEach((item: any) => {
+      data.forEach((item: Array<any>) => {
         let tempItem = item.filter((a: any) => a.id != user.id)[0];
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
@@ -90,7 +90,7 @@ const Sidebar = ({ user }) => {
       console.log(e);
     }
   };
-  const getUnreadMessages = async (id: any) => {
+  const getUnreadMessages = async (id: number) => {
     const { data } = await axios.get("/api/messages/" + id);
     const unReadMesssages = data.filter((message: any) => {
       return message.read != "1" && message.receiver == user.id;

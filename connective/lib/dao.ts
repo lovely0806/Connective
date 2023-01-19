@@ -1,264 +1,363 @@
 import moment from "moment";
-import mysql, { OkPacket, ResultSetHeader } from "mysql2"
-import {Message, User, DiscoverUser} from "../types/types"
+import mysql, { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
+import { Message, User, DiscoverUser } from "../types/types";
 
 export namespace DAO {
-    const connection = mysql.createConnection(process.env.DATABASE_URL || "");
+  const connection = mysql.createConnection(process.env.DATABASE_URL || "");
 
+  /**
+   * Contains functions for interacting with Users in the database
+   */
+  export class Users {
     /**
-     * Contains functions for interacting with Users in the database
+     * Gets a user by their email
+     * @param {string} email The users email
+     * @returns {User} The user object
      */
-    export class Users {
-        /**
-         * Gets a user by their email
-         * @param {string} email The users email
-         * @returns {User} The user object
-         */
-        static async getByEmail(email: string): Promise<User> {
-            var query = `SELECT * FROM Users WHERE email=?;`
-            var [results] = await connection.promise().query(query, [email]);
-            return results[0]
-        }
-
-        /**
-         * Adds a new user to the database
-         * @param {string} username The users username
-         * @param {string} password_hash The users hashed password
-         * @param {string} email The users email
-         * @param {string} stripeID The users stripe id
-         * @returns {number | boolean} The users insert id, or false if the insert failed
-         */
-        static async add(username: string, password_hash: string, email: string, stripeID: string): Promise<number | boolean> {
-            var query = `INSERT INTO Users (username, password_hash, email, stripeID) VALUES (?,?,?,?);`
-            var [result] = await connection.promise().execute<OkPacket>(query, [username, password_hash, email, stripeID]);
-            return result.insertId
-        }
-
-        /**
-         * Updates the email verification status of the given user
-         * @param {boolean} status The new verification status of the user
-         * @param {string} email The users email
-         */
-        static async updateVerificationStatus(status: boolean, email: string) {
-            var query = `UPDATE Users SET verify_email_otp = null, email_verified = ? WHERE email=?;`
-            await connection.promise().execute(query, [status == true ? "true" : "false", email]);
-        }
-
-        /**
-         * Sets the one time passcode for the given user by their email
-         * @param {string} code The new OTP code
-         * @param {string} email The users email
-         */
-        static async setOtpCode(code: string, email: string) {
-            var query = `UPDATE Users SET verify_email_otp = ? WHERE email=?;`
-            await connection.promise().execute(query, [code, email]);
-        }
-
-        /**
-         * Updates the one time passcode for a user, as well as the # of attempts for the given user
-         * @param {string} code The new OTP code
-         * @param {number} sendCodeAttempt The number of attempts which have occured
-         * @param {string} email The users email
-         */
-        static async updateOtpCode(code: string, sendCodeAttempt: number, email: string) {
-            var query = `UPDATE Users SET verify_email_otp = ?, send_code_attempt = ?, last_code_sent_time = ? WHERE email=?;`
-            await connection.promise().query(query, [code, sendCodeAttempt, moment().format("YYYY/MM/DD HH:mm:ss"), email]);
-        }
-    } 
-
-    export class Discover {
-        /**
-         * 
-         * @returns {DiscoverUser[]} All users who are displayed on the discover page
-         */
-        static async getAll(): Promise<DiscoverUser[]> {
-            var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, '' as industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`
-            var [results] = await connection.promise().query(query);
-
-            return results as DiscoverUser[]
-        }
+    static async getByEmail(email: string): Promise<User> {
+      var query = `SELECT * FROM Users WHERE email=?;`;
+      var [results] = await connection.promise().query(query, [email]);
+      return results[0];
     }
- 
+
     /**
-     * Contains functions for interacting with Businesses in the database
+     * Adds a new user to the database
+     * @param {string} username The users username
+     * @param {string} password_hash The users hashed password
+     * @param {string} email The users email
+     * @param {string} stripeID The users stripe id
+     * @returns {number | boolean} The users insert id, or false if the insert failed
      */
-    export class Business {
-        /**
-         * Determines if a user is a business
-         * @param {number} id The users id
-         * @returns {boolean} True if the user is a business
-         */
-        static async isBusiness(id: number): Promise<boolean> {
-            var query = `SELECT COUNT(id) FROM Business WHERE user_id=?;`
-            let [res] = await connection.promise().query(query, [id]);
-            return res[0]["count(id)"] > 0
-        }
+    static async add(
+      username: string,
+      password_hash: string,
+      email: string,
+      stripeID: string
+    ): Promise<number | boolean> {
+      var query = `INSERT INTO Users (username, password_hash, email, stripeID) VALUES (?,?,?,?);`;
+      var [result] = await connection
+        .promise()
+        .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
+      return result.insertId;
+    }
 
-        /**
-         * Gets a business by its user id
-         * @param {number} userId The businesses user id 
-         * @returns {Business} A Business object representing the business
-         */
-        static async getByUserId(userId: number): Promise<Business> {
-            var query = `SELECT * FROM Business WHERE user_id=?;`
-            var [result] = await connection.promise().query(query, [userId])
-            return result[0]
-        }
+    /**
+     * Updates the email verification status of the given user
+     * @param {boolean} status The new verification status of the user
+     * @param {string} email The users email
+     */
+    static async updateVerificationStatus(status: boolean, email: string) {
+      var query = `UPDATE Users SET verify_email_otp = null, email_verified = ? WHERE email=?;`;
+      await connection
+        .promise()
+        .execute(query, [status == true ? "true" : "false", email]);
+    }
 
-        /**
-         * Adds a new business to the database
-         * @param {number} userId The businesses user id
-         * @param {string} name The businesses name
-         * @param {string} description The businesses description
-         * @param {string} pfp A link to the businesses profile picture
-         * @param {string} url The businesses site url
-         * @param {string} location 
-         * @param {string} industry
-         * @param {string} size
-         * @param {string} status
-         * @returns 
-         */
-        static async add(userId: number, name: string, description: string, pfp: string, url: string, location: string, industry: string, size: string, status: string): Promise<number> {
-            var query = `INSERT INTO Business (
+    /**
+     * Sets the one time passcode for the given user by their email
+     * @param {string} code The new OTP code
+     * @param {string} email The users email
+     */
+    static async setOtpCode(code: string, email: string) {
+      var query = `UPDATE Users SET verify_email_otp = ? WHERE email=?;`;
+      await connection.promise().execute(query, [code, email]);
+    }
+
+    /**
+     * Updates the one time passcode for a user, as well as the # of attempts for the given user
+     * @param {string} code The new OTP code
+     * @param {number} sendCodeAttempt The number of attempts which have occured
+     * @param {string} email The users email
+     */
+    static async updateOtpCode(
+      code: string,
+      sendCodeAttempt: number,
+      email: string
+    ) {
+      var query = `UPDATE Users SET verify_email_otp = ?, send_code_attempt = ?, last_code_sent_time = ? WHERE email=?;`;
+      await connection
+        .promise()
+        .query(query, [
+          code,
+          sendCodeAttempt,
+          moment().format("YYYY/MM/DD HH:mm:ss"),
+          email,
+        ]);
+    }
+  }
+
+  export class Discover {
+    /**
+     *
+     * @returns {DiscoverUser[]} All users who are displayed on the discover page
+     */
+    static async getAll(): Promise<DiscoverUser[]> {
+      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, '' as industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`;
+      var [results] = await connection.promise().query(query);
+
+      return results as DiscoverUser[];
+    }
+  }
+
+  /**
+   * Contains functions for interacting with Businesses in the database
+   */
+  export class Business {
+    /**
+     * Determines if a user is a business
+     * @param {number} id The users id
+     * @returns {boolean} True if the user is a business
+     */
+    static async isBusiness(id: number): Promise<boolean> {
+      var query = `SELECT COUNT(id) FROM Business WHERE user_id=?;`;
+      let [res] = await connection.promise().query(query, [id]);
+      return res[0]["count(id)"] > 0;
+    }
+
+    /**
+     * Gets a business by its user id
+     * @param {number} userId The businesses user id
+     * @returns {Business} A Business object representing the business
+     */
+    static async getByUserId(userId: number): Promise<Business> {
+      var query = `SELECT * FROM Business WHERE user_id=?;`;
+      var [result] = await connection.promise().query(query, [userId]);
+      return result[0];
+    }
+
+    /**
+     * Adds a new business to the database
+     * @param {number} userId The businesses user id
+     * @param {string} name The businesses name
+     * @param {string} description The businesses description
+     * @param {string} pfp A link to the businesses profile picture
+     * @param {string} url The businesses site url
+     * @param {string} location
+     * @param {string} industry
+     * @param {string} size
+     * @param {string} status
+     * @returns
+     */
+    static async add(
+      userId: number,
+      name: string,
+      description: string,
+      pfp: string,
+      url: string,
+      location: string,
+      industry: string,
+      size: string,
+      status: string
+    ): Promise<number> {
+      var query = `INSERT INTO Business (
                             user_id, company_name, description, logo, website, location, industry, size, status
                         ) VALUES (
                             ?, ?, ?, ?, ?, ?, ?, ?, ?
-                        );`
-            var [result] = await connection.promise().execute<OkPacket>(query, [userId, name, description, pfp, url, location, industry, size, status]);
+                        );`;
+      var [result] = await connection
+        .promise()
+        .execute<OkPacket>(query, [
+          userId,
+          name,
+          description,
+          pfp,
+          url,
+          location,
+          industry,
+          size,
+          status,
+        ]);
 
-            return result.insertId
-        }
-
-        /**
-         * Updates the information for the given business
-         * @param {number} userId The businesses user id
-         * @param {string} name The new name for the businesses
-         * @param {boolean} pfpChanged Weather or not there is a profile picture
-         * @param {string} pfp The profile picture for the businesses
-         * @param {string} description The new description for the business
-         * @param {string} location The new location of the business
-         * @param {number} industry The new industry of the business (a number relating to a specific label)
-         * @param {string} size The size of the business
-         * @param {string} url The new site url of the business
-         * @param {string} status The new status for the business
-         */
-        static async update(userId: number, name: string, pfpChanged: boolean, pfp: string, description: string, location: string, industry: number, size: string, url: string, status: string) {
-            var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`
-            await connection.promise().execute(query, [name, pfpChanged ? "logo =" + `'${pfp}',` : "", description, location, industry, size, url, status, userId]);
-        }
-
-        /**
-         * Increments the number of views for the given business by their user id
-         * @param userId The users ID
-         */
-        static async incrementProfileViews(userId: number) {
-            var query = "UPDATE Business SET profileViews = profileViews + 1 WHERE user_id=?;"
-            await connection.promise().execute(query, [userId])
-        }
+      return result.insertId;
     }
 
     /**
-     * Contains functions for interacting with Individuals in the database
+     * Updates the information for the given business
+     * @param {number} userId The businesses user id
+     * @param {string} name The new name for the businesses
+     * @param {boolean} pfpChanged Weather or not there is a profile picture
+     * @param {string} pfp The profile picture for the businesses
+     * @param {string} description The new description for the business
+     * @param {string} location The new location of the business
+     * @param {number} industry The new industry of the business (a number relating to a specific label)
+     * @param {string} size The size of the business
+     * @param {string} url The new site url of the business
+     * @param {string} status The new status for the business
      */
-    export class Individual {
-        /**
-         * Determines if a user is an individual
-         * @param {number} id The individuals user id 
-         * @returns {boolean} True if the user is an individual
-         */
-        static async isIndividual(id: number): Promise<boolean> {
-            var query = `SELECT COUNT(id) FROM Individual WHERE user_id=?;`
-            let [res] = await connection.promise().query(query, [id]);
-            return res[0]["count(id)"] > 0
-        }
-
-        /**
-         * Gets an individual by its user id
-         * @param {number} userId The individuals user id
-         * @returns {Individual} An Indivual object representing the individual
-         */
-        static async getByUserId(userId: number): Promise<Individual> {
-            var query = `SELECT * FROM Individual WHERE user_id=?;`
-            var [result] = await connection.promise().query(query, [userId])
-            return result[0]
-        }
-
-        /**
-         * Increments the number of views for the given individual by their user id
-         * @param userId The users ID
-         */
-        static async incrementProfileViews(userId: number) {
-            var query = "UPDATE Individual SET profileViews = profileViews + 1 WHERE user_id=?;"
-            await connection.promise().execute(query, [userId])
-        }
+    static async update(
+      userId: number,
+      name: string,
+      pfpChanged: boolean,
+      pfp: string,
+      description: string,
+      location: string,
+      industry: number,
+      size: string,
+      url: string,
+      status: string
+    ) {
+      var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      await connection
+        .promise()
+        .execute(query, [
+          name,
+          pfpChanged ? "logo =" + `'${pfp}',` : "",
+          description,
+          location,
+          industry,
+          size,
+          url,
+          status,
+          userId,
+        ]);
     }
 
     /**
-     * Contains functions for interacting with Messages in the database
+     * Increments the number of views for the given business by their user id
+     * @param userId The users ID
      */
-    export class Messages {
-        /**
-         * Gets all messages between one user and antoher
-         * @param {number} userId The first users id
-         * @param {number} otherId The second users id
-         * @returns {Message[]} An array of Message objects representing the conversation
-         */
-        static async getByOtherUser(userId: number, otherId: number): Promise<Message[]> {
-            var query = `SELECT * FROM messages WHERE sender=? and receiver=? UNION ALL SELECT * FROM messages WHERE receiver=? and sender=?;`
-            var [results] = await connection.promise().query(query, [userId, otherId, userId, otherId]);
-
-            return results as Message[]
-        }
-
-        /**
-         * Adds a new message to the database
-         * @param {number} senderId The user id of the message sender
-         * @param {number} receiverId The user id of the message receiver
-         * @param {string} text The text content within the message
-         * @returns {number} The messages insert id
-         */
-        static async add(senderId: number, receiverId: number, text: string): Promise<number> {
-            var query = `INSERT INTO messages (`+'`sender`'+`, `+'`receiver`'+`, `+'`text`'+`, `+'`read`'+`, `+'`notified`'+`) VALUES (?, ?, ?, '0', '0')`
-            var [result] = await connection.promise().query<OkPacket>(query, [senderId, receiverId, text]);
-
-            return result.insertId
-        }
-
-        /**
-         * Gets all conversations from the given user
-         * @param {number} userId The users id 
-         * @returns An array of conversations
-         */
-        static async getConversations(userId: number) {
-            var query1 = `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`
-            var [results] = await connection.promise().query<OkPacket[]>(query1, [userId, userId]);
-
-            var query2 = `SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo FROM Users JOIN Individual on Users.id = Individual.user_id;`
-            var [profiles] = await connection.promise().query<OkPacket[]>(query2)
-            
-            let temp = []
-            //Refactor this
-            results.forEach((result: any) => {
-                temp.push(profiles.filter((a: any) => a.id == result.sender || a.id == result.receiver))
-            })
-            let conversations = []
-            temp.forEach(item => {
-                if(conversations.filter(a => a.id == item.id).length == 0) {
-                    conversations.push(item)
-                }
-            })
-            return conversations
-        }
-
-        /**
-         * Gets all unread & unnotified messages accross all users
-         * @returns {{id: number, email: string}[]} All unread and unnotified messages
-         */
-        static async getUnnotified(): Promise<{id: number, email: string}[]> {
-            var query = "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;"
-            var [messages] = await connection.promise().query(query)
-            
-            return messages as {id: number, email: string}[]
-        }
+    static async incrementProfileViews(userId: number) {
+      var query =
+        "UPDATE Business SET profileViews = profileViews + 1 WHERE user_id=?;";
+      await connection.promise().execute(query, [userId]);
     }
+  }
+
+  /**
+   * Contains functions for interacting with Individuals in the database
+   */
+  export class Individual {
+    /**
+     * Determines if a user is an individual
+     * @param {number} id The individuals user id
+     * @returns {boolean} True if the user is an individual
+     */
+    static async isIndividual(id: number): Promise<boolean> {
+      var query = `SELECT COUNT(id) FROM Individual WHERE user_id=?;`;
+      let [res] = await connection.promise().query(query, [id]);
+      return res[0]["count(id)"] > 0;
+    }
+
+    /**
+     * Gets an individual by its user id
+     * @param {number} userId The individuals user id
+     * @returns {Individual} An Indivual object representing the individual
+     */
+    static async getByUserId(userId: number): Promise<Individual> {
+      var query = `SELECT * FROM Individual WHERE user_id=?;`;
+      var [result] = await connection.promise().query(query, [userId]);
+      return result[0];
+    }
+
+    /**
+     * Increments the number of views for the given individual by their user id
+     * @param userId The users ID
+     */
+    static async incrementProfileViews(userId: number) {
+      var query =
+        "UPDATE Individual SET profileViews = profileViews + 1 WHERE user_id=?;";
+      await connection.promise().execute(query, [userId]);
+    }
+  }
+
+  /**
+   * Contains functions for interacting with Messages in the database
+   */
+  export class Messages {
+    /**
+     * Gets all messages between one user and antoher
+     * @param {number} userId The first users id
+     * @param {number} otherId The second users id
+     * @returns {Message[]} An array of Message objects representing the conversation
+     */
+    static async getByOtherUser(
+      userId: number,
+      otherId: number
+    ): Promise<Message[]> {
+      var query = `SELECT * FROM messages WHERE sender=? and receiver=? UNION ALL SELECT * FROM messages WHERE receiver=? and sender=?;`;
+      var [results] = await connection
+        .promise()
+        .query(query, [userId, otherId, userId, otherId]);
+
+      return results as Message[];
+    }
+
+    /**
+     * Adds a new message to the database
+     * @param {number} senderId The user id of the message sender
+     * @param {number} receiverId The user id of the message receiver
+     * @param {string} text The text content within the message
+     * @returns {number} The messages insert id
+     */
+    static async add(
+      senderId: number,
+      receiverId: number,
+      text: string
+    ): Promise<number> {
+      var query =
+        `INSERT INTO messages (` +
+        "`sender`" +
+        `, ` +
+        "`receiver`" +
+        `, ` +
+        "`text`" +
+        `, ` +
+        "`read`" +
+        `, ` +
+        "`notified`" +
+        `) VALUES (?, ?, ?, '0', '0')`;
+      var [result] = await connection
+        .promise()
+        .query<OkPacket>(query, [senderId, receiverId, text]);
+
+      return result.insertId;
+    }
+
+    /**
+     * Gets all conversations from the given user
+     * @param {number} userId The users id
+     * @returns An array of conversations
+     */
+    static async getConversations(userId: number) {
+      var query1 = `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`;
+      var [results] = await connection
+        .promise()
+        .query<RowDataPacket[]>(query1, [userId, userId]);
+
+      var query2 = `SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo FROM Users JOIN Individual on Users.id = Individual.user_id;`;
+      var [profiles] = await connection
+        .promise()
+        .query<RowDataPacket[]>(query2);
+
+      let temp = [];
+      // Refactor this
+      (results as Array<RowDataPacket>).forEach((result: RowDataPacket) => {
+        temp.push(
+          (profiles as Array<RowDataPacket>).filter(
+            (a: RowDataPacket) =>
+              a.id == result.sender || a.id == result.receiver
+          )
+        );
+      });
+      let conversations = [];
+      temp.forEach((item) => {
+        if (conversations.filter((a) => a.id == item.id).length == 0) {
+          conversations.push(item);
+        }
+      });
+      return conversations;
+    }
+
+    /**
+     * Gets all unread & unnotified messages accross all users
+     * @returns {{id: number, email: string}[]} All unread and unnotified messages
+     */
+    static async getUnnotified(): Promise<{ id: number; email: string }[]> {
+      var query =
+        "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;";
+      var [messages] = await connection.promise().query(query);
+
+      return messages as { id: number; email: string }[];
+    }
+  }
 }

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { EmailContent } from "../types/types";
 
 class Api {
-  email = async (type: string, message: string) => {
+  email = async (type: string, message: EmailContent) => {
     if (type === "SMTP") {
       try {
         const res = await axios.post("/api/notifications/mail", {

@@ -4,9 +4,14 @@ import Image from "next/image";
 import axios from "axios";
 import { useState } from "react";
 import Link from "next/link";
+import { MarketplaceListCardItem } from "../../../types/types";
 
-const ListRow = ({ item }) => {
-  const [published, setPublished] = useState(item.published);
+type Props = {
+  item: MarketplaceListCardItem;
+};
+
+const ListRow = ({ item }: Props) => {
+  const [published, setPublished] = useState<boolean>(item.published);
   console.log(item);
 
   const togglePublish = async () => {
@@ -48,7 +53,7 @@ const ListRow = ({ item }) => {
 
       <div className="flex flex-col">
         <div className="font-bold text-[26px] leading-[29px] text-[#0D1011] text-center mb-[12px]">
-          <p>${item.price.toFixed(2)}</p>
+          <p>${Number(item.price).toFixed(2)}</p>
         </div>
         <Link href={`lists/edit/${item.id}/1`}>
           <ButtonDark

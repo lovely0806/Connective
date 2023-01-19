@@ -13,7 +13,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "GET") {
       // Returns callers account
       const connection = mysql.createConnection(process.env.DATABASE_URL);
-      let query;
+      let query = "";
       if (type == "business") {
         query = `SELECT * FROM Business WHERE user_id='${user.id}';`;
       } else {

@@ -11,7 +11,7 @@ const ContactForm = () => {
     valueChangeHandler: nameChangeHandler,
     valueBlurHandler: nameBlurHandler,
     reset: nameReset,
-  } = useInput((value: any) => value.trim() !== "");
+  } = useInput((value: string) => value.trim() !== "");
 
   // Email input
   const validRegex = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
@@ -22,7 +22,7 @@ const ContactForm = () => {
     valueChangeHandler: emailChangeHandler,
     valueBlurHandler: emailBlurHandler,
     reset: emailReset,
-  } = useInput((value: any) => value.match(validRegex));
+  } = useInput((value: string) => value.match(validRegex) != null);
 
   // Phone Number input
   const {
@@ -32,7 +32,7 @@ const ContactForm = () => {
     valueChangeHandler: numberChangeHandler,
     valueBlurHandler: numberBlurHandler,
     reset: numberReset,
-  } = useInput((value: any) => value.trim() !== "");
+  } = useInput((value: string) => value.trim() !== "");
 
   // Message input
   const {
@@ -42,7 +42,7 @@ const ContactForm = () => {
     valueChangeHandler: messageChangeHandler,
     valueBlurHandler: messageBlurHandler,
     reset: messageReset,
-  } = useInput((value: any) => value.trim() !== "");
+  } = useInput((value: string) => value.trim() !== "");
 
   // form validation && submission
   let formIsValid = false;

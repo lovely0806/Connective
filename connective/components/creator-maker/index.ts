@@ -1,6 +1,6 @@
 export const creatorMaker = () => {
   (function (d, h, m) {
-    var js: any,
+    var js: HTMLElement | any,
       fjs = d.getElementsByTagName(h)[0];
     if (d.getElementById(m)) {
       return;

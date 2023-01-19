@@ -8,7 +8,7 @@ type Props = {
 };
 
 const ReviewModal = ({ onClick }: Props) => {
-  const [starChecked, setStarChecked] = useState(false);
+  const [starChecked, setStarChecked] = useState<boolean>(false);
 
   const startCheckHandler = () => {
     setStarChecked((prevState) => !prevState);

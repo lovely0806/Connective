@@ -18,22 +18,27 @@ import {
 import Head from "next/head";
 import { industries } from "../../common/selectOptions";
 import { SelectField } from "../../components/select-field/selectField";
+import {
+  AccountType,
+  IValidationItem,
+  ValidationResponse,
+} from "../../types/types";
 
 export default function CreateProfile({ user }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [url, setUrl] = useState("");
-  const [location, setLocation] = useState("");
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
   const [pfp, setPfp] = useState<Blob>();
-  const [src, setSrc] = useState("");
-  const [type, setType] = useState<"business" | "individual">("business");
+  const [src, setSrc] = useState<string>("");
+  const [type, setType] = useState<AccountType>(AccountType.BUSINESS);
   const [industry, setIndustry] = useState<number>();
-  const [size, setSize] = useState("");
-  const [status, setStatus] = useState("");
-  const [processing, setProcessing] = useState(false);
+  const [size, setSize] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [processing, setProcessing] = useState<boolean>(false);
   const [occupations, setOccupations] = useState<Array<any>>([]);
-  const [occupation, setOccupation] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<any>(null);
+  const [occupation, setOccupation] = useState<string>("");
+  const [fieldErrors, setFieldErrors] = useState<ValidationResponse>(null);
 
   const sizeOptions = [
     { value: "1-10", label: "1-10" },
@@ -86,7 +91,7 @@ export default function CreateProfile({ user }) {
   }, [industry]);
 
   useEffect(() => {
-    setFieldErrors(false);
+    setFieldErrors(null);
   }, [type]);
 
   // async function forwardIfProfileSetup() {
@@ -319,7 +324,7 @@ export default function CreateProfile({ user }) {
                     errorText={
                       fieldErrors
                         ? fieldErrors.fields.filter(
-                            (field) => field.name == "industry"
+                            (field: IValidationItem) => field.name == "industry"
                           )[0]?.error
                         : ""
                     }
@@ -334,7 +339,8 @@ export default function CreateProfile({ user }) {
                     errorText={
                       fieldErrors
                         ? fieldErrors.fields.filter(
-                            (field: any) => field.name == "occupation"
+                            (field: IValidationItem) =>
+                              field.name == "occupation"
                           )[0]?.error
                         : ""
                     }
@@ -351,7 +357,7 @@ export default function CreateProfile({ user }) {
                     errorText={
                       fieldErrors
                         ? fieldErrors.fields.filter(
-                            (field: any) => field.name == "size"
+                            (field: IValidationItem) => field.name == "size"
                           )[0]?.error
                         : ""
                     }
@@ -366,7 +372,7 @@ export default function CreateProfile({ user }) {
                     errorText={
                       fieldErrors
                         ? fieldErrors.fields.filter(
-                            (field: any) => field.name == "status"
+                            (field: IValidationItem) => field.name == "status"
                           )[0]?.error
                         : ""
                     }

@@ -11,18 +11,18 @@ import GoogleSsoDivider from "../../components/divider/orDivider";
 import GoogleAuthButton from "../../components/button/GoogleAuthButton";
 
 export default function SignUp() {
-  const [name, setName] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [otpError, setOtpError] = useState(null);
-  const [tacError, setTacError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [otpCode, setOtpCode] = useState(null);
-  const [emailVerified, setEmailVerified] = useState(null);
-  const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [nameError, setNameError] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [otpError, setOtpError] = useState<string>("");
+  const [tacError, setTacError] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [otpCode, setOtpCode] = useState<string>("");
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
+  const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
 
   const router = useRouter();
 

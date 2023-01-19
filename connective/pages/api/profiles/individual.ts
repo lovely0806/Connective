@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import mysql from "mysql2";
+import mysql, { RowDataPacket } from "mysql2";
 import { withIronSession } from "next-iron-session";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -28,10 +28,12 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
           `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id;`
         );
 
-      (listResults as Array<any>).forEach((list: any) => {
-        list.buyers = (purchaseResults as Array<any>).filter((i: any) => {
-          if (i.list_id == list.id) return 1;
-        }).length;
+      (listResults as Array<RowDataPacket>).forEach((list: RowDataPacket) => {
+        list.buyers = (purchaseResults as Array<RowDataPacket>).filter(
+          (i: RowDataPacket) => {
+            if (i.list_id == list.id) return 1;
+          }
+        ).length;
       });
 
       results[0].lists = listResults;

@@ -1,4 +1,4 @@
-import mysql from "mysql2";
+import mysql, { RowDataPacket } from "mysql2";
 import _ from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mailOptions, transporter } from "../../../services/nodemailer";
@@ -17,11 +17,10 @@ export default async function apiNewSession(
         );
 
       let groupedMessages = _.mapValues(
-        _.groupBy(messages, "email"),
+        _.groupBy(messages as Array<RowDataPacket>, "email"),
         (mlist: Array<any>) => mlist.map((msg) => _.omit(msg, msg.email))
       );
 
-      console.log(groupedMessages);
       await mailer(groupedMessages);
       //   console.log(results)
       res.status(200).json({ success: true });
@@ -43,7 +42,7 @@ const markSentMessages = async (messages: Array<any>) => {
   });
 };
 
-const mailer = async (emails) => {
+const mailer = async (emails: any) => {
   const mail = `
     <p>Hello There,</p>
     <p>You have an unread message from an affiliate partner on Connective. Please <a href="${process.env.BASE_URL}/auth/signin">sign in</a> below and respond to them.<br/>

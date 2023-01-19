@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { mailOptions, transporter } from "../../../services/nodemailer";
+import { EmailContent } from "../../../types/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = req.body.data;
@@ -26,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-async function mailer(data: any) {
+async function mailer(data: EmailContent) {
   await transporter.sendMail({
     ...mailOptions,
     subject: data.subject,

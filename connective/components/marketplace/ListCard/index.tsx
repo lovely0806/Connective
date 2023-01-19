@@ -3,20 +3,20 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
-import { User } from "../../../types/types";
+import { MarketplaceListCardItem, User } from "../../../types/types";
 
 type Props = {
-  item: any;
+  item: MarketplaceListCardItem;
   preview: boolean;
   user: User;
 };
 
 const ListCard = ({ item, preview, user }: Props) => {
   const router = useRouter();
-  const [truncatedTitle, setTruncatedTitle] = useState("");
-  const [truncatedDesc, setTruncatedDesc] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
-  const [username, setUsername] = useState("");
+  const [truncatedTitle, setTruncatedTitle] = useState<string>("");
+  const [truncatedDesc, setTruncatedDesc] = useState<string>("");
+  const [profilePicture, setProfilePicture] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
 
   const getProfilePicture = async () => {
     let type = await Util.accountType(user.id);
@@ -99,7 +99,7 @@ const ListCard = ({ item, preview, user }: Props) => {
             {preview ? 0 : item.buyers} {item.buyers == 1 ? "Buyer" : "Buyers"}
           </div>
           <p className="font-bold text-[26px] leading-[29px] text-[#0D1011]">
-            ${parseInt(item.price).toFixed(2)}
+            ${Number(item.price).toFixed(2)}
           </p>
         </div>
         {!preview && (
