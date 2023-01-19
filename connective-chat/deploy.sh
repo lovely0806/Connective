@@ -77,4 +77,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec connective-web-server nginx -s reload
+docker exec connective-web-server nginx -s reload

@@ -7,4 +7,9 @@ Powered by Express.js
 - Connect client on `:3000`
 
 # Production
-- Same steps as development but change the `docker-compose.dev.yml` to `docker-compose.yml`
+- Copy .env.example as .env and setup environment variables
+- Confirm domain name in `deploy.sh` on Line 8
+- Confirm email for letsencrypt in `deploy.sh` on Line 11
+- Confirm domain in `./nginx/default.conf` in server block
+- Execute `deploy.sh`
+- Connect client on `https://connective-testing.dev`
