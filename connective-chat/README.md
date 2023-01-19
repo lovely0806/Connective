@@ -11,5 +11,5 @@ Powered by Express.js
 - Confirm domain name in `deploy.sh` on Line 8
 - Confirm email for letsencrypt in `deploy.sh` on Line 11
 - Confirm domain in `./nginx/default.conf` in server block
-- Execute `deploy.sh`
+- Execute `bash ./deploy.sh`
 - Connect client on `https://connective-testing.dev`
