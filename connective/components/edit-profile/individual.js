@@ -18,6 +18,7 @@ export default function EditProfile({ user }) {
   const [loaded, setLoaded] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [pfpChanged, setPfpChanged] = useState(false);
+
   useEffect(() => {
     setLoaded(false);
     getProfile();

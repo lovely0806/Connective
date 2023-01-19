@@ -55,7 +55,6 @@ export default function EditProfile({ user }) {
     }catch(e){
       console.log(e);
     }
-    
   };
 
   const statusOptions = [
@@ -160,7 +159,7 @@ export default function EditProfile({ user }) {
       .then((res) => {
         if (res.status == 200) {
           console.log("success");
-          router.push(`/app/profile/userId${userId}`);
+          router.push(`/app/profile/${userId}`);
         }
       })
       .catch((e) => {
