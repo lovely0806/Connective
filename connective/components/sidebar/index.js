@@ -53,6 +53,7 @@ const Sidebar = ({ user }) => {
 
   const [sum, setSum] = useState();
   const [array1, setArray1] = useState([]);
+
   const getConversations = async () => {
     try {
       const { data } = await axios.get("/api/messages/conversations");
@@ -74,6 +75,7 @@ const Sidebar = ({ user }) => {
       console.log(e);
     }
   };
+
   const getUnreadMessages = async (id) => {
     const { data } = await axios.get("/api/messages/" + id);
     const unReadMesssages = data.filter((message) => {
@@ -116,7 +118,7 @@ const Sidebar = ({ user }) => {
         <p className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           General
         </p>
-        {/* 
+        {/*
         <SidebarItem
           text="Dashboard"
           icon="/assets/navbar/DashboardIcon.svg"
@@ -130,7 +132,7 @@ const Sidebar = ({ user }) => {
         ></SidebarItem>
       </div>
 
-      {/* 
+      {/*
       <div  className="mb-3">
         <p  className="font-[Montserrat] font-bold text-[1.5vh] leading-[20px] text-[#BFBFBF] mb-2">
           As a buyer
