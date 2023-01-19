@@ -18,6 +18,8 @@ export default async function handler(req, res) {
         .query(
           `UPDATE Users SET verify_email_otp = '${code}' WHERE email='${email}';`
         );
+    } else {
+      console.log("No user found")
     }
     res.status(200).json({ success: true });
   } catch (e) {

@@ -8,18 +8,34 @@ export default withIronSession(
       return res.status(404).send("");
     }
 
-    const { email, password, type = null, accessToken = null } = req.body;
+    const { email, password, rememberme, type = null, accessToken = null } = req.body;
 
     if (type === "google") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       const [results, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Users WHERE email='${email}';`);
- 
-      if (
-        results.length &&
-        bcrypt.compareSync(accessToken, results[0].password_hash.toString())
-      ) {
+        .query(`SELECT * FROM Users WHERE email='${email}';`); 
+
+      if (results.length == 0) {
+        console.log("No account");
+        return res
+          .status(500)
+          .json({ success: false, error: "Account does not exist" });
+      }
+
+      if (results.length) {
+        const user = results[0];
+        if (!user.email_verified) {
+          return res
+            .status(500)
+            .json({ success: false, error: "Email not verified" });
+        }
+      }
+
+      if (bcrypt.compareSync(accessToken, results[0].password_hash.toString())) {
+        req.session.set("user", { email, id: results[0].id });
+        console.log(req.session.get("user"));
+        await req.session.save();
         let [isBusinessProfile] = await connection
           .promise()
           .query(
@@ -71,7 +87,7 @@ export default withIronSession(
     }
 
     if (bcrypt.compareSync(password, results[0].password_hash.toString())) {
-      req.session.set("user", { email, id: results[0].id });
+      req.session.set("user", { email, id: results[0].id, rememberme });
       await req.session.save();
       let [isBusinessProfile] = await connection
         .promise()

@@ -9,20 +9,24 @@ import logo from "../../public/assets/logo.svg";
 import LoginSidebar from "components/login-sidebar";
 import Head from "next/head";
 import EmailVerification from "components/dailog/EmailVerification";
+import ResetPassword from "components/dailog/ResetPassword";
+import { GoogleLogin } from "react-google-login";
+import nextConfig from "../../next.config";
 import GoogleSsoDivider from "../../components/divider/orDivider";
 import GoogleAuthButton from "../../components/button/GoogleAuthButton";
 
 export default function SignIn() {
   const router = useRouter();
   const { error } = router.query;
-
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
+  const [emailNotVerified, setEmailNotVerified] = useState(null);
   const [otpCode, setOtpCode] = useState(null);
+  const [otpCodeforResetPassword, setOtpCodeforResetPassword] = useState(null);
   const [otpError, setOtpError] = useState(null);
 
   useEffect(() => {
@@ -115,6 +119,42 @@ export default function SignIn() {
       });
   };
 
+  const forgotPassword = async () => {
+    if (email == "") {
+      setEmailError("You must enter an email.");
+      setPasswordError("");
+      return;
+    }
+
+    setPasswordError("");
+    setEmailError("");
+
+    await axios({
+      method: "post",
+      url: "/api/auth/sendPasswordResetEmail",
+      data: { email },
+    })
+      .then(async (data) => {
+        console.log(data);
+        if (data) setResetPassword(true);
+      })
+      .catch(async (e) => {
+        if (
+          e.response.status == 500 ||
+          e.response.data.error == "Account does not exist"
+        )
+          setEmailError("Incorrect email");
+      });
+  };
+
+  const onGoogleSuccess = (res) => {
+    console.log("[Login Success] currentUser:", res.profileObj);
+  };
+
+  const onGoogleFailure = (res) => {
+    console.log("[login failed] res:", res);
+  };
+
   const showPasswordHandler = () => {
     setShowPassword((prevState) => !prevState);
   };
@@ -149,6 +189,31 @@ export default function SignIn() {
             <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-10">
               Welcome back! Please enter your details
             </p>
+
+            {/* <div
+              className="h–[47px] flex flex-row items-center w-[100%] bg-[#EFEFEF] mt-[40px] justify-center rounded-[8px] gap-[11.67px] py-[14.47px] cursor-pointer"
+              onClick=""
+            >
+              <Image
+                className="w-[16.67px] h-[16.67px] 1bp:w-[20px] 1bp:h-[20px]"
+                src={googleIcon}
+                alt="Google"
+                width="16.67px"
+                height="16.67px"
+              />
+              <p  className="font-normal text-[12px] leading-[18px] text-[#0D1011] font-[Poppins] 1bp:text-[14px]">
+                Login with with Google
+              </p>
+            </div>
+            <div  className="flex flex-row items-center gap-[12px] mt-[24px]">
+              <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
+              <div>
+                <p  className="font-normal text-[12px] leading-[18px] text-[#414141] font-[Poppins] 1bp:text-[14px]">
+                  or
+                </p>
+              </div>
+              <div  className="w-[100%] h-[1px] bg-[#D9D9D9]" />
+            </div> */}
           </div>
 
           <GoogleAuthButton isSignUp={false} />
@@ -203,11 +268,11 @@ export default function SignIn() {
                 Remember my information
               </p>
             </div>
-            <Link href=".">
+            <span onClick={forgotPassword}>
               <p className="font-Poppins font-normal text-[12px] leading-[18px] text-[#061A40] cursor-pointer 1bp:text-[16px]">
                 Forgot your password?
               </p>
-            </Link>
+            </span>
           </div>
 
           <button
@@ -227,12 +292,22 @@ export default function SignIn() {
       </div>
       {emailNotVerified ? (
         <>
-          <div className="w-full fixed h-full shadow-black z-10 backdrop-blur-sm flex items-center backdrop-brightness-90">
+          <div className="fixed z-10 flex items-center justify-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
             <EmailVerification
               code={setOtpCode}
               email={email}
               otpNotMatchError={otpError}
               setOtpNotMatchError={setOtpError}
+            />
+          </div>
+        </>
+      ) : null}
+      {resetPassword ? (
+        <>
+          <div className="fixed z-10 flex items-center justify-center w-full h-full shadow-black backdrop-blur-sm backdrop-brightness-90">
+            <ResetPassword
+              email={email}
+              setResetPassword={setResetPassword}
             />
           </div>
         </>

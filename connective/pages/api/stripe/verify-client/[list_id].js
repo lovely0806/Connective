@@ -6,6 +6,9 @@ export async function handler(req, res) {
   try {
     if (req.method == "GET") {
       let user = req.session.get().user
+      if (typeof user == "undefined") {
+        return res.status(403).json({ success: false, error: "Not signed in" });
+      }
       const listID = req.query.list_id;
       // fetch connected account ID from the database
       const connection = mysql.createConnection(process.env.DATABASE_URL);
