@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Head from "next/head";
 import InputField from "../../../../components/input-field";
+import { AuthApiResponse } from "../../../../types/apiResponseTypes";
 import axios from "axios";
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;

@@ -11,7 +11,18 @@ import Head from "next/head";
 import ReactPaginate from "react-paginate";
 import { industries } from "../../../common/selectOptions";
 import DiscoverList from "../../../components/discover/list";
-import { Industry, User } from "../../../types/types";
+import {
+  Business,
+  DiscoverUser,
+  Individual,
+  Industry,
+  User,
+} from "../../../types/types";
+import { business, individual } from "../../../util/validation/onboarding";
+import {
+  ProfileApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   return (
@@ -28,9 +39,9 @@ export default function Messages({ user }) {
   const router = useRouter();
   const discoverRef = useRef(null);
 
-  const [users, setUsers] = useState<Array<User>>([]);
+  const [users, setUsers] = useState<DiscoverUser[]>([]);
   const [filter, setFilter] = useState<string>("");
-  const [filteredUsers, setFilteredUsers] = useState<Array<User>>([]);
+  const [filteredUsers, setFilteredUsers] = useState<DiscoverUser[]>([]);
   const [page, setPage] = useState<number>(0);
   const [defaultIndustry, setDefaultIndustry] = useState<{
     value: string | number;
@@ -63,21 +74,30 @@ export default function Messages({ user }) {
 
   const getUsers = async () => {
     let start = Date.now();
-    const { data } = await Recache.cached(137, axios.get, ["/api/profiles"]);
-    let elapsed = Date.now() - start;
-    console.log(elapsed);
-    //const {data} = await axios.get("/api/profiles")
-    setUsers(data.filter((a) => a.show_on_discover));
+    const res: ProfileApiResponse.IDiscoverProfiles | IApiResponseError = (
+      await Recache.cached(137, axios.get, ["/api/profiles"])
+    ).data;
+    if (res.type == "IApiResponseError") throw res;
+    else {
+      let elapsed = Date.now() - start;
+      console.log(elapsed);
+      //const {data} = await axios.get("/api/profiles")
+      setUsers(res.users.filter((a) => a.show_on_discover));
+    }
   };
 
   const getIndustry = async () => {
     let account;
-    let individual = await axios.get(`/api/profiles/individual/${user.id}`);
-    let business = await axios.get(`/api/profiles/business/${user.id}`);
-    if (individual.data == "" && business.data != "") {
-      account = business.data;
-    } else if (individual.data != "" && business.data == "") {
-      account = individual.data;
+    let individual: Individual = (
+      await axios.get(`/api/profiles/individual/${user.id}`)
+    ).data.individual;
+    let business: Business = (
+      await axios.get(`/api/profiles/business/${user.id}`)
+    ).data.business;
+    if (!individual && business) {
+      account = business;
+    } else if (individual && !business) {
+      account = individual;
     }
     let temp = industries
       .map((industry) => {

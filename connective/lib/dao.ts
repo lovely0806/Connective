@@ -1,6 +1,12 @@
 import moment from "moment";
 import mysql, { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
-import { Message, User, DiscoverUser } from "../types/types";
+import {
+  Message,
+  User,
+  DiscoverUser,
+  Business as Business_Type,
+  Individual as Individual_Type,
+} from "../types/types";
 
 export namespace DAO {
   const connection = mysql.createConnection(process.env.DATABASE_URL || "");
@@ -18,6 +24,16 @@ export namespace DAO {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
       return results[0];
+    }
+
+    /**
+     * Gets all users
+     * @returns {User[]}
+     */
+    static async getAll(): Promise<User[]> {
+      var query = `SELECT * FROM Users;`;
+      var [results] = await connection.promise().query(query);
+      return results as User[];
     }
 
     /**
@@ -219,7 +235,7 @@ export namespace DAO {
      * @param {number} userId The businesses user id
      * @returns {Business} A Business object representing the business
      */
-    static async getByUserId(userId: number): Promise<Business> {
+    static async getByUserId(userId: number): Promise<Business_Type> {
       var query = `SELECT * FROM Business WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
       return result[0];
@@ -343,7 +359,7 @@ export namespace DAO {
      * @param {number} userId The individuals user id
      * @returns {Individual} An Indivual object representing the individual
      */
-    static async getByUserId(userId: number): Promise<Individual> {
+    static async getByUserId(userId: number): Promise<Individual_Type> {
       var query = `SELECT * FROM Individual WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
       return result[0];

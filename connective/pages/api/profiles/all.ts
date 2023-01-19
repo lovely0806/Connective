@@ -11,8 +11,8 @@ export default async function handler(
 ) {
   try {
     if (req.method == "GET") {
-      let users = await DAO.Discover.getAll();
-      res.status(200).json({ users } as ProfileApiResponse.IDiscoverProfiles);
+      let users = await DAO.Users.getAll();
+      res.status(200).json({ users } as ProfileApiResponse.IProfiles);
     }
   } catch (e) {
     console.log(e);

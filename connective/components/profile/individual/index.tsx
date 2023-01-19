@@ -2,7 +2,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Avatar from "../../avatar";
-import { User } from "../../../types/types";
+import { Individual, User } from "../../../types/types";
+import {
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../../types/apiResponseTypes";
 
 type Props = {
   user: User;
@@ -12,7 +16,7 @@ type Props = {
 export default function IndividualProfile({ user, id }: Props) {
   const router = useRouter();
 
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Individual>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,9 +32,10 @@ export default function IndividualProfile({ user, id }: Props) {
 
   const getProfile = async () => {
     await axios.get(`/api/profiles/individual?id=${id}`).then((res) => {
-      if (typeof res.data != "undefined") {
-        setData(res.data);
-        console.log(res.data);
+      let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data;
+      if (data.type == "IApiResponseError") throw data;
+      else {
+        setData(data.individual);
         setLoaded(true);
       }
     });

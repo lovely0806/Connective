@@ -59,13 +59,13 @@ export type MarketplaceListCardItem = {
 };
 
 export type Message = {
-  id: string;
+  id?: string;
   sender: string;
-  receiver: string;
+  receiver?: string;
   text: string;
-  read: boolean;
-  notified: boolean;
-  timestamp: string;
+  read?: boolean;
+  notified?: boolean;
+  timestamp?: string;
 };
 
 export type Business = {

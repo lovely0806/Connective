@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
 import { MarketplaceListCardItem, User } from "../../../types/types";
+import {
+  ProfileApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 type Props = {
   item: MarketplaceListCardItem;
@@ -23,19 +27,23 @@ const ListMarketplace = ({ item, preview, user }: Props) => {
     let type = await Util.accountType(user.id);
     if (type == "Individual") {
       await axios.get("/api/profiles/individual").then((res) => {
-        if (typeof res.data != "undefined") {
+        let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data;
+        if (data.type == "IApiResponseError") throw data;
+        else {
           console.log(res.data);
-          setProfilePicture(res.data.profile_picture);
-          setUsername(res.data.name);
+          setProfilePicture(data.individual.profile_picture);
+          setUsername(data.individual.name);
         }
       });
     }
     if (type == "Business") {
       await axios.get("/api/profiles/business").then((res) => {
-        if (typeof res.data != "undefined") {
+        let data: ProfileApiResponse.IBusiness | IApiResponseError = res.data;
+        if (data.type == "IApiResponseError") throw data;
+        else {
           console.log(res.data);
-          setProfilePicture(res.data.logo);
-          setUsername(res.data.name);
+          setProfilePicture(data.business.logo);
+          setUsername(data.business.company_name);
         }
       });
     }

@@ -20,18 +20,12 @@ const profileConfigured = async (id: any) => {
 
 const accountType = async (id: any) => {
   let type = "none";
-  await axios
-    .get(`/api/profiles/business/${id}`)
-    .then((res) => {
-      if (res.data != "") type = "Business";
-    })
-    .catch((e) => console.log(e));
-  await axios
-    .get(`/api/profiles/individual/${id}`)
-    .then((res) => {
-      if (res.data != "") type = "Individual";
-    })
-    .catch((e) => console.log(e));
+  await axios.get(`/api/profiles/business/${id}`).then((res) => {
+    if (res.data.business) type = "Business";
+  });
+  await axios.get(`/api/profiles/individual/${id}`).then((res) => {
+    if (res.data.individual) type = "Individual";
+  });
   return type;
 };
 
