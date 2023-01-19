@@ -361,6 +361,50 @@ export namespace DAO {
   }
 
   /**
+   * Contains functions for interacting with List in the database
+   */
+  export class Lists {
+    /**
+     * Gets purchased list by the specific buyer id
+     * @param buyerId The buyers Id
+     * @returns Purchased list for buyer
+     */
+    static async getPurchasedListByBuyerId(
+      buyerId: number
+    ): Promise<Array<RowDataPacket>> {
+      const query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE buyer_id = ${buyerId}`;
+      const [purchasedListsResults] = await connection.promise().query(query);
+      return purchasedListsResults as Array<RowDataPacket>;
+    }
+
+    /**
+     * Gets purchased list by the specific creator id
+     * @param creatorId The creators Id
+     * @returns Purchased list for creator
+     */
+    static async getPurchasedListByCreatorId(
+      creatorId: number
+    ): Promise<Array<RowDataPacket>> {
+      const query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE creator = ${creatorId}`;
+      const [soldListResults] = await connection.promise().query(query);
+      return soldListResults as Array<RowDataPacket>;
+    }
+
+    /**
+     * Gets list by the specific creator id
+     * @param creatorId The creators Id
+     * @returns List for the creators
+     */
+    static async getListsByCreator(
+      creatorId: number
+    ): Promise<Array<RowDataPacket>> {
+      const query = `select * from Lists where creator = ${creatorId}`;
+      const [createdListResults] = await connection.promise().query(query);
+      return createdListResults as Array<RowDataPacket>;
+    }
+  }
+
+  /**
    * Contains functions for interacting with Messages in the database
    */
   export class Messages {

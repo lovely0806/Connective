@@ -1,7 +1,7 @@
 import axios from "axios";
 import Compress from "compress.js";
 
-const profileConfigured = async (id: number) => {
+const profileConfigured = async (id: any) => {
   let configured = false;
   await axios.get(`/api/profiles/business/${id}`).then((res) => {
     if (typeof res.data != "undefined" && res.data != "") {
@@ -18,18 +18,24 @@ const profileConfigured = async (id: number) => {
   return configured;
 };
 
-const accountType = async (id: number) => {
+const accountType = async (id: any) => {
   let type = "none";
-  await axios.get(`/api/profiles/business/${id}`).then((res) => {
-    if (res.data != "") type = "Business";
-  });
-  await axios.get(`/api/profiles/individual/${id}`).then((res) => {
-    if (res.data != "") type = "Individual";
-  });
+  await axios
+    .get(`/api/profiles/business/${id}`)
+    .then((res) => {
+      if (res.data != "") type = "Business";
+    })
+    .catch((e) => console.log(e));
+  await axios
+    .get(`/api/profiles/individual/${id}`)
+    .then((res) => {
+      if (res.data != "") type = "Individual";
+    })
+    .catch((e) => console.log(e));
   return type;
 };
 
-const uploadFile = async (name: string, file: Blob, image: boolean = false) => {
+const uploadFile = async (name: any, file: { type: any }, image = false) => {
   if (image) {
     const compress = new Compress();
     let temp = await compress.compress(
@@ -52,7 +58,7 @@ const uploadFile = async (name: string, file: Blob, image: boolean = false) => {
     });
 
   // @ts-ignore
-  await axios.put(response?.data.url, file, {
+  await axios.put(response.data.url, file, {
     headers: {
       "Content-type": file.type,
       "Access-Control-Allow-Origin": "*",
@@ -60,13 +66,13 @@ const uploadFile = async (name: string, file: Blob, image: boolean = false) => {
   });
 
   // @ts-ignore
-  return response?.data.url.split("?")[0];
+  return response.data.url.split("?")[0];
 };
 
 const verifyField = (
   value: string,
-  setErrorText: (value: string) => void,
-  errorTextValue: string
+  setErrorText: (arg0: any) => void,
+  errorTextValue: any
 ) => {
   if (value == "") {
     setErrorText(errorTextValue);

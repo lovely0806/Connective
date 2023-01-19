@@ -67,14 +67,15 @@ const Sidebar = ({ user }) => {
     }
   };
 
-  const [sum, setSum] = useState<number>(0);
-  const [array1, setArray1] = useState<Array<number>>([]);
+  const [sum, setSum] = useState();
+  const [array1, setArray1] = useState([]);
+
   const getConversations = async () => {
     try {
       const { data } = await axios.get("/api/messages/conversations");
       let temp = [];
-      data.forEach((item: Array<any>) => {
-        let tempItem = item.filter((a: any) => a.id != user.id)[0];
+      data.forEach((item) => {
+        let tempItem = item.filter((a) => a.id != user.id)[0];
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
       });
@@ -90,7 +91,8 @@ const Sidebar = ({ user }) => {
       console.log(e);
     }
   };
-  const getUnreadMessages = async (id: number) => {
+
+  const getUnreadMessages = async (id) => {
     const { data } = await axios.get("/api/messages/" + id);
     const unReadMesssages = data.filter((message: any) => {
       return message.read != "1" && message.receiver == user.id;
@@ -195,7 +197,7 @@ const Sidebar = ({ user }) => {
         ></SidebarItem>
         <SidebarItem
           text="Messages"
-          text2={sum > 0 ? sum : null}
+          text2={sum && sum > 0 ? sum : null}
           icon="/assets/navbar/messages.png"
           route="/app/messages"
         ></SidebarItem>

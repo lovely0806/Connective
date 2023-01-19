@@ -1,6 +1,6 @@
-const mysql = require("mysql2");
 import { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
+import { DAO } from "../../../lib/dao";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { type } = req.query;
@@ -12,30 +12,29 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method == "GET") {
       // Returns callers account
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      let query = "";
+      var listsViewedResult = null;
       if (type == "business") {
-        query = `SELECT * FROM Business WHERE user_id='${user.id}';`;
+        listsViewedResult = await DAO.Business.getByUserId(user.id);
       } else {
-        query = `SELECT * FROM Individual WHERE user_id='${user.id}';`;
+        listsViewedResult = await DAO.Individual.getByUserId(user.id);
       }
-      var [listsViewedResults] = await connection.promise().query(query);
-      let listsViewed = listsViewedResults[0]?.listViews;
+      let listsViewed = listsViewedResult?.listViews;
 
-      query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE buyer_id = ${user.id}`;
-      var [purchasedListsResults] = await connection.promise().query(query);
+      const purchasedListsResults = await DAO.Lists.getPurchasedListByBuyerId(
+        user.id
+      );
       var purchasedLists = purchasedListsResults.length;
       var totalSpent = 0;
       purchasedListsResults.forEach((item) => {
         totalSpent += item.price;
       });
 
-      query = `select * from Lists where creator = ${user.id}`;
-      var [createdListResults] = await connection.promise().query(query);
+      const createdListResults = await DAO.Lists.getListsByCreator(user.id);
       var listsCreated = createdListResults.length;
 
-      query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE creator = ${user.id};`;
-      var [soldListResults] = await connection.promise().query(query);
+      const soldListResults = await DAO.Lists.getPurchasedListByCreatorId(
+        user.id
+      );
       var listsSold = soldListResults.length;
       var totalEarned = 0;
       soldListResults.forEach((item) => {

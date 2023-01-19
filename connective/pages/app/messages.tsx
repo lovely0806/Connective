@@ -5,9 +5,13 @@ import { withIronSession } from "next-iron-session";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Avatar from "../../components/avatar";
-import { User } from "../../types/types";
 
-const Message = ({ text, sent }) => {
+type Props = {
+  text: string;
+  sent: boolean;
+}
+
+const Message = ({ text, sent }: Props) => {
   if (sent) {
     return (
       <div className="ml-auto bg-blue-100 w-3/5 p-2 rounded-lg shadow-md">
@@ -30,10 +34,8 @@ const Conversations = ({
   conversations,
   unreadMessagesCount,
 }) => {
-  const [filter, setFilter] = useState<string>("");
-  const [filteredConversations, setFilteredConversations] = useState<
-    Array<any>
-  >([]);
+  const [filter, setFilter] = useState("");
+  const [filteredConversations, setFilteredConversations] = useState([]);
 
   useEffect(() => {
     setFilteredConversations([...conversations]);
@@ -43,7 +45,7 @@ const Conversations = ({
     if (filter != "")
       setFilteredConversations(
         conversations.filter(
-          (a: { username: string; email: string }) =>
+          (a: { username: string; email: string; }) =>
             a.username.toLowerCase().includes(filter.toLowerCase()) ||
             a.email.toLowerCase().includes(filter.toLowerCase())
         )
@@ -88,6 +90,9 @@ const Conversations = ({
               />
             )}
             <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
+            {
+              // console.log(item, item.unread)
+            }
             {unreadMessagesCount[item.id] > 0 ? (
               <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
                 {unreadMessagesCount[item.id]}
@@ -108,16 +113,14 @@ const Chat = ({
   conversations,
   getConversations,
 }) => {
-  const [messages, setMessages] = useState<Array<any>>([]);
-  const [userOptions, setUserOptions] = useState<
-    Array<{ value: number; label: string }>
-  >([]);
-  const [text, setText] = useState<string>("");
+  const [messages, setMessages] = useState([]);
+  const [userOptions, setUserOptions] = useState([]);
+  const [text, setText] = useState("");
   let prevMessages = 0;
 
   useEffect(() => {
     let temp = [];
-    users.forEach((user: User) => {
+    users.forEach((user: { id: any; username: string; email: string; }) => {
       temp.push({
         value: user.id,
         label: user.username + " (" + user.email + ")",
@@ -145,18 +148,14 @@ const Chat = ({
       document.getElementById("message-input").value = "";
 
       //Re-fetch the list of conversations if the message was sent to a new conversation
-      console.log(
-        conversations.filter((a: { id: number }) => a.id == selectedUser.id)
-      );
-      if (
-        conversations.filter((a: { id: number }) => a.id == selectedUser.id)
-          .length == 0
-      ) {
+      console.log(conversations.filter((a: { id: any; }) => a.id == selectedUser.id));
+      if (conversations.filter((a: { id: any; }) => a.id == selectedUser.id).length == 0) {
         getConversations();
       }
       setMessages([...messages, { sender: user.id, text }]);
     }
   };
+
   const getMessages = async () => {
     let temp = messages;
     const { data } = await axios.get("/api/messages/" + selectedUser.id);
@@ -168,8 +167,8 @@ const Chat = ({
     }
     prevMessages = data.length;
     setMessages(data);
-
-    const unReadMesssages = data.filter((message: any) => {
+    console.log(data);
+    const unReadMesssages = data.filter((message: { read: string; receiver: any; sender: any; }) => {
       return (
         message.read != "1" &&
         message.receiver == user.id &&
@@ -177,16 +176,17 @@ const Chat = ({
       );
     });
     const emailz = await axios("/api/messages/unread-messages-mailer", {
-      headers: {
+      // @ts-ignore
+      header: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     });
-
     await readMessages(unReadMesssages);
   };
 
-  const readMessages = async (unReadMesssages: Array<any>) => {
+  const readMessages = async (unReadMesssages: any) => {
+    console.log("EEEEEE", unReadMesssages);
     await axios.post("/api/messages/read-message", {
       header: {
         "Content-Type": "application/json",
@@ -199,7 +199,7 @@ const Chat = ({
   // Send message on pressing Enter key
   const messageInputRef = useRef(null);
   useEffect(() => {
-    const keyDownHandler = (event: { key: string }) => {
+    const keyDownHandler = (event: { key: string; }) => {
       if (
         event.key === "Enter" &&
         document.activeElement === messageInputRef.current
@@ -222,7 +222,6 @@ const Chat = ({
           </p>
         </div>
       )}
-
       <div
         id="messages-container"
         className="h-full overflow-y-scroll p-5 flex flex-col gap-10"
@@ -275,11 +274,9 @@ const UserDetails = ({ selectedUser }) => {
               title={selectedUser.username}
             />
           )}
-
           <p className="font-bold text-lg text-center mt-5">
             {selectedUser.username}
           </p>
-
           <p className="text-sm font-bold mt-10">Contact Details:</p>
           <div className="flex flex-row gap-2 my-5">
             <div className="bg-black/5 rounded-full p-[7px] w-8 h-8 shadow-lg">
@@ -302,8 +299,8 @@ const UserDetails = ({ selectedUser }) => {
 export default function Messages({ user }) {
   const router = useRouter();
   const { newUser } = router.query;
-  const [users, setUsers] = useState<Array<User>>([]);
-  const [selectedUser, setSelectedUser] = useState<Array<User>>([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState();
 
   // Automatically open latest (last opened) conversation when navigating to messages page
   useEffect(() => {
@@ -323,25 +320,20 @@ export default function Messages({ user }) {
     }
   }, [selectedUser]);
 
-  const [conversations, setConversations] = useState<Array<any>>([]);
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState<Array<any>>(
-    []
-  );
+  const [conversations, setConversations] = useState([]);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState([]);
 
   let sum = 0;
   const getUsers = async () => {
     const { data } = await axios.get("/api/profiles");
     setUsers(data);
-    newUser &&
-      setSelectedUser(
-        data.filter((item: { id: string | string[] }) => item.id == newUser)[0]
-      );
+    newUser && setSelectedUser(data.filter((item: { id: string | string[]; }) => item.id == newUser)[0]);
   };
   const getConversations = async () => {
     const { data } = await axios.get("/api/messages/conversations");
     let temp = [];
-    data.forEach((item: Array<any>) => {
-      let tempItem = item.filter((a: any) => a.id != user.id)[0];
+    data.forEach((item: any[]) => {
+      let tempItem = item.filter((a: { id: any; }) => a.id != user.id)[0];
       if (tempItem != undefined)
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
@@ -358,7 +350,7 @@ export default function Messages({ user }) {
 
   const getUnreadMessages = async (id: string) => {
     const { data } = await axios.get("/api/messages/" + id);
-    const unReadMesssages = data.filter((message: any) => {
+    const unReadMesssages = data.filter((message: { read: string; receiver: any; }) => {
       return message.read != "1" && message.receiver == user.id;
     }).length;
     return unReadMesssages;

@@ -1,6 +1,6 @@
-import mysql from "mysql2";
 import { withIronSession } from "next-iron-session";
 import type { NextApiRequest, NextApiResponse } from "next";
+import mysql from "mysql2";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -11,17 +11,18 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method == "POST") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
-      const IDs = req.body.data.map((message) => {
-        console.log(message.id);
+      const IDs = req.body.data.map((message: { id: any; }) => {
         return message.id;
       });
-      console.log(IDs);
-      var [results] = await connection
-        .promise()
-        .query(
-          'UPDATE messages SET `read`="1" WHERE id IN (' + IDs.join(", ") + ");"
-        );
-
+      if (IDs.length > 0) {
+        var [results] = await connection
+          .promise()
+          .query(
+            'UPDATE messages SET `read`="1" WHERE id IN (' +
+              IDs.join(", ") +
+              ");"
+          );
+      }
       res.status(200).json({ success: true });
     }
   } catch (e) {
