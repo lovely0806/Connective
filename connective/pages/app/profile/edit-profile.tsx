@@ -23,6 +23,10 @@ export default function EditProfile({ user }) {
     getAccountType();
   }, []);
 
+  useEffect(() => {
+    if (typeof user == "undefined") router.push("/auth/signin");
+  }, [user]);
+
   return (
     <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
       <Head>

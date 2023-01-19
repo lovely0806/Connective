@@ -1,3 +1,9 @@
+import type {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+  NextPage,
+} from "next";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -5,7 +11,9 @@ import Head from "next/head";
 import InputField from "../../../../components/input-field";
 import axios from "axios";
 
-export default function ResetPassword() {
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
+
+const ResetPassword: NextPage<Props> = ({ email, token }) => {
   const router = useRouter();
   const [linkExpired, setLinkExpired] = useState<boolean>(false);
   const [linkVerified, setLinkVerified] = useState<boolean>(false);
@@ -17,7 +25,7 @@ export default function ResetPassword() {
   const [passwordError, setPasswordError] = useState<string>("");
   const [linkError, setLinkError] = useState<string>("");
   const [passwordConfirmError, setPasswordConfirmError] = useState<string>("");
-  const { email, token } = router.query;
+  // const { email, token } = router.query;
 
   useEffect(() => {
     async function verifyLink() {
@@ -52,6 +60,16 @@ export default function ResetPassword() {
   };
 
   const submitNewPassword = async () => {
+    if (password == "") {
+      setPasswordError("You must enter a password.");
+      setPasswordConfirmError("");
+      return;
+    }
+    if (passwordConfirm == "") {
+      setPasswordConfirmError("You must enter a password.");
+      setPasswordError("");
+      return;
+    }
     if (password !== passwordConfirm) {
       setPasswordConfirmError("Passwords must match");
     } else {
@@ -211,4 +229,24 @@ export default function ResetPassword() {
       </div>
     </main>
   );
-}
+};
+
+export default ResetPassword;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { email, token } = context?.params;
+
+  return {
+    props: {
+      email,
+      token,
+    },
+  };
+};

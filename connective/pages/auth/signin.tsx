@@ -27,6 +27,7 @@ export default function SignIn() {
   const [otpCodeforResetPassword, setOtpCodeforResetPassword] =
     useState<string>("");
   const [otpError, setOtpError] = useState<string>("");
+  const [expiredError, setExpiredError] = useState<boolean>(false);
 
   const verifyEmail = async () => {
     const verifiedEmail = await axios({
@@ -121,9 +122,13 @@ export default function SignIn() {
       url: "/api/auth/sendPasswordResetEmail",
       data: { email },
     })
-      .then(async (data) => {
-        console.log(data);
-        if (data) setResetPassword(true);
+      .then(async (res) => {
+        if (res) setResetPassword(true);
+        if (res.data.error === "You can send only 2 requests in 15 minutes") {
+          setExpiredError(true);
+        } else {
+          setExpiredError(false);
+        }
       })
       .catch(async (e) => {
         if (
@@ -288,6 +293,7 @@ export default function SignIn() {
               // @ts-ignore
               email={email}
               setResetPassword={setResetPassword}
+              expiredError={expiredError}
             />
           </div>
         </>

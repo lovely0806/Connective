@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import uuid from "uuid";
 import sgMail from "@sendgrid/mail";
+import moment from "moment";
 import { DAO } from "../../../lib/dao";
 
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
@@ -26,6 +27,28 @@ export default withIronSession(
             .status(500)
             .json({ success: false, error: "Email not verified" });
         }
+
+        if (user.send_code_attempt && user.send_code_attempt == 2) {
+          const lastLinkSentTime = user.verification_timestamp;
+          const diff = moment().diff(lastLinkSentTime, "minutes");
+
+          if (diff < 15) {
+            return res.status(200).json({
+              success: false,
+              error: "You can send only 2 requests in 15 minutes",
+            });
+          }
+        }
+
+        const token = uuid.v4();
+        const sendCodeAttempt =
+          user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
+
+        await DAO.Users.updateVerification(token, sendCodeAttempt, email);
+
+        const link = `http://${req.headers.host}/auth/resetpassword/${email}/${token}`;
+
+        await sendEmail(link, email);
       }
 
       const token = uuid.v4();

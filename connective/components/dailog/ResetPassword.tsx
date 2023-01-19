@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 type Props = {
   email: string;
   setResetPassword: (value: boolean) => void;
+  expiredError?: boolean;
 };
 
-const EmailVerification = ({ email, setResetPassword }: Props) => {
+const EmailVerification = ({
+  email,
+  setResetPassword,
+  expiredError,
+}: Props) => {
   const [otpError, setOtpError] = useState<string>("");
+
+  useEffect(() => {
+    if (expiredError) {
+      setOtpError("You can send only 2 requests in 15 minutes");
+    }
+  }, [expiredError]);
 
   const handleResendEmail = async () => {
     setOtpError(null);
