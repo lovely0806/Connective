@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 var bcrypt = require("bcryptjs");
 const moment = require("moment");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import { ActivityFeed } from "services/activity/activityFeed";
 
 export default async function handler(req, res) {
   try {
@@ -23,11 +24,20 @@ export default async function handler(req, res) {
       // add stripe_account.id to the User database # FieldName: stripeID
 
       connection.execute(
-        `INSERT INTO Users (username, password_hash, email, stripeID, signup_timestamp) VALUES ('${username}', '${hash}', '${email}', '${stripe_account.id}', "${moment().format(
-          "YYYY/MM/DD HH:mm:ss"
-        )}");`
+        `INSERT INTO Users (username, password_hash, email, stripeID, signup_timestamp) VALUES ('${username}', '${hash}', '${email}', '${
+          stripe_account.id
+        }', "${moment().format("YYYY/MM/DD HH:mm:ss")}");`
       );
+
+      const [user] = await connection
+        .promise()
+        .query(`SELECT * FROM Users WHERE email='${email}';`);
       connection.end();
+      await ActivityFeed.Auth.handleAuth(
+        "user_signup",
+        `user ${user[0].id} has signed up`
+      );
+
       res.status(200).json({ success: true });
     }
   } catch (e) {
