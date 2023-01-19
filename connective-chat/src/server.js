@@ -28,5 +28,5 @@ if (process.env.NODE_ENV === 'development') {
 StartSocketConnection(io);
 
 http.listen(PORT, () => {
-    console.log('server is up on', PORT);
+    console.log(`🔔 ${process.env.NODE_ENV} server is up on`, PORT);
 });

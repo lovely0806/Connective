@@ -45,5 +45,5 @@ if (process.env.NODE_ENV === 'development') {
 socketMiddleware(io);
 
 server.listen(process.env.PORT, () => {
-    console.log('server is up on', process.env.PORT);
+    console.log(`🔔 ${process.env.NODE_ENV} server is up on`, process.env.PORT);
 });

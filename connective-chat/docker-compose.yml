@@ -4,9 +4,7 @@ services:
     build:
       context: .
       target: production
-    volumes:
-      - ./src:/src
-    command: npm run start
+    command: pm2 start ./build/server.js --no-daemon
     ports:
       - "3000:3000"
     env_file:
