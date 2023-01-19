@@ -67,7 +67,7 @@ esac
 if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
 docker-compose run --rm --entrypoint "\
-  certbot certonly --webroot -w /var/www/certbot \
+  certbot -v certonly --webroot -w /var/www/certbot \
     $staging_arg \
     $email_arg \
     $domain_args \
@@ -77,4 +77,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec connective-socket nginx -s reload
+docker-compose exec connective-web-server nginx -s reload
