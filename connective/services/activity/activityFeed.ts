@@ -30,7 +30,7 @@ export namespace ActivityFeed {
     static async handleMessage(sender: string, receiver: string, text: string) {
       let activityArray = [
         {
-          message: `user ${sender} sent message to ${receiver} saying ${text}`,
+          message: `user ${sender} sent message to ${receiver} saying "${text}"`,
           activity: "message_sent",
         },
       ];
