@@ -28,7 +28,7 @@ const Message = ({text, sent}) => {
 const Conversations = ({selectedUser, setSelectedUser, conversations, unreadMessagesCount}) => {
   const [filter, setFilter] = useState("")
   const [filteredConversations, setFilteredConversations] = useState([])
-  
+
   useEffect(() => {
     setFilteredConversations([...conversations])
   }, [conversations])
@@ -49,7 +49,7 @@ const Conversations = ({selectedUser, setSelectedUser, conversations, unreadMess
           {filteredConversations.map((item, index) => {
               return (
                   <div onClick={()=>{setSelectedUser(item)}}  className={`flex items-center  flex-row p-2 cursor-pointer border-b border-slate-200 ${selectedUser?.id == item.id ? "bg-white" : "bg-slate-100"} hover:bg-slate-100/50 transition-all`}>
-                     {item.logo ? (<img src={item.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg" width="50px" height="50px" title={item.username}/>) }
+                    {item.logo ? (<img src={item.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg" width="50px" height="50px" title={item.username}/>) }
                       <p  className="my-auto ml-2 text-md font-medium">{item.username}</p>
                         {
                           // console.log(item, item.unread)
@@ -61,9 +61,6 @@ const Conversations = ({selectedUser, setSelectedUser, conversations, unreadMess
                           </span>
                           : null
                         }
-                        
-                        
-                    
                   </div>
               )
           })}
@@ -110,8 +107,8 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       }
       setMessages([...messages, {sender: user.id, text}])
     }
-      
   }
+
   const getMessages = async () => {
       let temp = messages
       const {data} = await axios.get("/api/messages/" + selectedUser.id)
@@ -130,14 +127,11 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
           Accept: 'application/json'
         },
       })
-
-      // console.log(emailz);
-
-
       await readMessages(unReadMesssages)
   }
-  
+
   const readMessages = async (unReadMesssages) => {
+    console.log("EEEEEE", unReadMesssages);
     await axios.post('/api/messages/read-message', {
       header: {
         'Content-Type': 'application/json',
@@ -160,8 +154,6 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       document.removeEventListener('keydown', keyDownHandler);
     };
   }, []);
-  
-  
 
   return (
       <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
@@ -170,7 +162,6 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
                 <p  className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">{selectedUser?.username + " (" + selectedUser?.email + ")"}</p>
             </div>
           )}
-          
           <div id="messages-container"  className="h-full overflow-y-scroll p-5 flex flex-col gap-10">
               {messages.map((item, index) => {
                   return (
@@ -193,10 +184,8 @@ const UserDetails = ({selectedUser}) => {
     <div  className="w-1/5 h-full px-2">
       {selectedUser && (
         <>
-        {selectedUser.logo ? (<img src={selectedUser.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg mt-5" width="30px" height="30px" title={selectedUser.username}/>) }
-                      
-         <p  className="font-bold text-lg text-center mt-5">{selectedUser.username}</p>
-
+          {selectedUser.logo ? (<img src={selectedUser.logo}  className="w-12 h-12 bg-white rounded-full shadow-lg"/>) : (<Avatar className="rounded-full shadow-lg mt-5" width="30px" height="30px" title={selectedUser.username}/>) }
+          <p  className="font-bold text-lg text-center mt-5">{selectedUser.username}</p>
           <p  className="text-sm font-bold mt-10">Contact Details:</p>
           <div  className="flex flex-row gap-2 my-5">
             <div  className="bg-black/5 rounded-full p-[7px] w-8 h-8 shadow-lg">
