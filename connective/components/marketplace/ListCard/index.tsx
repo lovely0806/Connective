@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
 import { MarketplaceListCardItem, User } from "../../../types/types";
+import { IApiResponseError, ProfileApiResponse } from '../../../types/apiResponseTypes';
 
 type Props = {
   item: MarketplaceListCardItem;
@@ -23,10 +24,12 @@ const ListCard = ({ item, preview, user }: Props) => {
     if (type == "Individual") {
       try {
         await axios.get("/api/profiles/individual").then((res) => {
-          if (typeof res.data != "undefined") {
-            console.log(res.data);
-            setProfilePicture(res.data.profile_picture);
-            setUsername(res.data.name);
+          let data: ProfileApiResponse.IIndividual | IApiResponseError
+          if(data.type == "IApiResponseError") {
+            throw data
+          } else {
+            setProfilePicture(data.individual.profile_picture);
+            setUsername(data.individual.name);
           }
         });
       } catch (e) {

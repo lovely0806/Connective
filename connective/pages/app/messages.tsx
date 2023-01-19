@@ -5,7 +5,8 @@ import { withIronSession } from "next-iron-session";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Avatar from "../../components/avatar";
-import { User } from "../../types/types";
+import { User, Message, DiscoverUser } from '../../types/types';
+import { MessagesApiResponse, IApiResponseError, ProfileApiResponse } from '../../types/apiResponseTypes';
 
 const Message = ({ text, sent }) => {
   if (sent) {
@@ -108,7 +109,7 @@ const Chat = ({
   conversations,
   getConversations,
 }) => {
-  const [messages, setMessages] = useState<Array<any>>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [userOptions, setUserOptions] = useState<
     Array<{ value: number; label: string }>
   >([]);
@@ -158,32 +159,34 @@ const Chat = ({
     }
   };
   const getMessages = async () => {
-    let temp = messages;
-    const { data } = await axios.get("/api/messages/" + selectedUser.id);
-    if (data.length > prevMessages) {
-      document.getElementById("messages-container").scroll({
-        top: document.getElementById("messages-container").scrollHeight,
-        behavior: "smooth",
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (await axios.get("/api/messages/" + selectedUser.id)).data;
+    if(res.type == "IApiResponseError") {
+      throw res
+    } else {
+      if (res.messages.length > prevMessages) {
+        document.getElementById("messages-container").scroll({
+          top: document.getElementById("messages-container").scrollHeight,
+          behavior: "smooth",
+        });
+      }
+      prevMessages = res.messages.length;
+      setMessages(res.messages);
+  
+      const unReadMesssages = res.messages.filter((message) => {
+        return (
+          !message.read &&
+          message.receiver == user.id &&
+          message.sender == selectedUser.id
+        );
       });
+      await axios("/api/messages/unread-messages-mailer", {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      await readMessages(unReadMesssages);
     }
-    prevMessages = data.length;
-    setMessages(data);
-
-    const unReadMesssages = data.filter((message: any) => {
-      return (
-        message.read != "1" &&
-        message.receiver == user.id &&
-        message.sender == selectedUser.id
-      );
-    });
-    const emailz = await axios("/api/messages/unread-messages-mailer", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-
-    await readMessages(unReadMesssages);
   };
 
   const readMessages = async (unReadMesssages: Array<any>) => {
@@ -302,8 +305,8 @@ const UserDetails = ({ selectedUser }) => {
 export default function Messages({ user }) {
   const router = useRouter();
   const { newUser } = router.query;
-  const [users, setUsers] = useState<Array<User>>([]);
-  const [selectedUser, setSelectedUser] = useState<Array<User>>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User>();
 
   // Automatically open latest (last opened) conversation when navigating to messages page
   useEffect(() => {
@@ -330,11 +333,11 @@ export default function Messages({ user }) {
 
   let sum = 0;
   const getUsers = async () => {
-    const { data } = await axios.get("/api/profiles");
-    setUsers(data);
+    const data: ProfileApiResponse.IProfiles = (await axios.get("/api/profiles/all")).data;
+    setUsers(data.users);
     newUser &&
       setSelectedUser(
-        data.filter((item: { id: string | string[] }) => item.id == newUser)[0]
+        data.users.filter((item) => item.id.toString() == newUser)[0]
       );
   };
   const getConversations = async () => {
@@ -357,9 +360,10 @@ export default function Messages({ user }) {
   };
 
   const getUnreadMessages = async (id: string) => {
-    const { data } = await axios.get("/api/messages/" + id);
-    const unReadMesssages = data.filter((message: any) => {
-      return message.read != "1" && message.receiver == user.id;
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = await axios.get("/api/messages/" + id);
+    if(res.type == "IApiResponseError") throw res
+    const unReadMesssages = res.messages.filter((message) => {
+      return message.read && message.receiver == user.id;
     }).length;
     return unReadMesssages;
   };

@@ -1,11 +1,11 @@
-const mysql = require("mysql2")
 import {withIronSession} from "next-iron-session"
 import { DAO } from '../../../lib/dao';
+import { IApiResponseError } from '../../../types/apiResponseTypes';
 
 export async function handler(req, res) {
     try {
         if(typeof(req.session.get().user) == "undefined") {
-            return res.status(500).json({success: false, error: "Not signed in"})
+            return res.status(500).json({success: false, error: "Not signed in"} as IApiResponseError)
         }
         if(req.method == "POST") {
             const {id, type} = req.body 
@@ -17,7 +17,7 @@ export async function handler(req, res) {
         }
     } catch(e) {
         console.log(e)
-        return res.status(500).json({success: false, error: e})
+        return res.status(500).json({success: false, error: e} as IApiResponseError)
     }
 } 
 

@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import mysql, { RowDataPacket } from "mysql2";
 import { withIronSession } from "next-iron-session";
+import { IApiResponseError } from "../../../types/apiResponseTypes";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     // @ts-ignore
     let user = req.session.get().user;
     if (typeof user == "undefined") {
-      return res.status(403).json({ success: false, error: "Not signed in" });
+      return res.status(403).json({ success: false, error: "Not signed in" } as IApiResponseError);
     }
     if (req.method == "GET") {
       let { id } = req.query;

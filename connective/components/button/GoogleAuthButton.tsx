@@ -4,6 +4,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import googleIcon from "../../public/assets/google-icon.svg";
+import { AuthApiResponse } from '../../types/apiResponseTypes';
 
 type Props = {
   isSignUp: boolean;
@@ -23,8 +24,9 @@ const GoogleAuthButton = ({ isSignUp = false }: Props) => {
       data: { email, accessToken, type: "google" },
     })
       .then((res) => {
+        const data: AuthApiResponse.ISessions = res.data
         if (res.status == 201) {
-          res.data
+          data.accountExists
             ? router.push("/app/discover")
             : router.push("/onboarding/create-profile");
         }

@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import { IApiResponseError, MessagesApiResponse } from '../../types/apiResponseTypes';
 
 type Props = {
   text: string;
@@ -91,11 +92,15 @@ const Sidebar = ({ user }) => {
     }
   };
   const getUnreadMessages = async (id: number) => {
-    const { data } = await axios.get("/api/messages/" + id);
-    const unReadMesssages = data.filter((message: any) => {
-      return message.read != "1" && message.receiver == user.id;
-    }).length;
-    return unReadMesssages;
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (await axios.get("/api/messages/" + id)).data;
+    if(res.type == "IApiResponseError") {
+      throw(res)
+    } else {
+      const unReadMesssages = res.messages.filter((message: any) => {
+        return message.read != "1" && message.receiver == user.id;
+      }).length;
+      return unReadMesssages;
+    }
   };
   useEffect(() => {
     getConversations();

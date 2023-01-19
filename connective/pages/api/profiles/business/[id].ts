@@ -1,6 +1,7 @@
 import { withIronSession } from "next-iron-session";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { DAO } from "../../../../lib/dao";
+import { IApiResponseError, ProfileApiResponse } from "../../../../types/apiResponseTypes";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
@@ -8,11 +9,11 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     // @ts-ignore
     let user = req.session.get().user;
     if (typeof user == "undefined") {
-      return res.status(500).json({ success: false, error: "Not signed in" });
+      return res.status(500).json({ success: false, error: "Not signed in" } as IApiResponseError);
     }
     if (req.method == "GET") {
       //Returns callers account
-      res.status(200).json(await DAO.Business.getByUserId(Number(id)));
+      res.status(200).json({business: await DAO.Business.getByUserId(Number(id))} as ProfileApiResponse.IBusiness);
     }
   } catch (e) {
     console.log(e);

@@ -12,6 +12,7 @@ import GoogleAuthButton from "../../components/button/GoogleAuthButton";
 import LoginSidebar from "../../components/login-sidebar";
 import EmailVerification from "../../components/dailog/EmailVerification";
 import ResetPassword from "./resetpassword/[email]/[token]";
+import { AuthApiResponse, IApiResponseError } from '../../types/apiResponseTypes';
 
 export default function SignIn() {
   const router = useRouter();
@@ -30,16 +31,18 @@ export default function SignIn() {
   const [expiredError, setExpiredError] = useState<boolean>(false);
 
   const verifyEmail = async () => {
-    const verifiedEmail = await axios({
+    const verifiedEmail: AuthApiResponse.IVerifyEmail | IApiResponseError = (await axios({
       method: "post",
       url: "/api/auth/verifyEmail",
       data: { code: otpCode, email },
-    });
-    if (!verifiedEmail.data.success) {
-      if (verifiedEmail.data.error === "Incorrect verification code") {
-        setOtpError("Incorrect verification code");
-      } else {
-        setOtpError(verifiedEmail.data.error);
+    })).data;
+    if (!verifiedEmail.success) {
+      if(verifiedEmail.type == "IApiResponseError") {
+        if (verifiedEmail.error === "Incorrect verification code") {
+          setOtpError("Incorrect verification code");
+        } else {
+          setOtpError(verifiedEmail.error as string);
+        }
       }
     } else {
       setOtpError(null);
@@ -87,9 +90,9 @@ export default function SignIn() {
       data: { email, password },
     })
       .then((res) => {
+        const data: AuthApiResponse.ISessions = res.data
         if (res.status == 201) {
-          console.log(res.data);
-          res.data
+          data.accountExists
             ? router.push("/app/discover")
             : router.push("/onboarding/create-profile");
         }

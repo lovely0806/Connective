@@ -9,6 +9,7 @@ import Head from "next/head";
 import EmailVerification from "../../components/dailog/EmailVerification";
 import GoogleSsoDivider from "../../components/divider/orDivider";
 import GoogleAuthButton from "../../components/button/GoogleAuthButton";
+import { AuthApiResponse, IApiResponseError } from '../../types/apiResponseTypes';
 
 export default function SignUp() {
   const [name, setName] = useState<string>("");
@@ -27,13 +28,13 @@ export default function SignUp() {
   const router = useRouter();
 
   const verifyEmail = async () => {
-    const verifiedEmail = await axios({
+    const verifiedEmail: AuthApiResponse.IVerifyEmail | IApiResponseError = (await axios({
       method: "post",
       url: "/api/auth/verifyEmail",
       data: { code: otpCode, email },
-    });
-    if (!verifiedEmail.data.success) {
-      if (verifiedEmail.data.error === "Incorrect verification code")
+    })).data;
+    if (!verifiedEmail.success) {
+      if (verifiedEmail.type == "IApiResponseError" && verifiedEmail.error === "Incorrect verification code")
         setOtpError("Incorrect verification code");
     } else {
       setEmailVerified(true);
@@ -53,9 +54,9 @@ export default function SignUp() {
       data: { email, password },
     })
       .then((res) => {
+        const data: AuthApiResponse.ISessions = res.data
         if (res.status == 201) {
-          console.log(res.data);
-          res.data
+          data.accountExists
             ? router.push("/app/discover")
             : router.push("/onboarding/create-profile");
         }
