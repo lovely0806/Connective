@@ -22,6 +22,7 @@ export default function SignIn() {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [expiredError, setExpiredError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
   const [emailNotVerified, setEmailNotVerified] = useState(null);
@@ -134,9 +135,13 @@ export default function SignIn() {
       url: "/api/auth/sendPasswordResetEmail",
       data: { email },
     })
-      .then(async (data) => {
-        console.log(data);
-        if (data) setResetPassword(true);
+      .then(async (res) => {
+        if (res) setResetPassword(true);
+        if (res.data.error === "You can send only 2 requests in 15 minutes"){
+          setExpiredError(true);
+        } else {
+          setExpiredError(false);
+        }
       })
       .catch(async (e) => {
         if (
@@ -308,6 +313,7 @@ export default function SignIn() {
             <ResetPassword
               email={email}
               setResetPassword={setResetPassword}
+              expiredError={expiredError}
             />
           </div>
         </>

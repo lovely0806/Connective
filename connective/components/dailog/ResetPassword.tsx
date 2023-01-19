@@ -5,11 +5,18 @@ import axios from "axios";
 type Props = {
   email: string;
   setResetPassword: (value: boolean) => void;
+  expiredError?: boolean;
 };
 
-const EmailVerification = ({ email, setResetPassword } : Props) => {
+const EmailVerification = ({ email, setResetPassword, expiredError } : Props) => {
   const [otpError, setOtpError] = useState<string>("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (expiredError) {
+      setOtpError("You can send only 2 requests in 15 minutes");
+    }
+  }, [expiredError])
 
   const handleResendEmail = async () => {
     setOtpError(null);
