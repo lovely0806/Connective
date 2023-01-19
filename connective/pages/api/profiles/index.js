@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 import { withIronSession } from "next-iron-session";
+import { ActivityFeed } from "services/activity/activityFeed";
 
 export async function handler(req, res) {
   try {
@@ -15,6 +16,8 @@ export async function handler(req, res) {
                             [user.id, user.id])
       userIndustry = userIndustry[0].industry
       */
+
+      ActivityFeed.Discover.viewDiscover(user.id)
 
       var [results] = await connection
         .promise()
