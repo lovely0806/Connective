@@ -1,6 +1,7 @@
 version: '3.8'
 services:
-  connective-chat:
+  connective-socket:
+    container_name: connective-socket
     build:
       context: .
       target: dev

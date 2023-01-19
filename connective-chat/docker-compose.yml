@@ -1,11 +1,15 @@
 version: '3.8'
 services:
-  connective-chat:
+  connective-socket:
+    container_name: connective-socket
     build:
       context: .
       target: production
     command: pm2 start ./build/server.js --no-daemon
-    ports:
-      - "3000:3000"
     env_file:
       - .env
+  nginx:
+    container_name: connective-web-server
+    build: ./nginx
+    ports:
+      - 80:80

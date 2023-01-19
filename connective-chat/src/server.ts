@@ -36,10 +36,6 @@ app.use('/socket', session, route);
 
 if (process.env.NODE_ENV === 'development') {
     app.use(express.static(__dirname + '/public'));
-
-    app.get('/', (req: Request, res: Response) => {
-        res.sendFile(__dirname + '/index.html');
-    });
 }
 
 socketMiddleware(io);
