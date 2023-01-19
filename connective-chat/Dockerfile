@@ -1,7 +1,7 @@
 FROM node:16-alpine as base
 
 WORKDIR /src
-COPY ./src /src/
+COPY ./ /src/
 RUN npm install
 EXPOSE 3000
 

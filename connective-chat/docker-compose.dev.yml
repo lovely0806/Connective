@@ -4,11 +4,9 @@ services:
     build:
       context: .
       target: dev
-    volumes:
-      - ./src:/src
     command: npm run start:dev
     ports:
-      - "3001:3001"
+      - "3000:3000"
     env_file:
       - .env
       
