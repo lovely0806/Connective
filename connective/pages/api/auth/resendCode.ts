@@ -1,7 +1,7 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import moment from "moment";
 import { DAO } from "../../../lib/dao";
 import sgMail from "@sendgrid/mail";
-import moment from "moment";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
-import mysql from "mysql2";
 import bcrypt from "bcryptjs";
+import { DAO } from "../../../lib/dao";
 
 export default withIronSession(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -18,20 +18,16 @@ export default withIronSession(
     } = req.body;
 
     if (type === "google") {
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      const [results, fields] = await connection
-        .promise()
-        .query(`SELECT * FROM Users WHERE email='${email}';`);
+      const user = await DAO.Users.getByEmail(email);
 
-      if (!results[0]) {
+      if (!user) {
         console.log("No account");
         return res
           .status(500)
           .json({ success: false, error: "Account does not exist" });
       }
 
-      if (results[0]) {
-        const user = results[0];
+      if (user) {
         if (!user.email_verified) {
           return res
             .status(500)
@@ -39,37 +35,23 @@ export default withIronSession(
         }
       }
 
-      if (
-        bcrypt.compareSync(accessToken, results[0].password_hash.toString())
-      ) {
+      if (bcrypt.compareSync(accessToken, user.password_hash.toString())) {
         // @ts-ignore
-        req.session.set("user", { email, id: results[0].id });
+        req.session.set("user", { email, id: user.id });
         // @ts-ignore
         await req.session.save();
-        let [isBusinessProfile] = await connection
-          .promise()
-          .query(
-            `SELECT COUNT(id) FROM Business WHERE user_id='${results[0].id}';`
-          );
-        let [isIndividualProfile] = await connection
-          .promise()
-          .query(
-            `SELECT COUNT(id) FROM Individual WHERE user_id='${results[0].id}';`
-          );
+
+        const isBusinessAccount = await DAO.Business.isBusiness(user.id);
+        const isIndividualAccount = await DAO.Individual.isIndividual(user.id);
 
         // @ts-ignore
-        req.session.set("user", { email, id: results[0].id });
+        req.session.set("user", { email, id: user.id });
         // @ts-ignore
         await req.session.save();
 
         return res
           .status(201)
-          .send(
-            isBusinessProfile[0]["count(id)"] ||
-              isIndividualProfile[0]["count(id)"]
-              ? true
-              : false
-          );
+          .send(isBusinessAccount || isIndividualAccount ? true : false);
       } else {
         return res
           .status(500)
@@ -77,20 +59,16 @@ export default withIronSession(
       }
     }
 
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
-    var [results, fields] = await connection
-      .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}';`);
+    const user = await DAO.Users.getByEmail(email);
 
-    if (!results[0]) {
+    if (!user) {
       console.log("No account");
       return res
         .status(500)
         .json({ success: false, error: "Account does not exist" });
     }
 
-    if (results[0]) {
-      const user = results[0];
+    if (user) {
       if (!user.email_verified) {
         return res
           .status(500)
@@ -98,29 +76,18 @@ export default withIronSession(
       }
     }
 
-    if (bcrypt.compareSync(password, results[0].password_hash.toString())) {
+    if (bcrypt.compareSync(password, user.password_hash.toString())) {
       // @ts-ignore
-      req.session.set("user", { email, id: results[0].id, rememberme });
+      req.session.set("user", { email, id: user.id, rememberme });
       // @ts-ignore
       await req.session.save();
-      let [isBusinessProfile] = await connection
-        .promise()
-        .query(
-          `SELECT COUNT(id) FROM Business WHERE user_id='${results[0].id}';`
-        );
-      let [isIndividualProfile] = await connection
-        .promise()
-        .query(
-          `SELECT COUNT(id) FROM Individual WHERE user_id='${results[0].id}';`
-        );
+
+      const isBusinessAccount = await DAO.Business.isBusiness(user.id);
+      const isIndividualAccount = await DAO.Individual.isIndividual(user.id);
+
       return res
         .status(201)
-        .send(
-          isBusinessProfile[0]["count(id)"] ||
-            isIndividualProfile[0]["count(id)"]
-            ? true
-            : false
-        );
+        .send(isBusinessAccount || isIndividualAccount ? true : false);
     }
 
     return res.status(403).send("");

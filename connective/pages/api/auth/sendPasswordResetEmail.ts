@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
-import sgMail from "@sendgrid/mail";
-import mysql from "mysql2";
-import moment from "moment";
 import uuid from "uuid";
+import sgMail from "@sendgrid/mail";
+import { DAO } from "../../../lib/dao";
 
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
@@ -12,20 +11,16 @@ export default withIronSession(
     if (req.method == "POST") {
       const { email } = req.body;
 
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [results, fields] = await connection
-        .promise()
-        .query(`SELECT * FROM Users WHERE email='${email}';`);
+      const user = await DAO.Users.getByEmail(email);
 
-      if (!results[0]) {
+      if (!user) {
         console.log("No account");
         return res
           .status(500)
           .json({ success: false, error: "Account does not exist" });
       }
 
-      if (results[0]) {
-        const user = results[0];
+      if (user) {
         if (!user.email_verified) {
           return res
             .status(500)
@@ -35,13 +30,7 @@ export default withIronSession(
 
       const token = uuid.v4();
 
-      await connection
-        .promise()
-        .query(
-          `UPDATE Users SET verification_id = '${token}', verification_timestamp = "${moment().format(
-            "YYYY/MM/DD HH:mm:ss"
-          )}" WHERE email='${email}';`
-        );
+      await DAO.Users.updateVerificationId(token, email);
 
       const link = `http://${req.headers.host}/auth/resetpassword/${email}/${token}`;
 

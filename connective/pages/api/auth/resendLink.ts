@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import mysql from "mysql2";
-import sgMail from "@sendgrid/mail";
 import uuid from "uuid";
 import moment from "moment";
+import sgMail from "@sendgrid/mail";
+import { DAO } from "../../../lib/dao";
 
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
@@ -11,13 +11,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { email } = req.body;
-    const [result] = await connection
-      .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}'`);
-    if (result[0]) {
-      const user = result[0];
+    let user = await DAO.Users.getByEmail(email);
+    if (user) {
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastLinkSentTime = user.verification_timestamp;
         const diff = moment().diff(lastLinkSentTime, "minutes");
@@ -35,17 +31,10 @@ export default async function handler(
 
       await sendEmail(link, email);
 
-      const sendCodeAttemp =
+      const sendCodeAttempt =
         user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
-      // const sendCodeAttemp = 1;
 
-      await connection
-        .promise()
-        .query(
-          `UPDATE Users SET verification_id = '${token}', send_code_attempt = ${sendCodeAttemp}, verification_timestamp = "${moment().format(
-            "YYYY/MM/DD HH:mm:ss"
-          )}" WHERE email='${email}';`
-        );
+      await DAO.Users.updateVerification(token, sendCodeAttempt, email);
     }
     res.status(200).json({ success: true });
   } catch (e) {

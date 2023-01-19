@@ -21,24 +21,58 @@ export namespace DAO {
     }
 
     /**
+     * Gets a user by their email and verification id
+     * @param {string} email The users email
+     * @param {string} verificationId The users verification id
+     * @returns {User} The user object
+     */
+    static async getByEmailAndVerificationId(
+      email: string,
+      verificationId: string
+    ): Promise<User> {
+      var query = `SELECT * FROM Users WHERE email=? AND verification_id=?;`;
+      var [results] = await connection
+        .promise()
+        .query(query, [email, verificationId]);
+      return results[0];
+    }
+
+    /**
      * Adds a new user to the database
      * @param {string} username The users username
      * @param {string} password_hash The users hashed password
      * @param {string} email The users email
      * @param {string} stripeID The users stripe id
+     * @param {boolean} isSignupWithGoogle The user signed up with Google SSO
      * @returns {number | boolean} The users insert id, or false if the insert failed
      */
     static async add(
       username: string,
       password_hash: string,
       email: string,
-      stripeID: string
+      stripeID: string,
+      isSignupWithGoogle: boolean = false
     ): Promise<number | boolean> {
       var query = `INSERT INTO Users (username, password_hash, email, stripeID) VALUES (?,?,?,?);`;
-      var [result] = await connection
-        .promise()
-        .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
-      return result.insertId;
+      if (isSignupWithGoogle) {
+        query = `INSERT INTO Users (username, password_hash, email, stripeID, email_verified, is_signup_with_google) VALUES (?,?,?,?,?,?);`;
+        var [result] = await connection
+          .promise()
+          .execute<OkPacket>(query, [
+            username,
+            password_hash,
+            email,
+            stripeID,
+            true,
+            true,
+          ]);
+        return result.insertId;
+      } else {
+        var [result] = await connection
+          .promise()
+          .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
+        return result.insertId;
+      }
     }
 
     /**
@@ -83,6 +117,72 @@ export namespace DAO {
           moment().format("YYYY/MM/DD HH:mm:ss"),
           email,
         ]);
+    }
+
+    /**
+     * Updates the password hash value for a user
+     * @param {string} hash The new password hash
+     * @param {string} email The users email
+     */
+    static async updatePasswordHash(hash: string, email: string) {
+      await connection
+        .promise()
+        .query(
+          `UPDATE Users SET password_hash='${hash}' WHERE email='${email}';`
+        );
+    }
+
+    /**
+     * Updates the password hash value and verification id for a user
+     * @param {string} hash The new password hash
+     * @param {string} verificationId The new verification id
+     * @param {string} email The users email
+     */
+    static async updatePasswordHashAndVerificationId(
+      hash: string,
+      verificationId: string,
+      email: string
+    ) {
+      await connection
+        .promise()
+        .query(
+          `UPDATE Users SET password_hash='${hash}', verification_id = '${verificationId}' WHERE email='${email}';`
+        );
+    }
+
+    /**
+     * Updates the verification id value for a user
+     * @param {string} verificationId The new verification id
+     * @param {string} email The users email
+     */
+    static async updateVerificationId(verificationId: string, email: string) {
+      await connection
+        .promise()
+        .query(
+          `UPDATE Users SET verification_id = '${verificationId}', verification_timestamp = "${moment().format(
+            "YYYY/MM/DD HH:mm:ss"
+          )}" WHERE email='${email}';`
+        );
+    }
+
+    /**
+     * Updates the verification status for a user
+     * @param {string} token The new password hash
+     * @param {string} sendCodeAttempt The sending code attempt
+     * @param {string} email The users email
+     */
+    static async updateVerification(
+      token: string,
+      sendCodeAttempt: number,
+      email: string
+    ) {
+      await connection
+        .promise()
+        .query(
+          `UPDATE Users SET verification_id = '${token}', send_code_attempt = ${sendCodeAttempt}, verification_timestamp = "${moment().format(
+            "YYYY/MM/DD HH:mm:ss"
+          )}" WHERE email='${email}';`
+        );
     }
   }
 

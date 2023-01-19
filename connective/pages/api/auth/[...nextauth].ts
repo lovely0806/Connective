@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import mysql from "mysql2";
-import Stripe from 'stripe';
+import { DAO } from "../../../lib/dao";
+import Stripe from "stripe";
 import bcrypt from "bcryptjs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null);
@@ -27,18 +27,10 @@ export default (req: NextApiRequest, res: NextApiResponse<Response>) =>
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(accessToken, salt);
 
-        const connection = mysql.createConnection(process.env.DATABASE_URL);
-        const [results, fields] = await connection
-          .promise()
-          .query(`SELECT * FROM Users WHERE email='${email}';`);
-
-        if (results[0]) {
-          if (results[0].is_signup_with_google) {
-            await connection
-              .promise()
-              .query(
-                `UPDATE Users SET password_hash='${hash}' WHERE email='${email}';`
-              );
+        let user = await DAO.Users.getByEmail(email);
+        if (user) {
+          if (user.is_signup_with_google) {
+            DAO.Users.updatePasswordHash(hash, email);
           } else {
             return `/auth/signin?error=true`;
           }
@@ -46,11 +38,7 @@ export default (req: NextApiRequest, res: NextApiResponse<Response>) =>
           const stripe_account = await stripe.accounts.create({
             type: "express",
           });
-          await connection
-            .promise()
-            .execute(
-              `INSERT INTO Users (username, password_hash, email, email_verified, stripeID, is_signup_with_google) VALUES ('${name}', '${hash}', '${email}', true,'${stripe_account.id}', true);`
-            );
+          DAO.Users.add(name, hash, email, stripe_account.id, true);
         }
 
         return `/auth/signin?token=${accessToken}&email=${email}`;

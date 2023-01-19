@@ -1,31 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import mysql from "mysql2";
 import moment from "moment";
 import bcrypt from "bcryptjs";
+import { DAO } from "../../../lib/dao";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { email, password, token } = req.body;
 
-    const [result] = await connection
-      .promise()
-      .query(
-        `SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`
-      );
+    var user = await DAO.Users.getByEmailAndVerificationId(email, token);
 
-    if (!result[0] || token == "") {
+    if (!user || token == "") {
       return res.status(403).json({
         success: false,
         error: "The link is incorrect.",
       });
     }
 
-    if (result[0]) {
-      const user = result[0];
+    if (user) {
       if (user.verification_timestamp) {
         const diff = moment().diff(user.verification_timestamp, "minutes");
 
@@ -40,20 +34,13 @@ export default async function handler(
 
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
+    user = await DAO.Users.getByEmailAndVerificationId(email, token);
 
-    var [results, fields] = await connection
-      .promise()
-      .query(
-        `SELECT * FROM Users WHERE email='${email}' and verification_id = '${token}';`
-      );
-
-    if (!results[0]) {
+    if (!user) {
       res.status(500).json({ success: false, error: "Email doesn't exist" });
     } else {
-      connection.execute(
-        `UPDATE Users SET password_hash = '${hash}', verification_id = '' WHERE email='${email}';`
-      );
-      connection.end();
+      DAO.Users.updatePasswordHashAndVerificationId(hash, "", email);
+
       res.status(200).json({ success: true });
     }
   } catch (e) {
