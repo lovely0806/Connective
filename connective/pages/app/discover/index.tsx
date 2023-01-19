@@ -16,7 +16,10 @@ import { Industry, User } from "../../../types/types";
 function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   return (
     <>
-      {currentItems && currentItems.map((item: ReactNode) => <div>{item}</div>)}
+      {currentItems &&
+        currentItems.map((item: ReactNode, index: number) => (
+          <div key={index}>{item}</div>
+        ))}
     </>
   );
 }

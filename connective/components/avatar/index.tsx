@@ -26,9 +26,10 @@ const Avatar = ({
       <Image
         objectFit="cover"
         className={className || "rounded"}
-        layout={width ? "responsive" : "fill"}
-        width={width ? width : 0}
-        height={height ? height : 0}
+        // @ts-ignore
+        layout={width ? "" : "fill"}
+        width={width}
+        height={height}
         src={avatar}
       />
     </div>
