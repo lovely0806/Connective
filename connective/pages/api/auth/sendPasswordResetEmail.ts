@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
-import uuid from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import sgMail from "@sendgrid/mail";
 import moment from "moment";
 import { DAO } from "../../../lib/dao";
@@ -40,7 +40,7 @@ export default withIronSession(
           }
         }
 
-        const token = uuid.v4();
+        const token = uuidv4();
         const sendCodeAttempt =
           user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
 
@@ -51,7 +51,7 @@ export default withIronSession(
         await sendEmail(link, email);
       }
 
-      const token = uuid.v4();
+      const token = uuidv4();
 
       await DAO.Users.updateVerificationId(token, email);
 
