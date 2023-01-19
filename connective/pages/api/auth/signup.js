@@ -2,7 +2,7 @@ const mysql = require("mysql2");
 var bcrypt = require("bcryptjs");
 const moment = require("moment");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-import { ActivityFeed } from "services/activity/DAO";
+import { ActivityFeed } from "services/activity/activityFeed";
 
 export default async function handler(req, res) {
   try {

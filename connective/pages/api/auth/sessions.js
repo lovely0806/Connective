@@ -1,5 +1,5 @@
 import { withIronSession } from "next-iron-session";
-import { ActivityFeed } from "services/activity/DAO";
+import { ActivityFeed } from "services/activity/activityFeed";
 const mysql = require("mysql2");
 const bcrypt = require("bcryptjs");
 
