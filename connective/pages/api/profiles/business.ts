@@ -1,9 +1,10 @@
 import { withIronSession } from "next-iron-session";
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 import { DAO } from "../../../lib/dao";
 
-export async function handler(req: any, res: NextApiResponse) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // @ts-ignore
     let user = req.session.get().user;
     if (typeof user == "undefined") {
       return res.status(403).json({ success: false, error: "Not signed in" });
@@ -13,7 +14,7 @@ export async function handler(req: any, res: NextApiResponse) {
       if (typeof id == "undefined") id = user.id;
 
       //Returns callers account
-      var business = await DAO.Business.getByUserId(id)
+      var business = await DAO.Business.getByUserId(Number(id));
       /*
       var [listResults, listFields, listErr] = await connection
         .promise()
@@ -38,9 +39,28 @@ export async function handler(req: any, res: NextApiResponse) {
       res.status(200).json(business);
     }
     if (req.method == "POST") {
-      const { name, description, pfp, url, location, industry, occupation, size, status } =
-        req.body;
-      await DAO.Business.add(user.id, name, description, pfp, url, location, industry, size, status)
+      const {
+        name,
+        description,
+        pfp,
+        url,
+        location,
+        industry,
+        occupation,
+        size,
+        status,
+      } = req.body;
+      await DAO.Business.add(
+        user.id,
+        name,
+        description,
+        pfp,
+        url,
+        location,
+        industry,
+        size,
+        status
+      );
       res.status(200).json({ success: true });
     }
     if (req.method == "PATCH") {
@@ -59,8 +79,19 @@ export async function handler(req: any, res: NextApiResponse) {
         status,
       } = req.body;
 
-      await DAO.Business.update(user.id, name, pfpChanged, pfp, description, location, industry, size, url, status)
-      
+      await DAO.Business.update(
+        user.id,
+        name,
+        pfpChanged,
+        pfp,
+        description,
+        location,
+        industry,
+        size,
+        url,
+        status
+      );
+
       res.status(200).json({ success: true });
     }
   } catch (e) {

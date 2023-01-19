@@ -1,24 +1,30 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-const mysql = require("mysql2");
-const moment = require("moment");
-var bcrypt = require("bcryptjs");
+import type { NextApiRequest, NextApiResponse } from "next";
+import mysql from "mysql2";
+import moment from "moment";
+import bcrypt from "bcryptjs";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { email, password, token } = req.body;
 
     const [result] = await connection
       .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`);
+      .query(
+        `SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`
+      );
 
-    if (result.length == 0 || token == "") {
+    if (!result[0] || token == "") {
       return res.status(403).json({
-        success: false, error: "The link is incorrect."
-      })
+        success: false,
+        error: "The link is incorrect.",
+      });
     }
 
-    if (result.length) {
+    if (result[0]) {
       const user = result[0];
       if (user.verification_timestamp) {
         const diff = moment().diff(user.verification_timestamp, "minutes");
@@ -26,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (diff > 15) {
           return res.status(403).json({
             success: false,
-            error: "The link has expired."
-          })
+            error: "The link has expired.",
+          });
         }
       }
     }
@@ -35,11 +41,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
 
-    var [results, fields, err] = await connection
+    var [results, fields] = await connection
       .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}' and verification_id = '${token}';`);
+      .query(
+        `SELECT * FROM Users WHERE email='${email}' and verification_id = '${token}';`
+      );
 
-    if (results.length === 0) {
+    if (!results[0]) {
       res.status(500).json({ success: false, error: "Email doesn't exist" });
     } else {
       connection.execute(

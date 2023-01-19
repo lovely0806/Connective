@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React, { useState } from "react";
 import axios from "axios";
 
 type Props = {
@@ -7,9 +6,8 @@ type Props = {
   setResetPassword: (value: boolean) => void;
 };
 
-const EmailVerification = ({ email, setResetPassword } : Props) => {
+const EmailVerification = ({ email, setResetPassword }: Props) => {
   const [otpError, setOtpError] = useState<string>("");
-  const router = useRouter();
 
   const handleResendEmail = async () => {
     setOtpError(null);
@@ -18,7 +16,10 @@ const EmailVerification = ({ email, setResetPassword } : Props) => {
       url: "/api/auth/resendLink",
       data: { email },
     });
-    if ( verifiedEmail?.data?.error === "You can send only 2 requests in 15 minutes" ) {
+    if (
+      verifiedEmail?.data?.error ===
+      "You can send only 2 requests in 15 minutes"
+    ) {
       setOtpError("You can send only 2 requests in 15 minutes");
     } else {
       setOtpError(null);

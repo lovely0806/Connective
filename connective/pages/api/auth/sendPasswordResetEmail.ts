@@ -1,10 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import sgMail from "@sendgrid/mail";
+import mysql from "mysql2";
+import moment from "moment";
+import uuid from "uuid";
+
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
-const mysql = require("mysql2");
-const moment = require("moment");
-const uuid = require("uuid");
 
 export default withIronSession(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -12,18 +13,18 @@ export default withIronSession(
       const { email } = req.body;
 
       const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [results, fields, err] = await connection
+      var [results, fields] = await connection
         .promise()
         .query(`SELECT * FROM Users WHERE email='${email}';`);
 
-      if (results.length == 0) {
+      if (!results[0]) {
         console.log("No account");
         return res
           .status(500)
           .json({ success: false, error: "Account does not exist" });
       }
 
-      if (results.length) {
+      if (results[0]) {
         const user = results[0];
         if (!user.email_verified) {
           return res

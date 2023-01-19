@@ -1,22 +1,28 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-const mysql = require("mysql2");
-const moment = require("moment");
+import type { NextApiRequest, NextApiResponse } from "next";
+import mysql from "mysql2";
+import moment from "moment";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { token, email } = req.body;
     const [result] = await connection
       .promise()
-      .query(`SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`);
+      .query(
+        `SELECT * FROM Users WHERE email='${email}' and verification_id='${token}'`
+      );
 
-    if (result.length == 0 || token == "") {
+    if (!result[0] || token == "") {
       return res.status(403).json({
-        success: false, error: "The link is incorrect."
-      })
+        success: false,
+        error: "The link is incorrect.",
+      });
     }
 
-    if (result.length) {
+    if (result[0]) {
       const user = result[0];
       if (user.verification_timestamp) {
         const diff = moment().diff(user.verification_timestamp, "minutes");
@@ -24,8 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (diff > 15) {
           return res.status(403).json({
             success: false,
-            error: "The link has expired."
-          })
+            error: "The link has expired.",
+          });
         }
 
         res.status(200).json({ success: true });

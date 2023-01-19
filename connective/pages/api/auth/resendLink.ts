@@ -1,17 +1,22 @@
-const mysql = require("mysql2");
+import { NextApiRequest, NextApiResponse } from "next";
+import mysql from "mysql2";
 import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
-const uuid = require("uuid");
-const moment = require("moment");
+import uuid from "uuid";
+import moment from "moment";
 
-export default async function handler(req, res) {
+sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { email } = req.body;
     const [result] = await connection
       .promise()
       .query(`SELECT * FROM Users WHERE email='${email}'`);
-    if (result.length) {
+    if (result[0]) {
       const user = result[0];
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastLinkSentTime = user.verification_timestamp;
@@ -30,7 +35,8 @@ export default async function handler(req, res) {
 
       await sendEmail(link, email);
 
-      const sendCodeAttemp = user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
+      const sendCodeAttemp =
+        user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
       // const sendCodeAttemp = 1;
 
       await connection
@@ -48,7 +54,7 @@ export default async function handler(req, res) {
   }
 }
 
-async function sendEmail(link, email) {
+async function sendEmail(link: string, email: string) {
   return new Promise((resolve, reject) => {
     console.log("Sending an email to " + email);
     const template = `<p>Hello There,</p>

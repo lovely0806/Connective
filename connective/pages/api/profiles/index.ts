@@ -1,9 +1,13 @@
+import type { NextApiRequest, NextApiResponse } from "next";
 import { DAO } from "../../../lib/dao";
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     if (req.method == "GET") {
-      let users = await DAO.Discover.getAll()
+      let users = await DAO.Discover.getAll();
       res.status(200).json(users);
     }
   } catch (e) {

@@ -1,14 +1,18 @@
 import { DAO } from "../../../lib/dao";
 import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 import moment from "moment";
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
-    let user = await DAO.Users.getByEmail(email)
+    let user = await DAO.Users.getByEmail(email);
     if (user) {
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastCodeSentTime = user.last_code_sent_time;
@@ -26,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ? Number(user.send_code_attempt) + 1
         : 1;
 
-      await DAO.Users.updateOtpCode(code.toString(), sendCodeAttempt, email)
+      await DAO.Users.updateOtpCode(code.toString(), sendCodeAttempt, email);
     }
     res.status(200).json({ success: true });
   } catch (e) {

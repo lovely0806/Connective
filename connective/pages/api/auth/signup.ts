@@ -1,26 +1,28 @@
-import {DAO} from "../../../lib/dao";
-import type { NextApiRequest, NextApiResponse } from 'next'
-var bcrypt = require("bcryptjs");
-const moment = require("moment");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import { DAO } from "../../../lib/dao";
+import type { NextApiRequest, NextApiResponse } from "next";
+import Stripe from "stripe";
+import bcrypt from "bcryptjs";
 
-export default async function handler(req: any, res: NextApiResponse) {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null);
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const { username, email, password } = req.body;
 
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
 
-    var user = await DAO.Users.getByEmail(email)
+    var user = await DAO.Users.getByEmail(email);
 
     if (user) {
       res.status(500).json({ success: false, error: "Email already exists" });
     } else {
       const stripe_account = await stripe.accounts.create({ type: "express" });
-      // stripe_account.id
-      // add stripe_account.id to the User database # FieldName: stripeID
 
-      await DAO.Users.add(username, hash, email, stripe_account.id)
+      await DAO.Users.add(username, hash, email, stripe_account.id);
       res.status(200).json({ success: true });
     }
   } catch (e) {

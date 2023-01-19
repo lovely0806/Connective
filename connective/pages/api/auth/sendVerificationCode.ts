@@ -1,17 +1,21 @@
 import sgMail from "@sendgrid/mail";
 import { DAO } from "../../../lib/dao";
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
+
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
-    
-    let user = await DAO.Users.getByEmail(email)
+
+    let user = await DAO.Users.getByEmail(email);
     if (user) {
       await sendEmail(code.toString(), email);
-      await DAO.Users.setOtpCode(code.toString(), email)
+      await DAO.Users.setOtpCode(code.toString(), email);
     }
     res.status(200).json({ success: true });
   } catch (e) {
