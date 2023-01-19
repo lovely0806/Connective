@@ -1,4 +1,5 @@
 import { withIronSession } from "next-iron-session";
+import { ActivityFeed } from "services/activity/activityFeed";
 const mysql = require("mysql2");
 const bcrypt = require("bcryptjs");
 
@@ -8,13 +9,19 @@ export default withIronSession(
       return res.status(404).send("");
     }
 
-    const { email, password, rememberme, type = null, accessToken = null } = req.body;
+    const {
+      email,
+      password,
+      rememberme,
+      type = null,
+      accessToken = null,
+    } = req.body;
 
     if (type === "google") {
       const connection = mysql.createConnection(process.env.DATABASE_URL);
       const [results, fields, err] = await connection
         .promise()
-        .query(`SELECT * FROM Users WHERE email='${email}';`); 
+        .query(`SELECT * FROM Users WHERE email='${email}';`);
 
       if (results.length == 0) {
         console.log("No account");
@@ -32,7 +39,9 @@ export default withIronSession(
         }
       }
 
-      if (bcrypt.compareSync(accessToken, results[0].password_hash.toString())) {
+      if (
+        bcrypt.compareSync(accessToken, results[0].password_hash.toString())
+      ) {
         req.session.set("user", { email, id: results[0].id });
         console.log(req.session.get("user"));
         await req.session.save();
@@ -49,6 +58,10 @@ export default withIronSession(
 
         req.session.set("user", { email, id: results[0].id });
         await req.session.save();
+        await ActivityFeed.Auth.handleAuth(
+          "user_login",
+          `user ${results[0].id} has logged in`
+        );
 
         return res
           .status(201)
@@ -99,6 +112,11 @@ export default withIronSession(
         .query(
           `SELECT COUNT(id) FROM Individual WHERE user_id='${results[0].id}';`
         );
+      await ActivityFeed.Auth.handleAuth(
+        "user_login",
+        `user ${results[0].id} has logged in`
+      );
+
       return res
         .status(201)
         .send(
