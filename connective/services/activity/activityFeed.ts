@@ -85,7 +85,7 @@ export namespace ActivityFeed {
 
   export class Discover {
     static async viewDiscover(userId: string) {
-      await addActivityFeed("pageview_discover", `User ${userId} viewed the discover page`);
+      await addActivityFeed("pageview_discover", `user ${userId} viewed the discover page`);
     }
   }
 }
