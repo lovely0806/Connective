@@ -12,15 +12,19 @@ export default function EditProfile({ user }) {
   const [accountType, setAccountType] = useState();
   const router = useRouter();
 
-  const getAccountType = async () => {
-    if (user) setAccountType(await Util.accountType(user.id));
-  };
-  useEffect(() => {
-    if (typeof user == "undefined") router.push("/auth/signin");
-  }, [user]);
   useEffect(() => {
     getAccountType();
   }, []);
+
+  useEffect(() => {
+    if (typeof user == "undefined") router.push("/auth/signin");
+  }, [user]);
+
+  const getAccountType = async () => {
+    if (user) setAccountType(await Util.accountType(user.id));
+  };
+
+  console.log(accountType)
 
   return (
     <main className="flex flex-row h-screen min-w-screen font-[Montserrat] bg-[#F5F5F5]">
