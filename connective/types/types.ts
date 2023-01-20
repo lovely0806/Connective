@@ -50,15 +50,18 @@ export type ListItem = {
   preview_url: string;
   published: boolean;
   cover_url: string;
-  category: int;
+  category: number;
   created_at: string;
   buyer_id?: number;
+  buyers?: number;
+  logo?: string;
+  username?: string;
 };
 
 export type Message = {
-  id?: string;
-  sender: string;
-  receiver?: string;
+  id?: number;
+  sender: number;
+  receiver?: number;
   text: string;
   read?: boolean;
   notified?: boolean;

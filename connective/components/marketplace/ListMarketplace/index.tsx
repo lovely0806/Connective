@@ -4,14 +4,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
-import { MarketplaceListCardItem, User } from "../../../types/types";
+import { ListItem, User } from "../../../types/types";
 import {
   ProfileApiResponse,
   IApiResponseError,
 } from "../../../types/apiResponseTypes";
 
 type Props = {
-  item: MarketplaceListCardItem;
+  item: ListItem;
   preview: boolean;
   user: User;
 };

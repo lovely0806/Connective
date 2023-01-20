@@ -1,7 +1,10 @@
 import { DAO } from "../../../lib/dao";
 import { withIronSession } from "next-iron-session";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { IApiResponseError } from "../../../types/apiResponseTypes";
+import {
+  IApiResponseError,
+  MessagesApiResponse,
+} from "../../../types/apiResponseTypes";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -14,7 +17,9 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method == "GET") {
       let conversations = await DAO.Messages.getConversations(user.id);
-      res.status(200).json(conversations);
+      res
+        .status(200)
+        .json({ conversations } as MessagesApiResponse.IConversations);
     }
   } catch (e) {
     console.log(e);

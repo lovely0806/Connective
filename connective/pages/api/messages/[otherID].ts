@@ -22,7 +22,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         Number(otherID)
       );
       messages = messages.sort((a, b) => {
-        return parseInt(a.id) - parseInt(b.id);
+        return a.id - b.id;
       });
       res.status(200).json({ messages } as MessagesApiResponse.IGetOtherID);
     }

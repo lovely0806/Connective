@@ -1,7 +1,7 @@
 import axios from "axios";
 import Compress from "compress.js";
 
-const profileConfigured = async (id: any) => {
+const profileConfigured = async (id: number) => {
   let configured = false;
   await axios.get(`/api/profiles/business/${id}`).then((res) => {
     if (typeof res.data != "undefined" && res.data != "") {
@@ -18,7 +18,7 @@ const profileConfigured = async (id: any) => {
   return configured;
 };
 
-const accountType = async (id: any) => {
+const accountType = async (id: number) => {
   let type = "none";
   await axios.get(`/api/profiles/business/${id}`).then((res) => {
     if (res.data.business) type = "Business";
@@ -29,7 +29,7 @@ const accountType = async (id: any) => {
   return type;
 };
 
-const uploadFile = async (name: any, file: { type: any }, image = false) => {
+const uploadFile = async (name: string, file: Blob, image = false) => {
   if (image) {
     const compress = new Compress();
     let temp = await compress.compress(
@@ -65,8 +65,8 @@ const uploadFile = async (name: any, file: { type: any }, image = false) => {
 
 const verifyField = (
   value: string,
-  setErrorText: (arg0: any) => void,
-  errorTextValue: any
+  setErrorText: (value: string) => void,
+  errorTextValue: string
 ) => {
   if (value == "") {
     setErrorText(errorTextValue);

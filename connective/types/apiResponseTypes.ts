@@ -1,4 +1,11 @@
-import { Business, DiscoverUser, Individual, Message, User } from "./types";
+import {
+  Business,
+  Conversation,
+  DiscoverUser,
+  Individual,
+  Message,
+  User,
+} from "./types";
 
 export interface IApiResponseError {
   success: boolean;
@@ -37,6 +44,11 @@ export namespace MessagesApiResponse {
   export interface IPostOtherID {
     insertId: number;
     type: "IPostOtherID";
+  }
+
+  export interface IConversations {
+    conversations: Conversation[];
+    type: "IConversations";
   }
 }
 

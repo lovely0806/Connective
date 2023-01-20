@@ -8,6 +8,7 @@ import {
   IApiResponseError,
   MessagesApiResponse,
 } from "../../types/apiResponseTypes";
+import { Message } from "../../types/types";
 
 type Props = {
   text: string;
@@ -102,8 +103,8 @@ const Sidebar = ({ user }) => {
     if (res.type == "IApiResponseError") {
       throw res;
     } else {
-      const unReadMesssages = res.messages.filter((message: any) => {
-        return message.read != "1" && message.receiver == user.id;
+      const unReadMesssages = res.messages.filter((message: Message) => {
+        return !message.read && message.receiver == user.id;
       }).length;
       return unReadMesssages;
     }
