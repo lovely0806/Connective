@@ -350,7 +350,7 @@ export default function Messages({ user }) {
     }
   }, [selectedUser]);
 
-  const [conversations, setConversations] = useState<Array<Conversation>>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   let unreadMessagesCount = [];
   let sum = 0;
   const getUsers = async () => {
@@ -374,24 +374,22 @@ export default function Messages({ user }) {
   };
 
   const getConversations = async () => {
-    const data: MessagesApiResponse.IConversations = (
-      await axios.get("/api/messages/conversations")
-    ).data;
-    let temp = [];
-    data.conversations.forEach((item: Conversation[]) => {
-      let tempItem = item.filter((a: { id: number }) => a.id != user.id)[0];
-      if (tempItem != undefined)
-        if (temp.filter((a) => a.id == tempItem.id).length == 0)
-          temp.push(tempItem);
-    });
-    let temp2 = [...temp];
-    temp2?.map(async (item, index) => {
-      let x = await getUnreadMessages(item.id);
-      item.unread = x;
-      unreadMessagesCount[item.id] = x;
-    });
-    setConversations(temp2);
-    sum = unreadMessagesCount?.reduce((a, v) => a + v, 0);
+    try {
+      const data: MessagesApiResponse.IConversations = (
+        await axios.get("/api/messages/conversations")
+      ).data;
+      let tempConversations = data.conversations;
+      let conversations = [...tempConversations];
+      conversations?.map(async (conversation, index) => {
+        let unread = await getUnreadMessages(conversation.id.toString());
+        conversation.unread = unread;
+        unreadMessagesCount[conversation.id] = unread;
+      });
+      setConversations(conversations)
+      sum = unreadMessagesCount?.reduce((a, v) => a + v, 0);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getUnreadMessages = async (id: string) => {

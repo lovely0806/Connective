@@ -79,6 +79,7 @@ export type Conversation = {
   username: string;
   location: string;
   logo: string;
+  unread?: number;
 };
 
 export type StripePrice = {

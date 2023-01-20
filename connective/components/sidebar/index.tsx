@@ -73,26 +73,21 @@ const Sidebar = ({ user }) => {
   };
 
   const [sum, setSum] = useState();
-  const [array1, setArray1] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState([]);
 
   const getConversations = async () => {
     try {
       const data: MessagesApiResponse.IConversations = (
         await axios.get("/api/messages/conversations")
       ).data;
-      let temp = [];
-      data.conversations.forEach((item) => {
-        let tempItem = item.filter((a) => a.id != user.id)[0];
-        if (temp.filter((a) => a.id == tempItem.id).length == 0)
-          temp.push(tempItem);
+      let tempConversations = data.conversations;
+      let conversations = [...tempConversations];
+      conversations?.map(async (conversation, index) => {
+        let unread = await getUnreadMessages(conversation.id);
+        conversation.unread = unread;
+        unreadMessages[conversation.id] = unread;
       });
-      let temp2 = [...temp];
-      temp2?.map(async (item, index) => {
-        let x = await getUnreadMessages(item.id);
-        item.unread = x;
-        array1[item.id] = x;
-      });
-      setSum(array1?.reduce((a, v) => a + v, 0));
+      setSum(unreadMessages?.reduce((a, v) => a + v, 0));
     } catch (e) {
       console.log(e);
     }

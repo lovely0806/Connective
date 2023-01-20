@@ -611,9 +611,9 @@ export namespace DAO {
      */
     static async getConversations(
       userId: number
-    ): Promise<Array<Array<Conversation>>> {
+    ): Promise<Conversation[]> {
       var query1 = `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`;
-      var [results] = await connection
+      var [uniqueMessagesQuery] = await connection
         .promise()
         .query<RowDataPacket[]>(query1, [userId, userId]);
 
@@ -621,22 +621,26 @@ export namespace DAO {
       var [profiles] = await connection
         .promise()
         .query<RowDataPacket[]>(query2);
-
-      let temp = [];
-      results.forEach((result) => {
-        temp.push(
+      //console.log(profiles.map(profile => profile.id))
+      let conversationProfiles = [];
+      uniqueMessagesQuery.forEach((message) => {
+        conversationProfiles.push(
           profiles.filter(
-            (a) => a.id == result.sender || a.id == result.receiver
+            (profile) => profile.id == message.sender || profile.id == message.receiver
           )
         );
       });
+      //console.log(conversationProfiles)
       let conversations = [];
-      temp.forEach((item) => {
-        if (conversations.filter((a) => a.id == item.id).length == 0) {
-          conversations.push(item);
+      conversationProfiles.forEach((conversation) => {
+        let otherUser = conversation.filter(user => user.id != userId)[0]
+        if(typeof(otherUser) != "undefined") {
+          if (conversations.filter((conversation) => conversation.id == otherUser.id).length == 0) {
+            conversations.push(otherUser);
+          }
         }
       });
-      return conversations as Array<Array<Conversation>>;
+      return conversations as Conversation[];
     }
 
     /**
