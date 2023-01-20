@@ -47,7 +47,7 @@ export namespace MessagesApiResponse {
   }
 
   export interface IConversations {
-    conversations: Conversation[];
+    conversations: Array<Array<Conversation>>;
     type: "IConversations";
   }
 }

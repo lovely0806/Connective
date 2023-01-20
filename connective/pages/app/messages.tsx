@@ -83,6 +83,7 @@ const Conversations = ({
       {filteredConversations.map((item, index) => {
         return (
           <div
+            key={index}
             onClick={() => {
               setSelectedUser(item);
             }}
@@ -104,9 +105,6 @@ const Conversations = ({
               />
             )}
             <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
-            {
-              // console.log(item, item.unread)
-            }
             {unreadMessagesCount[item.id] > 0 ? (
               <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
                 {unreadMessagesCount[item.id]}
@@ -171,9 +169,6 @@ const Chat = ({
       document.getElementById("message-input").value = "";
 
       //Re-fetch the list of conversations if the message was sent to a new conversation
-      console.log(
-        conversations.filter((a: { id: number }) => a.id == selectedUser.id)
-      );
       if (
         conversations.filter((a: { id: number }) => a.id == selectedUser.id)
           .length == 0
@@ -218,7 +213,6 @@ const Chat = ({
   };
 
   const readMessages = async (unReadMesssages: Array<Message>) => {
-    console.log("EEEEEE", unReadMesssages);
     await axios.post("/api/messages/read-message", {
       header: {
         "Content-Type": "application/json",
@@ -260,7 +254,11 @@ const Chat = ({
       >
         {messages.map((item, index) => {
           return (
-            <Message text={item.text} sent={item.sender == user.id}></Message>
+            <Message
+              key={index}
+              text={item.text}
+              sent={item.sender == user.id}
+            ></Message>
           );
         })}
       </div>
@@ -376,15 +374,12 @@ export default function Messages({ user }) {
   };
 
   const getConversations = async () => {
-    const data: MessagesApiResponse.IConversations = (await axios.get(
-      "/api/messages/conversations"
-    )).data;
+    const data: MessagesApiResponse.IConversations = (
+      await axios.get("/api/messages/conversations")
+    ).data;
     let temp = [];
-    console.log(data);
-    data.conversations.forEach((item: Conversation) => {
-      let tempItem = data.conversations.filter(
-        (a: { id: number }) => a.id != user.id
-      )[0];
+    data.conversations.forEach((item: Conversation[]) => {
+      let tempItem = item.filter((a: { id: number }) => a.id != user.id)[0];
       if (tempItem != undefined)
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
@@ -403,10 +398,12 @@ export default function Messages({ user }) {
     const res: MessagesApiResponse.IGetOtherID | IApiResponseError =
       await axios.get("/api/messages/" + id);
     if (res.type == "IApiResponseError") throw res;
-    const unReadMesssages = res.messages.filter((message) => {
-      return message.read && message.receiver == user.id;
-    }).length;
-    return unReadMesssages;
+    if (res.messages) {
+      const unReadMesssages = res.messages.filter((message) => {
+        return !message.read && message.receiver == user.id;
+      }).length;
+      return unReadMesssages;
+    }
   };
 
   useEffect(() => {

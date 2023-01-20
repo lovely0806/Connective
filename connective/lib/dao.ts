@@ -232,7 +232,7 @@ export namespace DAO {
      * @returns {DiscoverUser[]} All users who are displayed on the discover page
      */
     static async getAll(): Promise<Array<DiscoverUser>> {
-      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, '' as industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`;
+      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id`;
       var [results] = await connection.promise().query(query);
 
       return results as Array<DiscoverUser>;
@@ -609,7 +609,9 @@ export namespace DAO {
      * @param {number} userId The users id
      * @returns An array of conversations
      */
-    static async getConversations(userId: number) {
+    static async getConversations(
+      userId: number
+    ): Promise<Array<Array<Conversation>>> {
       var query1 = `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`;
       var [results] = await connection
         .promise()
@@ -620,24 +622,21 @@ export namespace DAO {
         .promise()
         .query<RowDataPacket[]>(query2);
 
-      let temp: Array<Conversation> = [];
-      // Refactor this
-      (results as Array<{ sender: number; receiver: number }>).forEach(
-        (result: { sender: number; receiver: number }) => {
-          const filtered = (profiles as Array<Conversation>).filter(
-            (a: Conversation) =>
-              a.id == result.sender || a.id == result.receiver
-          );
-          temp.push(...filtered);
-        }
-      );
-      let conversations: Array<Conversation> = [];
+      let temp = [];
+      results.forEach((result) => {
+        temp.push(
+          profiles.filter(
+            (a) => a.id == result.sender || a.id == result.receiver
+          )
+        );
+      });
+      let conversations = [];
       temp.forEach((item) => {
         if (conversations.filter((a) => a.id == item.id).length == 0) {
           conversations.push(item);
         }
       });
-      return conversations as Array<Conversation>;
+      return conversations as Array<Array<Conversation>>;
     }
 
     /**

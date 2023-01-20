@@ -77,9 +77,11 @@ const Sidebar = ({ user }) => {
 
   const getConversations = async () => {
     try {
-      const { data } = await axios.get("/api/messages/conversations");
+      const data: MessagesApiResponse.IConversations = (
+        await axios.get("/api/messages/conversations")
+      ).data;
       let temp = [];
-      data.forEach((item) => {
+      data.conversations.forEach((item) => {
         let tempItem = item.filter((a) => a.id != user.id)[0];
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
@@ -91,7 +93,6 @@ const Sidebar = ({ user }) => {
         array1[item.id] = x;
       });
       setSum(array1?.reduce((a, v) => a + v, 0));
-      console.log(sum);
     } catch (e) {
       console.log(e);
     }
@@ -103,10 +104,12 @@ const Sidebar = ({ user }) => {
     if (res.type == "IApiResponseError") {
       throw res;
     } else {
-      const unReadMesssages = res.messages.filter((message: Message) => {
-        return !message.read && message.receiver == user.id;
-      }).length;
-      return unReadMesssages;
+      if (res.messages) {
+        const unReadMesssages = res.messages.filter((message: Message) => {
+          return !message.read && message.receiver == user.id;
+        }).length;
+        return unReadMesssages;
+      }
     }
   };
   useEffect(() => {
