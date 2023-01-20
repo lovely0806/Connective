@@ -1,9 +1,11 @@
+import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import { DAO } from "../../../lib/dao";
 import { IApiResponseError } from "../../../types/apiResponseTypes";
 
-export async function handler(req, res) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
+    // @ts-ignore
     if (typeof req.session.get().user == "undefined") {
       return res
         .status(500)
