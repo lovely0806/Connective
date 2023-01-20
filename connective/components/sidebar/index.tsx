@@ -92,6 +92,7 @@ const Sidebar = ({ user }) => {
       console.log(e);
     }
   };
+
   const getUnreadMessages = async (id: number) => {
     const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
       await axios.get("/api/messages/" + id)
@@ -107,6 +108,7 @@ const Sidebar = ({ user }) => {
       }
     }
   };
+
   useEffect(() => {
     getConversations();
 

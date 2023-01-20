@@ -37,14 +37,14 @@ type PropsConversations = {
   selectedUser: Conversation;
   setSelectedUser: Dispatch<SetStateAction<Conversation>>;
   conversations: Array<Conversation>;
-  unreadMessagesCount: Array<number>;
+  unreadMessages: Array<number>;
 };
 
 const Conversations = ({
   selectedUser,
   setSelectedUser,
   conversations,
-  unreadMessagesCount,
+  unreadMessages,
 }: PropsConversations) => {
   const [filter, setFilter] = useState<string>("");
   const [filteredConversations, setFilteredConversations] = useState<
@@ -105,9 +105,9 @@ const Conversations = ({
               />
             )}
             <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
-            {unreadMessagesCount[item.id] > 0 ? (
+            {unreadMessages[item.id] > 0 ? (
               <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
-                {unreadMessagesCount[item.id]}
+                {unreadMessages[item.id]}
               </span>
             ) : null}
           </div>
@@ -351,8 +351,8 @@ export default function Messages({ user }) {
   }, [selectedUser]);
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  let unreadMessagesCount = [];
-  let sum = 0;
+  const [sum, setSum] = useState();
+  const [unreadMessages, setUnreadMessages] = useState([]);
   const getUsers = async () => {
     const data: ProfileApiResponse.IProfiles = (
       await axios.get("/api/profiles/all")
@@ -381,26 +381,30 @@ export default function Messages({ user }) {
       let tempConversations = data.conversations;
       let conversations = [...tempConversations];
       conversations?.map(async (conversation, index) => {
-        let unread = await getUnreadMessages(conversation.id.toString());
+        let unread = await getUnreadMessages(conversation.id);
         conversation.unread = unread;
-        unreadMessagesCount[conversation.id] = unread;
+        unreadMessages[conversation.id] = unread;
       });
-      setConversations(conversations)
-      sum = unreadMessagesCount?.reduce((a, v) => a + v, 0);
+      setConversations(conversations);
+      setSum(unreadMessages?.reduce((a, v) => a + v, 0));
     } catch (e) {
       console.log(e);
     }
   };
 
-  const getUnreadMessages = async (id: string) => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError =
-      await axios.get("/api/messages/" + id);
-    if (res.type == "IApiResponseError") throw res;
-    if (res.messages) {
-      const unReadMesssages = res.messages.filter((message) => {
-        return !message.read && message.receiver == user.id;
-      }).length;
-      return unReadMesssages;
+  const getUnreadMessages = async (id: number) => {
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
+      await axios.get("/api/messages/" + id)
+    ).data;
+    if (res.type == "IApiResponseError") {
+      throw res;
+    } else {
+      if (res.messages) {
+        const unReadMesssages = res.messages.filter((message: Message) => {
+          return !message.read && message.receiver == user.id;
+        }).length;
+        return unReadMesssages;
+      }
     }
   };
 
@@ -419,7 +423,7 @@ export default function Messages({ user }) {
     <Layout user={user} title="Messages">
       <div className="bg-white h-full overflow-clip mt-5 flex flex-row">
         <Conversations
-          unreadMessagesCount={unreadMessagesCount}
+          unreadMessages={unreadMessages}
           selectedUser={selectedUser}
           conversations={conversations}
           setSelectedUser={setSelectedUser}

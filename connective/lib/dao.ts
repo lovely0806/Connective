@@ -27,7 +27,14 @@ export namespace DAO {
     static async getById(id: number): Promise<User> {
       var query = `SELECT * FROM Users WHERE id=?;`;
       var [results] = await connection.promise().query(query, [id]);
-      return results[0] as User;
+
+      const result = {
+        ...results[0],
+        email_verified: results[0].email_verified == 1,
+        is_signup_with_google: results[0].is_signup_with_google == 1,
+        show_on_discover: results[0].show_on_discover == 1,
+      } as User;
+      return result;
     }
 
     /**
@@ -38,7 +45,14 @@ export namespace DAO {
     static async getByEmail(email: string): Promise<User> {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
-      return results[0] as User;
+
+      const result = {
+        ...results[0],
+        email_verified: results[0].email_verified == 1,
+        is_signup_with_google: results[0].is_signup_with_google == 1,
+        show_on_discover: results[0].show_on_discover == 1,
+      } as User;
+      return result;
     }
 
     /**
@@ -48,7 +62,16 @@ export namespace DAO {
     static async getAll(): Promise<User[]> {
       var query = `SELECT * FROM Users;`;
       var [results] = await connection.promise().query(query);
-      return results as Array<User>;
+
+      const result = (results as Array<RowDataPacket>).map((value) => {
+        return {
+          ...value,
+          email_verified: value.email_verified == 1,
+          is_signup_with_google: value.is_signup_with_google == 1,
+          show_on_discover: value.show_on_discover == 1,
+        } as User;
+      });
+      return result;
     }
 
     /**
@@ -65,7 +88,14 @@ export namespace DAO {
       var [results] = await connection
         .promise()
         .query(query, [email, verificationId]);
-      return results[0] as User;
+
+      const result = {
+        ...results[0],
+        email_verified: results[0].email_verified == 1,
+        is_signup_with_google: results[0].is_signup_with_google == 1,
+        show_on_discover: results[0].show_on_discover == 1,
+      } as User;
+      return result;
     }
 
     /**
@@ -235,7 +265,14 @@ export namespace DAO {
       var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id`;
       var [results] = await connection.promise().query(query);
 
-      return results as Array<DiscoverUser>;
+      const result = (results as Array<RowDataPacket>).map((value) => {
+        return {
+          ...value,
+          show_on_discover: value.show_on_discover == 1,
+        } as DiscoverUser;
+      });
+
+      return result;
     }
   }
 
@@ -507,7 +544,13 @@ export namespace DAO {
     ): Promise<Array<ListItem>> {
       const query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE buyer_id = ${buyerId}`;
       const [purchasedListsResults] = await connection.promise().query(query);
-      return purchasedListsResults as Array<ListItem>;
+
+      const result = (purchasedListsResults as Array<RowDataPacket>).map(
+        (value) => {
+          return { ...value, published: value.published } as ListItem;
+        }
+      );
+      return result;
     }
 
     /**
@@ -520,7 +563,11 @@ export namespace DAO {
     ): Promise<Array<ListItem>> {
       const query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE creator = ${creatorId}`;
       const [soldListResults] = await connection.promise().query(query);
-      return soldListResults as Array<ListItem>;
+
+      const result = (soldListResults as Array<RowDataPacket>).map((value) => {
+        return { ...value, published: value.published } as ListItem;
+      });
+      return result;
     }
 
     /**
@@ -533,7 +580,13 @@ export namespace DAO {
     ): Promise<Array<ListItem>> {
       const query = `select * from Lists where creator = ${creatorId}`;
       const [createdListResults] = await connection.promise().query(query);
-      return createdListResults as Array<ListItem>;
+
+      const result = (createdListResults as Array<RowDataPacket>).map(
+        (value) => {
+          return { ...value, published: value.published } as ListItem;
+        }
+      );
+      return result;
     }
 
     /**
@@ -570,7 +623,17 @@ export namespace DAO {
         .promise()
         .query(query, [userId, otherId, userId, otherId]);
 
-      return results as Array<Message>;
+      const result = (results as Array<RowDataPacket>).map(
+        (value: RowDataPacket) => {
+          return {
+            ...value,
+            notified: value.notified == 1,
+            read: value.read == 1,
+          } as Message;
+        }
+      );
+
+      return result;
     }
 
     /**
@@ -609,9 +672,7 @@ export namespace DAO {
      * @param {number} userId The users id
      * @returns An array of conversations
      */
-    static async getConversations(
-      userId: number
-    ): Promise<Conversation[]> {
+    static async getConversations(userId: number): Promise<Conversation[]> {
       var query1 = `select distinct sender, receiver from messages where sender = ? union all select distinct sender, receiver from messages where receiver = ?;`;
       var [uniqueMessagesQuery] = await connection
         .promise()
@@ -626,16 +687,21 @@ export namespace DAO {
       uniqueMessagesQuery.forEach((message) => {
         conversationProfiles.push(
           profiles.filter(
-            (profile) => profile.id == message.sender || profile.id == message.receiver
+            (profile) =>
+              profile.id == message.sender || profile.id == message.receiver
           )
         );
       });
       //console.log(conversationProfiles)
       let conversations = [];
       conversationProfiles.forEach((conversation) => {
-        let otherUser = conversation.filter(user => user.id != userId)[0]
-        if(typeof(otherUser) != "undefined") {
-          if (conversations.filter((conversation) => conversation.id == otherUser.id).length == 0) {
+        let otherUser = conversation.filter((user) => user.id != userId)[0];
+        if (typeof otherUser != "undefined") {
+          if (
+            conversations.filter(
+              (conversation) => conversation.id == otherUser.id
+            ).length == 0
+          ) {
             conversations.push(otherUser);
           }
         }
