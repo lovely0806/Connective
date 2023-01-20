@@ -1,31 +1,27 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
+import { v4 as uuidv4 } from 'uuid';
 import sgMail from "@sendgrid/mail";
+import moment from "moment";
+import { DAO } from "../../../lib/dao";
+
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
-const mysql = require("mysql2");
-const moment = require("moment");
-const uuid = require("uuid");
 
 export default withIronSession(
   async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method == "POST") {
       const { email } = req.body;
 
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [results, fields, err] = await connection
-        .promise()
-        .query(`SELECT * FROM Users WHERE email='${email}';`);
+      const user = await DAO.Users.getByEmail(email);
 
-      if (results.length == 0) {
+      if (!user) {
         console.log("No account");
         return res
           .status(500)
           .json({ success: false, error: "Account does not exist" });
       }
 
-      if (results.length) {
-        const user = results[0];
-
+      if (user) {
         if (!user.email_verified) {
           return res
             .status(500)
@@ -44,21 +40,25 @@ export default withIronSession(
           }
         }
 
-        const token = uuid.v4();
-        const sendCodeAttemp = user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
+        const token = uuidv4();
+        const sendCodeAttempt =
+          user.send_code_attempt == 2 ? 1 : Number(user.send_code_attempt) + 1;
 
-        await connection
-          .promise()
-          .query(
-            `UPDATE Users SET verification_id = '${token}', send_code_attempt = ${sendCodeAttemp}, verification_timestamp = "${moment().format(
-              "YYYY/MM/DD HH:mm:ss"
-            )}" WHERE email='${email}';`
-          );
+        await DAO.Users.updateVerification(token, sendCodeAttempt, email);
 
         const link = `http://${req.headers.host}/auth/resetpassword/${email}/${token}`;
 
         await sendEmail(link, email);
       }
+
+      const token = uuidv4();
+
+      await DAO.Users.updateVerificationId(token, email);
+
+      const link = `http://${req.headers.host}/auth/resetpassword/${email}/${token}`;
+
+      await sendEmail(link, email);
+
       res.status(200).json({ success: true });
     }
   },
