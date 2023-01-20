@@ -6,6 +6,7 @@ import {
   AuthApiResponse,
   IApiResponseError,
 } from "../../../types/apiResponseTypes";
+import { ActivityFeed } from "../../../services/activity/activityFeed";
 
 export default withIronSession(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -58,6 +59,11 @@ export default withIronSession(
         req.session.set("user", { email, id: user.id });
         // @ts-ignore
         await req.session.save();
+        
+        await ActivityFeed.Auth.handleAuth(
+          "user_login",
+          `user ${user.id} has logged in`
+        );
 
         return res
           .status(201)
@@ -106,6 +112,11 @@ export default withIronSession(
 
       const isBusinessAccount = await DAO.Business.isBusiness(user.id);
       const isIndividualAccount = await DAO.Individual.isIndividual(user.id);
+
+      await ActivityFeed.Auth.handleAuth(
+        "user_login",
+        `user ${user.id} has logged in`
+      );
 
       return res
         .status(201)
