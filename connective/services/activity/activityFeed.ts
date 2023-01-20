@@ -28,6 +28,7 @@ export namespace ActivityFeed {
 
   export class Messages {
     static async handleMessage(sender: string, receiver: string, text: string) {
+      console.log("Handlin message")
       let activityArray = [
         {
           message: `user ${sender} sent message to ${receiver} saying "${text}"`,

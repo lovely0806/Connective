@@ -5,6 +5,7 @@ import {
   IApiResponseError,
   MessagesApiResponse,
 } from "../../../types/apiResponseTypes";
+import {ActivityFeed} from '../../../services/activity/activityFeed';
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { otherID } = req.query;
@@ -28,6 +29,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method == "POST") {
       const { text } = req.body;
+      await ActivityFeed.Messages.handleMessage(user.id, otherID.toString(), text);
       let insertId = await DAO.Messages.add(user.id, Number(otherID), text);
       res.status(200).json({ insertId } as MessagesApiResponse.IPostOtherID);
     }
