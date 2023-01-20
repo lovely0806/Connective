@@ -94,8 +94,8 @@ export namespace DAO {
             password_hash,
             email,
             stripeID,
-            true,
-            true,
+            1,
+            1,
           ]);
         return result.insertId;
       } else {
@@ -118,7 +118,7 @@ export namespace DAO {
       var query = `UPDATE Users SET verify_email_otp = null, email_verified = ? WHERE email=?;`;
       await connection
         .promise()
-        .execute(query, [status == true ? "true" : "false", email]);
+        .execute(query, [status == true ? 1 : 0, email]);
     }
 
     /**
