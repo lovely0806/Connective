@@ -4,10 +4,10 @@ import Image from "next/image";
 import axios from "axios";
 import { useState } from "react";
 import Link from "next/link";
-import { MarketplaceListCardItem } from "../../../types/types";
+import { ListItem } from "../../../types/types";
 
 type Props = {
-  item: MarketplaceListCardItem;
+  item: ListItem;
 };
 
 const ListRow = ({ item }: Props) => {
