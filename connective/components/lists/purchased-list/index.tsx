@@ -4,10 +4,10 @@ import ButtonLight from "../../button-light";
 import ButtonGreen from "../../button-green";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { PurchasedItem } from "../../../types/types";
+import { ListItem } from "../../../types/types";
 
 type Props = {
-  item: PurchasedItem;
+  item: ListItem;
   showModal: MouseEventHandler<HTMLButtonElement>;
 };
 

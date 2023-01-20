@@ -36,7 +36,9 @@ export default function CreateProfile({ user }) {
   const [size, setSize] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
-  const [occupations, setOccupations] = useState<Array<any>>([]);
+  const [occupations, setOccupations] = useState<
+    Array<{ value: number; label: string }>
+  >([]);
   const [occupation, setOccupation] = useState<string>("");
   const [fieldErrors, setFieldErrors] = useState<ValidationResponse>(null);
 
