@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Avatar from "../../avatar";
 import { Individual, User } from "../../../types/types";
-import { IApiResponseError, ProfileApiResponse } from '../../../types/apiResponseTypes';
+import {
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../../types/apiResponseTypes";
 
 type Props = {
   user: User;
@@ -29,8 +32,8 @@ export default function IndividualProfile({ user, id }: Props) {
 
   const getProfile = async () => {
     await axios.get(`/api/profiles/individual?id=${id}`).then((res) => {
-      let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data
-      if(data.type == "IApiResponseError") throw data
+      let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data;
+      if (data.type == "IApiResponseError") throw data;
       else {
         setData(data.individual);
         setLoaded(true);

@@ -29,7 +29,7 @@ const accountType = async (id: number) => {
   return type;
 };
 
-const uploadFile = async (name: string, file: Blob, image: boolean = false) => {
+const uploadFile = async (name: string, file: Blob, image = false) => {
   if (image) {
     const compress = new Compress();
     let temp = await compress.compress(
@@ -52,7 +52,7 @@ const uploadFile = async (name: string, file: Blob, image: boolean = false) => {
     });
 
   // @ts-ignore
-  await axios.put(response?.data.url, file, {
+  await axios.put(response.data.url, file, {
     headers: {
       "Content-type": file.type,
       "Access-Control-Allow-Origin": "*",
@@ -60,7 +60,7 @@ const uploadFile = async (name: string, file: Blob, image: boolean = false) => {
   });
 
   // @ts-ignore
-  return response?.data.url.split("?")[0];
+  return response.data.url.split("?")[0];
 };
 
 const verifyField = (

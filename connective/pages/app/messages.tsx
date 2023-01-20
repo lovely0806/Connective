@@ -1,14 +1,23 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import Layout from "../../components/layout";
 import { withIronSession } from "next-iron-session";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Avatar from "../../components/avatar";
-import { User, Message, DiscoverUser } from '../../types/types';
-import { MessagesApiResponse, IApiResponseError, ProfileApiResponse } from '../../types/apiResponseTypes';
+import { User, Message, Conversation } from "../../types/types";
+import {
+  MessagesApiResponse,
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../types/apiResponseTypes";
 
-const Message = ({ text, sent }) => {
+type PropsMessage = {
+  text: string;
+  sent: boolean;
+};
+
+const Message = ({ text, sent }: PropsMessage) => {
   if (sent) {
     return (
       <div className="ml-auto bg-blue-100 w-3/5 p-2 rounded-lg shadow-md">
@@ -24,16 +33,22 @@ const Message = ({ text, sent }) => {
   }
 };
 
+type PropsConversations = {
+  selectedUser: Conversation;
+  setSelectedUser: Dispatch<SetStateAction<Conversation>>;
+  conversations: Array<Conversation>;
+  unreadMessagesCount: Array<number>;
+};
+
 const Conversations = ({
-  sum,
   selectedUser,
   setSelectedUser,
   conversations,
   unreadMessagesCount,
-}) => {
+}: PropsConversations) => {
   const [filter, setFilter] = useState<string>("");
   const [filteredConversations, setFilteredConversations] = useState<
-    Array<any>
+    Array<Conversation>
   >([]);
 
   useEffect(() => {
@@ -89,6 +104,9 @@ const Conversations = ({
               />
             )}
             <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
+            {
+              // console.log(item, item.unread)
+            }
             {unreadMessagesCount[item.id] > 0 ? (
               <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
                 {unreadMessagesCount[item.id]}
@@ -101,14 +119,21 @@ const Conversations = ({
   );
 };
 
+type PropsChat = {
+  users: Array<User>;
+  selectedUser: Conversation;
+  user: User;
+  conversations: Array<Conversation>;
+  getConversations: () => Promise<void>;
+};
+
 const Chat = ({
   users,
   selectedUser,
-  setSelectedUser,
   user,
   conversations,
   getConversations,
-}) => {
+}: PropsChat) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userOptions, setUserOptions] = useState<
     Array<{ value: number; label: string }>
@@ -118,7 +143,7 @@ const Chat = ({
 
   useEffect(() => {
     let temp = [];
-    users.forEach((user: User) => {
+    users.forEach((user: { id: number; username: string; email: string }) => {
       temp.push({
         value: user.id,
         label: user.username + " (" + user.email + ")",
@@ -158,10 +183,13 @@ const Chat = ({
       setMessages([...messages, { sender: user.id, text }]);
     }
   };
+
   const getMessages = async () => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (await axios.get("/api/messages/" + selectedUser.id)).data;
-    if(res.type == "IApiResponseError") {
-      throw res
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
+      await axios.get("/api/messages/" + selectedUser.id)
+    ).data;
+    if (res.type == "IApiResponseError") {
+      throw res;
     } else {
       if (res.messages.length > prevMessages) {
         document.getElementById("messages-container").scroll({
@@ -171,7 +199,7 @@ const Chat = ({
       }
       prevMessages = res.messages.length;
       setMessages(res.messages);
-  
+
       const unReadMesssages = res.messages.filter((message) => {
         return (
           !message.read &&
@@ -189,7 +217,8 @@ const Chat = ({
     }
   };
 
-  const readMessages = async (unReadMesssages: Array<any>) => {
+  const readMessages = async (unReadMesssages: Array<Message>) => {
+    console.log("EEEEEE", unReadMesssages);
     await axios.post("/api/messages/read-message", {
       header: {
         "Content-Type": "application/json",
@@ -225,7 +254,6 @@ const Chat = ({
           </p>
         </div>
       )}
-
       <div
         id="messages-container"
         className="h-full overflow-y-scroll p-5 flex flex-col gap-10"
@@ -278,11 +306,9 @@ const UserDetails = ({ selectedUser }) => {
               title={selectedUser.username}
             />
           )}
-
           <p className="font-bold text-lg text-center mt-5">
             {selectedUser.username}
           </p>
-
           <p className="text-sm font-bold mt-10">Contact Details:</p>
           <div className="flex flex-row gap-2 my-5">
             <div className="bg-black/5 rounded-full p-[7px] w-8 h-8 shadow-lg">
@@ -306,7 +332,7 @@ export default function Messages({ user }) {
   const router = useRouter();
   const { newUser } = router.query;
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User>();
+  const [selectedUser, setSelectedUser] = useState<Conversation>();
 
   // Automatically open latest (last opened) conversation when navigating to messages page
   useEffect(() => {
@@ -326,25 +352,39 @@ export default function Messages({ user }) {
     }
   }, [selectedUser]);
 
-  const [conversations, setConversations] = useState<Array<any>>([]);
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState<Array<any>>(
-    []
-  );
-
+  const [conversations, setConversations] = useState<Array<Conversation>>([]);
+  let unreadMessagesCount = [];
   let sum = 0;
   const getUsers = async () => {
-    const data: ProfileApiResponse.IProfiles = (await axios.get("/api/profiles/all")).data;
+    const data: ProfileApiResponse.IProfiles = (
+      await axios.get("/api/profiles/all")
+    ).data;
     setUsers(data.users);
-    newUser &&
-      setSelectedUser(
-        data.users.filter((item) => item.id.toString() == newUser)[0]
-      );
+    if (newUser) {
+      const temp = data.users.filter(
+        (item) => item.id.toString() == newUser
+      )[0];
+      const selectedUser = {
+        id: temp.id,
+        email: temp.email,
+        username: temp.username,
+        location: "",
+        logo: temp.logo,
+      } as Conversation;
+      setSelectedUser(selectedUser);
+    }
   };
+
   const getConversations = async () => {
-    const { data } = await axios.get("/api/messages/conversations");
+    const data: MessagesApiResponse.IConversations = (await axios.get(
+      "/api/messages/conversations"
+    )).data;
     let temp = [];
-    data.forEach((item: Array<any>) => {
-      let tempItem = item.filter((a: any) => a.id != user.id)[0];
+    console.log(data);
+    data.conversations.forEach((item: Conversation) => {
+      let tempItem = data.conversations.filter(
+        (a: { id: number }) => a.id != user.id
+      )[0];
       if (tempItem != undefined)
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
@@ -360,8 +400,9 @@ export default function Messages({ user }) {
   };
 
   const getUnreadMessages = async (id: string) => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = await axios.get("/api/messages/" + id);
-    if(res.type == "IApiResponseError") throw res
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError =
+      await axios.get("/api/messages/" + id);
+    if (res.type == "IApiResponseError") throw res;
     const unReadMesssages = res.messages.filter((message) => {
       return message.read && message.receiver == user.id;
     }).length;
@@ -383,7 +424,6 @@ export default function Messages({ user }) {
     <Layout user={user} title="Messages">
       <div className="bg-white h-full overflow-clip mt-5 flex flex-row">
         <Conversations
-          sum={sum}
           unreadMessagesCount={unreadMessagesCount}
           selectedUser={selectedUser}
           conversations={conversations}
@@ -393,7 +433,6 @@ export default function Messages({ user }) {
           user={user}
           users={users}
           selectedUser={selectedUser}
-          setSelectedUser={setSelectedUser}
           conversations={conversations}
           getConversations={getConversations}
         ></Chat>

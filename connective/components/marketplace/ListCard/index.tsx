@@ -3,11 +3,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
-import { MarketplaceListCardItem, User } from "../../../types/types";
-import { IApiResponseError, ProfileApiResponse } from '../../../types/apiResponseTypes';
+import { ListItem, User } from "../../../types/types";
+import {
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../../types/apiResponseTypes";
 
 type Props = {
-  item: MarketplaceListCardItem;
+  item: ListItem;
   preview: boolean;
   user: User;
 };
@@ -24,9 +27,10 @@ const ListCard = ({ item, preview, user }: Props) => {
     if (type == "Individual") {
       try {
         await axios.get("/api/profiles/individual").then((res) => {
-          let data: ProfileApiResponse.IIndividual | IApiResponseError
-          if(data.type == "IApiResponseError") {
-            throw data
+          let data: ProfileApiResponse.IIndividual | IApiResponseError =
+            res.data;
+          if (data.type == "IApiResponseError") {
+            throw data;
           } else {
             setProfilePicture(data.individual.profile_picture);
             setUsername(data.individual.name);
@@ -39,10 +43,12 @@ const ListCard = ({ item, preview, user }: Props) => {
     if (type == "Business") {
       try {
         await axios.get("/api/profiles/business").then((res) => {
-          if (typeof res.data != "undefined") {
-            console.log(res.data);
-            setProfilePicture(res.data.logo);
-            setUsername(res.data.name);
+          let data: ProfileApiResponse.IBusiness | IApiResponseError = res.data;
+          if (data.type == "IApiResponseError") {
+            throw data;
+          } else {
+            setProfilePicture(data.business.logo);
+            setUsername(data.business.company_name);
           }
         });
       } catch (e) {

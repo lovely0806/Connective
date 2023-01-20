@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import moment from "moment";
 import { DAO } from "../../../lib/dao";
-import { AuthApiResponse, IApiResponseError } from '../../../types/apiResponseTypes';
+import {
+  AuthApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,6 +38,8 @@ export default async function handler(
     }
   } catch (e) {
     console.log(e);
-    return res.status(200).json({ success: false, error: e } as IApiResponseError);
+    return res
+      .status(200)
+      .json({ success: false, error: e } as IApiResponseError);
   }
 }

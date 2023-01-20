@@ -1,6 +1,16 @@
 import moment from "moment";
-import mysql, { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
-import { Message, User, DiscoverUser, Business as Business_Type, Individual as Individual_Type } from "../types/types";
+import mysql, { OkPacket, RowDataPacket } from "mysql2";
+import {
+  Message,
+  User,
+  DiscoverUser,
+  Business as Business_Type,
+  Individual as Individual_Type,
+  ListItem,
+  UnreadNotification,
+  StripePrice,
+  Conversation,
+} from "../types/types";
 
 export namespace DAO {
   const connection = mysql.createConnection(process.env.DATABASE_URL || "");
@@ -10,6 +20,17 @@ export namespace DAO {
    */
   export class Users {
     /**
+     * Gets a user by their id
+     * @param {number} id The users email
+     * @returns {User} The user object
+     */
+    static async getById(id: number): Promise<User> {
+      var query = `SELECT * FROM Users WHERE id=?;`;
+      var [results] = await connection.promise().query(query, [id]);
+      return results[0] as User;
+    }
+
+    /**
      * Gets a user by their email
      * @param {string} email The users email
      * @returns {User} The user object
@@ -17,7 +38,7 @@ export namespace DAO {
     static async getByEmail(email: string): Promise<User> {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
-      return results[0];
+      return results[0] as User;
     }
 
     /**
@@ -25,9 +46,9 @@ export namespace DAO {
      * @returns {User[]}
      */
     static async getAll(): Promise<User[]> {
-      var query = `SELECT * FROM Users;`
-      var [results] = await connection.promise().query(query)
-      return results as User[]
+      var query = `SELECT * FROM Users;`;
+      var [results] = await connection.promise().query(query);
+      return results as Array<User>;
     }
 
     /**
@@ -44,7 +65,7 @@ export namespace DAO {
       var [results] = await connection
         .promise()
         .query(query, [email, verificationId]);
-      return results[0];
+      return results[0] as User;
     }
 
     /**
@@ -90,7 +111,10 @@ export namespace DAO {
      * @param {boolean} status The new verification status of the user
      * @param {string} email The users email
      */
-    static async updateVerificationStatus(status: boolean, email: string) {
+    static async updateVerificationStatus(
+      status: boolean,
+      email: string
+    ): Promise<void> {
       var query = `UPDATE Users SET verify_email_otp = null, email_verified = ? WHERE email=?;`;
       await connection
         .promise()
@@ -102,7 +126,7 @@ export namespace DAO {
      * @param {string} code The new OTP code
      * @param {string} email The users email
      */
-    static async setOtpCode(code: string, email: string) {
+    static async setOtpCode(code: string, email: string): Promise<void> {
       var query = `UPDATE Users SET verify_email_otp = ? WHERE email=?;`;
       await connection.promise().execute(query, [code, email]);
     }
@@ -117,7 +141,7 @@ export namespace DAO {
       code: string,
       sendCodeAttempt: number,
       email: string
-    ) {
+    ): Promise<void> {
       var query = `UPDATE Users SET verify_email_otp = ?, send_code_attempt = ?, last_code_sent_time = ? WHERE email=?;`;
       await connection
         .promise()
@@ -134,7 +158,10 @@ export namespace DAO {
      * @param {string} hash The new password hash
      * @param {string} email The users email
      */
-    static async updatePasswordHash(hash: string, email: string) {
+    static async updatePasswordHash(
+      hash: string,
+      email: string
+    ): Promise<void> {
       await connection
         .promise()
         .query(
@@ -152,7 +179,7 @@ export namespace DAO {
       hash: string,
       verificationId: string,
       email: string
-    ) {
+    ): Promise<void> {
       await connection
         .promise()
         .query(
@@ -165,7 +192,10 @@ export namespace DAO {
      * @param {string} verificationId The new verification id
      * @param {string} email The users email
      */
-    static async updateVerificationId(verificationId: string, email: string) {
+    static async updateVerificationId(
+      verificationId: string,
+      email: string
+    ): Promise<void> {
       await connection
         .promise()
         .query(
@@ -185,7 +215,7 @@ export namespace DAO {
       token: string,
       sendCodeAttempt: number,
       email: string
-    ) {
+    ): Promise<void> {
       await connection
         .promise()
         .query(
@@ -201,11 +231,11 @@ export namespace DAO {
      *
      * @returns {DiscoverUser[]} All users who are displayed on the discover page
      */
-    static async getAll(): Promise<DiscoverUser[]> {
+    static async getAll(): Promise<Array<DiscoverUser>> {
       var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, '' as industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`;
       var [results] = await connection.promise().query(query);
 
-      return results as DiscoverUser[];
+      return results as Array<DiscoverUser>;
     }
   }
 
@@ -232,7 +262,7 @@ export namespace DAO {
     static async getByUserId(userId: number): Promise<Business_Type> {
       var query = `SELECT * FROM Business WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
-      return result[0];
+      return result[0] as Business_Type;
     }
 
     /**
@@ -305,7 +335,7 @@ export namespace DAO {
       size: string,
       url: string,
       status: string
-    ) {
+    ): Promise<void> {
       var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
       await connection
         .promise()
@@ -326,7 +356,7 @@ export namespace DAO {
      * Increments the number of views for the given business by their user id
      * @param userId The users ID
      */
-    static async incrementProfileViews(userId: number) {
+    static async incrementProfileViews(userId: number): Promise<void> {
       var query =
         "UPDATE Business SET profileViews = profileViews + 1 WHERE user_id=?;";
       await connection.promise().execute(query, [userId]);
@@ -356,17 +386,168 @@ export namespace DAO {
     static async getByUserId(userId: number): Promise<Individual_Type> {
       var query = `SELECT * FROM Individual WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
-      return result[0];
+      return result[0] as Individual_Type;
+    }
+
+    /**
+     * Adds a new individual to the database
+     * @param {number} userId The individual user id
+     * @param {string} name The individual name
+     * @param {string} bio The individual bio
+     * @param {string} pfp A link to the individual profile picture
+     * @param {string} location location
+     * @param {number} profileViews profile views count
+     * @param {number} listViews list views count
+     * @param {string} industry
+     * @param {string} status
+     * @param {string} occupation
+     * @returns
+     */
+    static async add(
+      userId: number,
+      name: string,
+      bio: string,
+      pfp: string,
+      location: string,
+      profileViews: number,
+      listViews: number,
+      industry: string,
+      status: string,
+      occupation: string
+    ): Promise<number> {
+      var query = `INSERT INTO Individual (
+                            user_id, name, bio, profile_picture, location, profileViews, listViews, status, industry, occupation
+                        ) VALUES (
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                        );`;
+      var [result] = await connection
+        .promise()
+        .execute<OkPacket>(query, [
+          userId,
+          name,
+          bio,
+          pfp,
+          location,
+          profileViews,
+          listViews,
+          status,
+          industry,
+          occupation,
+        ]);
+
+      return result.insertId;
+    }
+
+    /**
+     * Update individual user data
+     * @param userId
+     * @param pfpChanged
+     * @param pfp
+     * @param name
+     * @param bio
+     * @param location
+     * @param status
+     */
+    static async update(
+      userId: number,
+      pfpChanged: boolean,
+      pfp: string,
+      name: string,
+      bio: string,
+      location: string,
+      status: string
+    ): Promise<void> {
+      let query = "";
+      if (pfpChanged) {
+        query = `UPDATE Individual SET name = '${name}', ${
+          pfpChanged ?? "profile_picture =" + `'${pfp}',`
+        } bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${userId}';`;
+      } else {
+        query = `UPDATE Individual SET name = '${name}',bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${userId}';`;
+      }
+      await connection.promise().execute(query);
     }
 
     /**
      * Increments the number of views for the given individual by their user id
      * @param userId The users ID
      */
-    static async incrementProfileViews(userId: number) {
+    static async incrementProfileViews(userId: number): Promise<void> {
       var query =
         "UPDATE Individual SET profileViews = profileViews + 1 WHERE user_id=?;";
       await connection.promise().execute(query, [userId]);
+    }
+  }
+
+  /**
+   * Contains functions for interacting with List in the database
+   */
+  export class Lists {
+    /**
+     * Gets all urls from lists
+     * @returns urls array
+     */
+    static async getUrls(): Promise<Array<string>> {
+      const [lists] = await connection.promise().query(`SELECT url FROM Lists`);
+      const urls: Array<string> = (lists as Array<RowDataPacket>).map(
+        (list) => {
+          return list.url;
+        }
+      );
+      return urls;
+    }
+
+    /**
+     * Gets purchased list by the specific buyer id
+     * @param buyerId The buyers Id
+     * @returns Purchased list for buyer
+     */
+    static async getPurchasedListByBuyerId(
+      buyerId: number
+    ): Promise<Array<ListItem>> {
+      const query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE buyer_id = ${buyerId}`;
+      const [purchasedListsResults] = await connection.promise().query(query);
+      return purchasedListsResults as Array<ListItem>;
+    }
+
+    /**
+     * Gets purchased list by the specific creator id
+     * @param creatorId The creators Id
+     * @returns Purchased list for creator
+     */
+    static async getPurchasedListByCreatorId(
+      creatorId: number
+    ): Promise<Array<ListItem>> {
+      const query = `select * from Lists join purchased_lists on purchased_lists.list_id = Lists.id WHERE creator = ${creatorId}`;
+      const [soldListResults] = await connection.promise().query(query);
+      return soldListResults as Array<ListItem>;
+    }
+
+    /**
+     * Gets list by the specific creator id
+     * @param creatorId The creators Id
+     * @returns List for the creators
+     */
+    static async getListsByCreator(
+      creatorId: number
+    ): Promise<Array<ListItem>> {
+      const query = `select * from Lists where creator = ${creatorId}`;
+      const [createdListResults] = await connection.promise().query(query);
+      return createdListResults as Array<ListItem>;
+    }
+
+    /**
+     * Get stripe price for the specific list item
+     * @param id list id
+     * @returns
+     */
+    static async getListStripePrice(id: number): Promise<StripePrice> {
+      var [result] = await connection
+        .promise()
+        .query(
+          `SELECT Lists.price, Users.stripeID FROM Lists INNER JOIN Users ON Lists.creator = Users.id WHERE Lists.id="${id}"`
+        );
+      return result[0] as StripePrice;
     }
   }
 
@@ -383,13 +564,13 @@ export namespace DAO {
     static async getByOtherUser(
       userId: number,
       otherId: number
-    ): Promise<Message[]> {
+    ): Promise<Array<Message>> {
       var query = `SELECT * FROM messages WHERE sender=? and receiver=? UNION ALL SELECT * FROM messages WHERE receiver=? and sender=?;`;
       var [results] = await connection
         .promise()
         .query(query, [userId, otherId, userId, otherId]);
 
-      return results as Message[];
+      return results as Array<Message>;
     }
 
     /**
@@ -439,35 +620,58 @@ export namespace DAO {
         .promise()
         .query<RowDataPacket[]>(query2);
 
-      let temp = [];
+      let temp: Array<Conversation> = [];
       // Refactor this
-      (results as Array<RowDataPacket>).forEach((result: RowDataPacket) => {
-        temp.push(
-          (profiles as Array<RowDataPacket>).filter(
-            (a: RowDataPacket) =>
+      (results as Array<{ sender: number; receiver: number }>).forEach(
+        (result: { sender: number; receiver: number }) => {
+          const filtered = (profiles as Array<Conversation>).filter(
+            (a: Conversation) =>
               a.id == result.sender || a.id == result.receiver
-          )
-        );
-      });
-      let conversations = [];
+          );
+          temp.push(...filtered);
+        }
+      );
+      let conversations: Array<Conversation> = [];
       temp.forEach((item) => {
         if (conversations.filter((a) => a.id == item.id).length == 0) {
           conversations.push(item);
         }
       });
-      return conversations;
+      return conversations as Array<Conversation>;
     }
 
     /**
      * Gets all unread & unnotified messages accross all users
      * @returns {{id: number, email: string}[]} All unread and unnotified messages
      */
-    static async getUnnotified(): Promise<{ id: number; email: string }[]> {
+    static async getUnnotified(): Promise<Array<UnreadNotification>> {
       var query =
         "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;";
       var [messages] = await connection.promise().query(query);
 
-      return messages as { id: number; email: string }[];
+      return messages as Array<UnreadNotification>;
+    }
+
+    /**
+     * Updates notified flag to present sent
+     * @param id message id
+     */
+    static async updateNotifyForSentMessage(id: number): Promise<void> {
+      await connection
+        .promise()
+        .query("UPDATE messages SET `notified`='1' WHERE id =" + id + ";");
+    }
+
+    /**
+     * Updates read flag to read message
+     * @param ids message id array
+     */
+    static async updateReadMessage(ids: Array<number>): Promise<void> {
+      await connection
+        .promise()
+        .query(
+          'UPDATE messages SET `read`="1" WHERE id IN (' + ids.join(", ") + ");"
+        );
     }
   }
 }

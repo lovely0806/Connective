@@ -11,9 +11,18 @@ import Head from "next/head";
 import ReactPaginate from "react-paginate";
 import { industries } from "../../../common/selectOptions";
 import DiscoverList from "../../../components/discover/list";
-import { Business, DiscoverUser, Individual, Industry, User } from "../../../types/types";
-import { business, individual } from '../../../util/validation/onboarding';
-import { ProfileApiResponse, IApiResponseError } from '../../../types/apiResponseTypes';
+import {
+  Business,
+  DiscoverUser,
+  Individual,
+  Industry,
+  User,
+} from "../../../types/types";
+import { business, individual } from "../../../util/validation/onboarding";
+import {
+  ProfileApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   return (
@@ -65,8 +74,10 @@ export default function Messages({ user }) {
 
   const getUsers = async () => {
     let start = Date.now();
-    const res: ProfileApiResponse.IDiscoverProfiles | IApiResponseError = (await Recache.cached(137, axios.get, ["/api/profiles"])).data;
-    if(res.type == "IApiResponseError") throw res
+    const res: ProfileApiResponse.IDiscoverProfiles | IApiResponseError = (
+      await Recache.cached(137, axios.get, ["/api/profiles"])
+    ).data;
+    if (res.type == "IApiResponseError") throw res;
     else {
       let elapsed = Date.now() - start;
       console.log(elapsed);
@@ -77,8 +88,12 @@ export default function Messages({ user }) {
 
   const getIndustry = async () => {
     let account;
-    let individual: Individual = (await axios.get(`/api/profiles/individual/${user.id}`)).data.individual;
-    let business: Business = (await axios.get(`/api/profiles/business/${user.id}`)).data.business;
+    let individual: Individual = (
+      await axios.get(`/api/profiles/individual/${user.id}`)
+    ).data.individual;
+    let business: Business = (
+      await axios.get(`/api/profiles/business/${user.id}`)
+    ).data.business;
     if (!individual && business) {
       account = business;
     } else if (individual && !business) {

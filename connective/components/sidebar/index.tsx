@@ -4,7 +4,11 @@ import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { IApiResponseError, MessagesApiResponse } from '../../types/apiResponseTypes';
+import {
+  IApiResponseError,
+  MessagesApiResponse,
+} from "../../types/apiResponseTypes";
+import { Message } from "../../types/types";
 
 type Props = {
   text: string;
@@ -68,14 +72,15 @@ const Sidebar = ({ user }) => {
     }
   };
 
-  const [sum, setSum] = useState<number>(0);
-  const [array1, setArray1] = useState<Array<number>>([]);
+  const [sum, setSum] = useState();
+  const [array1, setArray1] = useState([]);
+
   const getConversations = async () => {
     try {
       const { data } = await axios.get("/api/messages/conversations");
       let temp = [];
-      data.forEach((item: Array<any>) => {
-        let tempItem = item.filter((a: any) => a.id != user.id)[0];
+      data.forEach((item) => {
+        let tempItem = item.filter((a) => a.id != user.id)[0];
         if (temp.filter((a) => a.id == tempItem.id).length == 0)
           temp.push(tempItem);
       });
@@ -92,12 +97,14 @@ const Sidebar = ({ user }) => {
     }
   };
   const getUnreadMessages = async (id: number) => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (await axios.get("/api/messages/" + id)).data;
-    if(res.type == "IApiResponseError") {
-      throw(res)
+    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
+      await axios.get("/api/messages/" + id)
+    ).data;
+    if (res.type == "IApiResponseError") {
+      throw res;
     } else {
-      const unReadMesssages = res.messages.filter((message: any) => {
-        return message.read != "1" && message.receiver == user.id;
+      const unReadMesssages = res.messages.filter((message: Message) => {
+        return !message.read && message.receiver == user.id;
       }).length;
       return unReadMesssages;
     }
@@ -200,7 +207,7 @@ const Sidebar = ({ user }) => {
         ></SidebarItem>
         <SidebarItem
           text="Messages"
-          text2={sum > 0 ? sum : null}
+          text2={sum && sum > 0 ? sum : null}
           icon="/assets/navbar/messages.png"
           route="/app/messages"
         ></SidebarItem>

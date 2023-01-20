@@ -1,7 +1,10 @@
 import { withIronSession } from "next-iron-session";
 import { DAO } from "../../../lib/dao";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { IApiResponseError, MessagesApiResponse } from "../../../types/apiResponseTypes";
+import {
+  IApiResponseError,
+  MessagesApiResponse,
+} from "../../../types/apiResponseTypes";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { otherID } = req.query;
@@ -9,7 +12,9 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     // @ts-ignore
     let user = req.session.get().user;
     if (typeof user == "undefined") {
-      return res.status(500).json({ success: false, error: "Not signed in" } as IApiResponseError);
+      return res
+        .status(500)
+        .json({ success: false, error: "Not signed in" } as IApiResponseError);
     }
     if (req.method == "GET") {
       var messages = await DAO.Messages.getByOtherUser(
@@ -17,18 +22,20 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         Number(otherID)
       );
       messages = messages.sort((a, b) => {
-        return parseInt(a.id) - parseInt(b.id);
+        return a.id - b.id;
       });
-      res.status(200).json({messages} as MessagesApiResponse.IGetOtherID);
+      res.status(200).json({ messages } as MessagesApiResponse.IGetOtherID);
     }
     if (req.method == "POST") {
       const { text } = req.body;
       let insertId = await DAO.Messages.add(user.id, Number(otherID), text);
-      res.status(200).json({insertId} as MessagesApiResponse.IPostOtherID);
+      res.status(200).json({ insertId } as MessagesApiResponse.IPostOtherID);
     }
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false, error: e } as IApiResponseError);
+    return res
+      .status(500)
+      .json({ success: false, error: e } as IApiResponseError);
   }
 }
 

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import uuid from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
 import sgMail from "@sendgrid/mail";
 import { DAO } from "../../../lib/dao";
@@ -26,7 +26,7 @@ export default async function handler(
         }
       }
 
-      const token = uuid.v4();
+      const token = uuidv4();
       const link = `http://localhost:3000/auth/resetpassword/${email}/${token}`;
 
       await sendEmail(link, email);

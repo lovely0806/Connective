@@ -4,11 +4,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Util from "../../../util";
 import axios from "axios";
-import { MarketplaceListCardItem, User } from "../../../types/types";
-import { ProfileApiResponse, IApiResponseError } from '../../../types/apiResponseTypes';
+import { ListItem, User } from "../../../types/types";
+import {
+  ProfileApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 type Props = {
-  item: MarketplaceListCardItem;
+  item: ListItem;
   preview: boolean;
   user: User;
 };
@@ -24,8 +27,8 @@ const ListMarketplace = ({ item, preview, user }: Props) => {
     let type = await Util.accountType(user.id);
     if (type == "Individual") {
       await axios.get("/api/profiles/individual").then((res) => {
-        let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data
-        if(data.type == "IApiResponseError") throw data
+        let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data;
+        if (data.type == "IApiResponseError") throw data;
         else {
           console.log(res.data);
           setProfilePicture(data.individual.profile_picture);
@@ -35,8 +38,8 @@ const ListMarketplace = ({ item, preview, user }: Props) => {
     }
     if (type == "Business") {
       await axios.get("/api/profiles/business").then((res) => {
-        let data: ProfileApiResponse.IBusiness | IApiResponseError = res.data
-        if(data.type == "IApiResponseError") throw data
+        let data: ProfileApiResponse.IBusiness | IApiResponseError = res.data;
+        if (data.type == "IApiResponseError") throw data;
         else {
           console.log(res.data);
           setProfilePicture(data.business.logo);

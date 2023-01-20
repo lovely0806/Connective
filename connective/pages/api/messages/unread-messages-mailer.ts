@@ -1,6 +1,6 @@
-import mysql, { RowDataPacket } from "mysql2";
-import _ from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
+import _ from "lodash";
+import { DAO } from "../../../lib/dao";
 import { mailOptions, transporter } from "../../../services/nodemailer";
 
 export default async function apiNewSession(
@@ -9,20 +9,14 @@ export default async function apiNewSession(
 ) {
   try {
     if (req.method == "GET") {
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [messages] = await connection
-        .promise()
-        .query(
-          "SELECT messages.id, Users.email FROM messages LEFT JOIN Users ON Users.id=`receiver` WHERE `read`='0' AND messages.timestamp < DATE_SUB(NOW(), interval 2 minute) AND `notified` ='0' ORDER BY timestamp DESC;"
-        );
+      const messages = await DAO.Messages.getUnnotified();
 
       let groupedMessages = _.mapValues(
-        _.groupBy(messages as Array<RowDataPacket>, "email"),
+        _.groupBy(messages, "email"),
         (mlist: Array<any>) => mlist.map((msg) => _.omit(msg, msg.email))
       );
 
       await mailer(groupedMessages);
-      //   console.log(results)
       res.status(200).json({ success: true });
     }
   } catch (e) {
@@ -31,14 +25,8 @@ export default async function apiNewSession(
   }
 }
 const markSentMessages = async (messages: Array<any>) => {
-  const connection = mysql.createConnection(process.env.DATABASE_URL);
-  // console.log(ids[0])
   messages.forEach(async function (message: any) {
-    await connection
-      .promise()
-      .query(
-        "UPDATE messages SET `notified`='1' WHERE id =" + message.id + ";"
-      );
+    await DAO.Messages.updateNotifyForSentMessage(message.id);
   });
 };
 

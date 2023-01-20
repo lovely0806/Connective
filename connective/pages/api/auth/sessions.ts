@@ -2,7 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import bcrypt from "bcryptjs";
 import { DAO } from "../../../lib/dao";
-import { AuthApiResponse, IApiResponseError } from '../../../types/apiResponseTypes';
+import {
+  AuthApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 export default withIronSession(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -25,14 +28,20 @@ export default withIronSession(
         console.log("No account");
         return res
           .status(500)
-          .json({ success: false, error: "Account does not exist" } as IApiResponseError);
+          .json({
+            success: false,
+            error: "Account does not exist",
+          } as IApiResponseError);
       }
 
       if (user) {
         if (!user.email_verified) {
           return res
             .status(500)
-            .json({ success: false, error: "Email not verified" } as IApiResponseError);
+            .json({
+              success: false,
+              error: "Email not verified",
+            } as IApiResponseError);
         }
       }
 
@@ -52,11 +61,17 @@ export default withIronSession(
 
         return res
           .status(201)
-          .json({accountExists: isBusinessAccount || isIndividualAccount ? true : false} as AuthApiResponse.ISessions);
+          .json({
+            accountExists:
+              isBusinessAccount || isIndividualAccount ? true : false,
+          } as AuthApiResponse.ISessions);
       } else {
         return res
           .status(500)
-          .json({ success: false, error: "Account does not exist" } as IApiResponseError);
+          .json({
+            success: false,
+            error: "Account does not exist",
+          } as IApiResponseError);
       }
     }
 
@@ -66,14 +81,20 @@ export default withIronSession(
       console.log("No account");
       return res
         .status(500)
-        .json({ success: false, error: "Account does not exist" } as IApiResponseError);
+        .json({
+          success: false,
+          error: "Account does not exist",
+        } as IApiResponseError);
     }
 
     if (user) {
       if (!user.email_verified) {
         return res
           .status(500)
-          .json({ success: false, error: "Email not verified" } as IApiResponseError);
+          .json({
+            success: false,
+            error: "Email not verified",
+          } as IApiResponseError);
       }
     }
 
@@ -88,7 +109,10 @@ export default withIronSession(
 
       return res
         .status(201)
-        .json({accountExists: isBusinessAccount || isIndividualAccount ? true : false} as AuthApiResponse.ISessions);
+        .json({
+          accountExists:
+            isBusinessAccount || isIndividualAccount ? true : false,
+        } as AuthApiResponse.ISessions);
     }
 
     return res.status(403).send("");

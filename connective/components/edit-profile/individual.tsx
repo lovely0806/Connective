@@ -6,7 +6,10 @@ import FileUpload from "../file-upload";
 import Util from "../../util";
 import Select from "react-select";
 import { User } from "../../types/types";
-import { ProfileApiResponse, IApiResponseError } from '../../types/apiResponseTypes';
+import {
+  ProfileApiResponse,
+  IApiResponseError,
+} from "../../types/apiResponseTypes";
 
 type Props = {
   user: User;
@@ -32,11 +35,11 @@ export default function EditProfile({ user }: Props) {
 
   const getProfile = async () => {
     await axios.get("/api/profiles/individual").then((res) => {
-      let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data
-      if(data.type == "IApiResponseError") {
-        throw(data)
+      let data: ProfileApiResponse.IIndividual | IApiResponseError = res.data;
+      if (data.type == "IApiResponseError") {
+        throw data;
       } else {
-        let individual = data.individual
+        let individual = data.individual;
         setUserId(individual.user_id.toString());
         setSrc(individual.profile_picture);
         setName(individual.name);

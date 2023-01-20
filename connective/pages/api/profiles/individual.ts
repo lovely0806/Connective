@@ -1,23 +1,27 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import mysql, { RowDataPacket } from "mysql2";
 import { withIronSession } from "next-iron-session";
-import { IApiResponseError } from "../../../types/apiResponseTypes";
+import { DAO } from "../../../lib/dao";
+import {
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../../types/apiResponseTypes";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     // @ts-ignore
     let user = req.session.get().user;
     if (typeof user == "undefined") {
-      return res.status(403).json({ success: false, error: "Not signed in" } as IApiResponseError);
+      return res
+        .status(403)
+        .json({ success: false, error: "Not signed in" } as IApiResponseError);
     }
     if (req.method == "GET") {
       let { id } = req.query;
       if (typeof id == "undefined") id = user.id;
-      //Returns callers account
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      var [results, fields] = await connection
-        .promise()
-        .query(`SELECT * FROM Individual WHERE user_id='${id}';`);
+
+      // Returns callers account
+      var individual = await DAO.Individual.getByUserId(Number(id));
+      /*
       var [listResults, listFields] = await connection
         .promise()
         .query(
@@ -38,23 +42,24 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       });
 
       results[0].lists = listResults;
-      res.status(200).json(results[0]);
+      */
+      res.status(200).json({ individual } as ProfileApiResponse.IIndividual);
     }
     if (req.method == "POST") {
       const { name, bio, pfp, location, status, industry, occupation } =
         req.body;
-      console.log(req.body);
-
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      await connection.promise().execute(
-        `
-                INSERT INTO Individual (
-                    user_id, name, profile_picture, bio, location, status, industry, occupation
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
-        [user.id, name, pfp, bio, location, status, industry, occupation]
+      await DAO.Individual.add(
+        user.id,
+        name,
+        bio,
+        pfp,
+        location,
+        0,
+        0,
+        industry,
+        status,
+        occupation
       );
-
-      connection.end();
       res.status(200).json({ success: true });
     }
     if (req.method == "PATCH") {
@@ -63,20 +68,17 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "PUT") {
       // console.log(user);
       const { name, bio, pfp, location, pfpChanged, status } = req.body;
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
-      let query;
-      if (pfpChanged) {
-        query = `UPDATE Individual SET name = '${name}', ${
-          pfpChanged ?? "profile_picture =" + `'${pfp}',`
-        } bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${
-          user.id
-        }';`;
-      } else {
-        query = `UPDATE Individual SET name = '${name}',bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${user.id}';`;
-      }
-      await connection.promise().execute(query);
 
-      connection.end();
+      await DAO.Individual.update(
+        user.id,
+        pfpChanged,
+        pfp,
+        name,
+        bio,
+        location,
+        status
+      );
+
       res.status(200).json({ success: true });
     }
   } catch (e) {

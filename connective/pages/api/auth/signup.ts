@@ -2,7 +2,10 @@ import { DAO } from "../../../lib/dao";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import bcrypt from "bcryptjs";
-import { AuthApiResponse, IApiResponseError } from "../../../types/apiResponseTypes";
+import {
+  AuthApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null);
 
@@ -19,7 +22,10 @@ export default async function handler(
     var user = await DAO.Users.getByEmail(email);
 
     if (user) {
-      res.status(500).json({ success: false, error: "Email already exists" } as IApiResponseError);
+      res.status(500).json({
+        success: false,
+        error: "Email already exists",
+      } as IApiResponseError);
     } else {
       const stripe_account = await stripe.accounts.create({ type: "express" });
 
@@ -28,6 +34,12 @@ export default async function handler(
     }
   } catch (e) {
     console.log(e);
-    res.status(500).json({ success: false, error: e } as AuthApiResponse.ISignup);
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: e,
+        type: "ISignup",
+      } as AuthApiResponse.ISignup);
   }
 }

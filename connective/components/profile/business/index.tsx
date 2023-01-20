@@ -4,6 +4,10 @@ import { useRouter } from "next/router";
 import { industries } from "../../../common/selectOptions";
 import Avatar from "../../avatar";
 import { User } from "../../../types/types";
+import {
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../../types/apiResponseTypes";
 
 type Props = {
   user: User;
@@ -30,12 +34,16 @@ export default function BusinessProfile({ user, id }: Props) {
   const getProfile = async () => {
     try {
       await axios.get(`/api/profiles/business?id=${id}`).then((res) => {
-        if (typeof res.data != "undefined") {
-          setData(res.data);
-          console.log(res.data);
+        let data: ProfileApiResponse.IBusiness | IApiResponseError = res.data;
+        if (data.type == "IApiResponseError") {
+          throw data;
+        } else {
+          setData(data.business);
           setLoaded(true);
           const selectedIndustry = industries.find(
-            (industry) => industry.id == res.data.industry
+            (industry) =>
+              industry.id ==
+              (data as ProfileApiResponse.IBusiness).business.industry
           );
           setIndustry(selectedIndustry.name);
         }

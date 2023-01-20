@@ -6,6 +6,10 @@ import FileUpload from "../file-upload";
 import Select from "react-select";
 import Util from "../../util";
 import { industryOptions } from "../../common/selectOptions";
+import {
+  IApiResponseError,
+  ProfileApiResponse,
+} from "../../types/apiResponseTypes";
 
 export default function EditProfile({ user }) {
   const [name, setName] = useState<string>("");
@@ -34,21 +38,24 @@ export default function EditProfile({ user }) {
   const getProfile = async () => {
     try {
       await axios.get("/api/profiles/business").then((res) => {
-        if (typeof res.data != "undefined") {
-          console.log("res.data", res.data);
-          setUserId(res.data.user_id);
-          setName(res.data.company_name);
-          setDescription(res.data.description);
-          setLocation(res.data.location);
-          setUrl(res.data.website);
+        let data: ProfileApiResponse.IBusiness | IApiResponseError = res.data;
+        if (data.type == "IApiResponseError") {
+          throw data;
+        } else {
+          let business = data.business;
+          setUserId(business.user_id.toString());
+          setName(business.company_name);
+          setDescription(business.description);
+          setLocation(business.location);
+          setUrl(business.website);
           const selectedIndustry = industryOptions.find(
-            (industry) => industry.value == res.data.industry
+            (industry) => industry.value == business.industry
           );
           setIndustry(selectedIndustry.value);
           setIndustryName(selectedIndustry.label);
-          setSize(res.data.size);
-          setSrc(res.data.logo);
-          setStatus(res.data.status);
+          setSize(business.size);
+          setSrc(business.logo);
+          setStatus(business.status);
           setLoaded(true);
         }
       });

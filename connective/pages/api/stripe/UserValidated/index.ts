@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
-import mysql from "mysql2";
 import Stripe from "stripe";
+import { DAO } from "../../../../lib/dao";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null);
 
@@ -16,18 +16,16 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       let id = req.query.id;
       if (typeof id == "undefined") id = user.id;
 
-      const connection = mysql.createConnection(process.env.DATABASE_URL);
       if (typeof user == "undefined") {
         return res.status(500).json({ success: false, error: "Not signed in" });
       }
-      var [result, fields] = await connection
-        .promise()
-        .query(`SELECT * FROM Users WHERE id='${id}';`);
+
+      const result = await DAO.Users.getById(user.id);
       // @ts-ignore
       connection.close();
-      if (result[0]) {
+      if (result) {
         const acc = await stripe.accounts.retrieve({
-          stripeAccount: result[0].stripeID,
+          stripeAccount: result.stripeID,
         });
         return res.json({ success: true, verified: acc.charges_enabled });
       } else {

@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { DAO } from "../../../lib/dao";
-import { ProfileApiResponse, IApiResponseError } from '../../../types/apiResponseTypes';
+import {
+  ProfileApiResponse,
+  IApiResponseError,
+} from "../../../types/apiResponseTypes";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,10 +12,12 @@ export default async function handler(
   try {
     if (req.method == "GET") {
       let users = await DAO.Discover.getAll();
-      res.status(200).json({users} as ProfileApiResponse.IDiscoverProfiles);
+      res.status(200).json({ users } as ProfileApiResponse.IDiscoverProfiles);
     }
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false, error: e } as IApiResponseError);
+    return res
+      .status(500)
+      .json({ success: false, error: e } as IApiResponseError);
   }
 }
