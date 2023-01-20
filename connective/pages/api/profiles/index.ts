@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { DAO } from "../../../lib/dao";
+import { withIronSession } from "next-iron-session";
 import {
   ProfileApiResponse,
   IApiResponseError,
 } from "../../../types/apiResponseTypes";
 import { ActivityFeed } from "../../../services/activity/activityFeed";
 
-export default async function handler(
+export async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -28,3 +29,12 @@ export default async function handler(
       .json({ success: false, error: e } as IApiResponseError);
   }
 }
+
+export default withIronSession(handler, {
+  password: process.env.APPLICATION_SECRET,
+  cookieName: "Connective",
+  // if your localhost is served on http:// then disable the secure flag
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+  },
+});
