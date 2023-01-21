@@ -23,6 +23,7 @@ import {
   IValidationItem,
   ValidationResponse,
 } from "../../types/types";
+import {Recache} from "recache-client"
 
 export default function CreateProfile({ user }) {
   const [name, setName] = useState<string>("");
@@ -65,6 +66,16 @@ export default function CreateProfile({ user }) {
       label: "Looking to expand my network",
     },
   ];
+
+  
+  useEffect(() => {
+    try {
+      Recache.logEvent_AutodetectIp("onboarding")
+    } catch (e) {
+      console.log(e)
+    }
+    
+  }, [])
 
   function getIndustryOptions() {
     return industries.map((industry) => {

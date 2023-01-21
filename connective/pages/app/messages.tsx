@@ -11,6 +11,7 @@ import {
   IApiResponseError,
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
+import {Recache} from "recache-client"
 
 type PropsMessage = {
   text: string;
@@ -50,6 +51,15 @@ const Conversations = ({
   const [filteredConversations, setFilteredConversations] = useState<
     Array<Conversation>
   >([]);
+  
+  useEffect(() => {
+    try {
+      Recache.logEvent_AutodetectIp("messages")
+    } catch (e) {
+      console.log(e)
+    }
+    
+  }, [])
 
   useEffect(() => {
     setFilteredConversations([...conversations]);

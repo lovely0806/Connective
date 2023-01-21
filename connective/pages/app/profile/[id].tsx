@@ -7,11 +7,20 @@ import IndividualProfile from "../../../components/profile/individual";
 import Util from "../../../util";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import {Recache} from "recache-client"
 
 export default function Profile({ user }) {
   const [accountType, setAccountType] = useState<string>();
   const router = useRouter();
   const { id } = router.query;
+
+  useEffect(() => {
+    try {
+      Recache.logEvent_AutodetectIp("profile")
+    } catch (e) {
+      console.log(e)
+    }
+  }, [])
 
   const getAccountType = async () => {
     setAccountType(await Util.accountType(Number(id.toString())));

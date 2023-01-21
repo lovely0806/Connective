@@ -109,6 +109,14 @@ export default function Messages({ user }) {
   };
 
   useEffect(() => {
+    try {
+      Recache.logEvent_AutodetectIp("discover")
+    } catch (e) {
+      console.log(e)
+    }
+  }, [])
+
+  useEffect(() => {
     if (typeof user == "undefined") {
       router.push("/auth/signin");
     } else {
