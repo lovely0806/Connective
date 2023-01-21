@@ -8,7 +8,7 @@ import Avatar from "../../components/avatar";
 import { User, Message, Conversation } from "../../types/types";
 import {
   MessagesApiResponse,
-  IApiResponseError,
+  IApiResponseError, 
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
 
@@ -17,7 +17,7 @@ type PropsMessage = {
   sent: boolean;
 };
 import { io } from "socket.io-client";
-import { Events } from "common/events";
+import { Events } from "../../common/events";
 
 let socketIO;
 
