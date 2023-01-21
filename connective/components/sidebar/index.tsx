@@ -111,12 +111,6 @@ const Sidebar = ({ user }) => {
 
   useEffect(() => {
     getConversations();
-
-    let intervalId = setInterval(() => {
-      getConversations();
-    }, 5000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   return (

@@ -733,13 +733,13 @@ export namespace DAO {
 
     /**
      * Updates read flag to read message
-     * @param ids message id array
+     * @param {sender, receiver} ids of sender and receiver
      */
-    static async updateReadMessage(ids: Array<number>): Promise<void> {
+    static async updateReadMessage({sender, receiver}: {sender: number, receiver: number}): Promise<void> {
       await connection
         .promise()
         .query(
-          'UPDATE messages SET `read`="1" WHERE id IN (' + ids.join(", ") + ");"
+          'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',[sender,receiver]
         );
     }
   }
