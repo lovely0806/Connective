@@ -221,17 +221,16 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
     if(document.getElementById("message-input").value != ""){
       try {
         if(socketIO.connected){
-          await axios.post("/api/messages/" + selectedUser.id, {text})
-          socketIO.emit(Events.SEND_MESSAGE,{receiver:selectedUser.id, sender:user.id, text})
           document.getElementById("message-input").value = ""
-    
+          setMessages([...messages, {sender: user.id, text}])
+          setIsNewMessageArrived(true);
+          socketIO.emit(Events.SEND_MESSAGE,{receiver:selectedUser.id, sender:user.id, text})
+          await axios.post("/api/messages/" + selectedUser.id, {text})
           //Re-fetch the list of conversations if the message was sent to a new conversation
           console.log(conversations.filter(a => a.id == selectedUser.id))
           if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
               getConversations()
           }
-          setMessages([...messages, {sender: user.id, text}])
-          setIsNewMessageArrived(true);
         } else {
           setShowError(true)
         }
@@ -245,7 +244,7 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       let temp = messages
       const {data} = await axios.get("/api/messages/" + selectedUser.id)
       prevMessages = data.length
-      setMessages(data)
+      setMessages(data.messages)
       setIsNewMessageArrived(true);
       console.log('message data from api',{data});
       
@@ -444,12 +443,6 @@ export default function Messages({ user }) {
   useEffect(() => {
     getUsers();
     getConversations();
-
-    let intervalId = setInterval(() => {
-      getConversations();
-    }, 5000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   return (
