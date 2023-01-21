@@ -129,12 +129,12 @@ type PropsChat = {
   getConversations: () => Promise<void>;
 };
 
-const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getConversations}) => {
+const Chat = ({users, selectedUser, user, conversations, getConversations}) => {
   const [messages, setMessages] = useState([])
   const [isNewMessageArrived,setIsNewMessageArrived] = useState(false);
   const [showError,setShowError] =useState(false);
   const [socketToken, setSocketToken] = useState('')
-  const timeoutRef = useRef();
+  const timeoutRef = useRef<any>(null);
   const [userOptions, setUserOptions] = useState([])
   const [text, setText] = useState("")
   let prevMessages = 0
@@ -177,17 +177,18 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
           socketIO = null;
           setSocketToken('');
         });
-
-        socketIO.on(Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),(msg)=>{
-          console.log('from socket',{msg});
-          setMessages((prevMsgs)=>{
-            const msgs = [...prevMsgs]
-            msgs.push(msg)
-            return msgs
+        if (typeof Events.NEW_MESSAGE_TO_ID === 'function') {
+          socketIO.on(Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),(msg)=>{
+            console.log('from socket',{msg});
+            setMessages((prevMsgs)=>{
+              const msgs = [...prevMsgs]
+              msgs.push(msg)
+              return msgs
+            })
+            setIsNewMessageArrived(true);
+            readMessages({sender:selectedUser.id, receiver:user.id})
           })
-          setIsNewMessageArrived(true);
-          readMessages({sender:selectedUser.id, receiver:user.id})
-        })
+        }
       }
     }
   },[user, selectedUser, socketToken]);
@@ -218,10 +219,10 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
   },[showError])
 
   const sendMessage = async() => {
-    if(document.getElementById("message-input").value != ""){
+    if((document.getElementById("message-input") as HTMLInputElement).value != ""){
       try {
         if(socketIO.connected){
-          document.getElementById("message-input").value = ""
+          (document.getElementById("message-input") as HTMLInputElement).value = ""
           setMessages([...messages, {sender: user.id, text}])
           setIsNewMessageArrived(true);
           socketIO.emit(Events.SEND_MESSAGE,{receiver:selectedUser.id, sender:user.id, text})
@@ -249,7 +250,7 @@ const Chat = ({users, selectedUser, setSelectedUser, user, conversations, getCon
       console.log('message data from api',{data});
       
       const emailz = await axios('/api/messages/unread-messages-mailer', {
-        header: {
+        headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
