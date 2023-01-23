@@ -9,8 +9,14 @@ import {
   IApiResponseError,
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
+import { Industry, User } from "../../types/types";
 
-export default function EditProfile({ user, industries }) {
+type Props = {
+  user: User;
+  industries: Industry[];
+};
+
+export default function EditProfile({ user, industries } : Props) {
   const [name, setName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [nameError, setNameError] = useState<string>("");
@@ -50,8 +56,8 @@ export default function EditProfile({ user, industries }) {
           const selectedIndustry = industries.find(
             (industry) => industry.id == business.industry
           );
-          setIndustry(selectedIndustry.value);
-          setIndustryName(selectedIndustry.label);
+          setIndustry(selectedIndustry.id);
+          setIndustryName(selectedIndustry.name);
           setSize(business.size);
           setSrc(business.logo);
           setStatus(business.status);
@@ -100,8 +106,8 @@ export default function EditProfile({ user, industries }) {
     const selectedIndustry = industries.find(
       (industry) => industry.id == value
     );
-    setIndustryName(selectedIndustry.label);
-    setIndustry(selectedIndustry.value);
+    setIndustryName(selectedIndustry.name);
+    setIndustry(selectedIndustry.id);
   };
 
   const submit = async () => {
