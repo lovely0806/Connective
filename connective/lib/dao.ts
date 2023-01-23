@@ -1,6 +1,5 @@
 import moment from "moment";
 import mysql, { OkPacket, RowDataPacket } from "mysql2";
-import { industryOptions } from "../common/selectOptions";
 import {
   Message,
   User,
