@@ -10,7 +10,7 @@ import {
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
 
-export default function EditProfile({ user }) {
+export default function EditProfile({ user, industries }) {
   const [name, setName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [nameError, setNameError] = useState<string>("");
@@ -47,8 +47,8 @@ export default function EditProfile({ user }) {
           setDescription(business.description);
           setLocation(business.location);
           setUrl(business.website);
-          const selectedIndustry = industryOptions.find(
-            (industry) => industry.value == business.industry
+          const selectedIndustry = industries.find(
+            (industry) => industry.id == business.industry
           );
           setIndustry(selectedIndustry.value);
           setIndustryName(selectedIndustry.label);
@@ -97,8 +97,8 @@ export default function EditProfile({ user }) {
   }, [pfp]);
 
   const handleChangeIndustry = (value: number) => {
-    const selectedIndustry = industryOptions.find(
-      (industry) => industry.value == value
+    const selectedIndustry = industries.find(
+      (industry) => industry.id == value
     );
     setIndustryName(selectedIndustry.label);
     setIndustry(selectedIndustry.value);
@@ -225,7 +225,7 @@ export default function EditProfile({ user }) {
                 onChange={(e) => {
                   handleChangeIndustry(Number(e.value));
                 }}
-                options={industryOptions as any}
+                options={industries as any}
                 placeholder="Choose your industry"
                 value={{ value: industryName, label: industryName }}
               ></Select>
