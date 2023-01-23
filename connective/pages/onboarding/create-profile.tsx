@@ -24,8 +24,9 @@ import {
   ValidationResponse,
 } from "../../types/types";
 import {Recache} from "recache-client"
+import { DAO } from "../../lib/dao";
 
-export default function CreateProfile({ user }) {
+export default function CreateProfile({ user, industries }) {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [url, setUrl] = useState<string>("");
@@ -515,8 +516,10 @@ export const getServerSideProps = withIronSession(
       return { props: {} };
     }
 
+    const industries = await DAO.Industries.getAll();
+
     return {
-      props: { user },
+      props: { user, industries },
     };
   },
   {

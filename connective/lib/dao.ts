@@ -1,5 +1,6 @@
 import moment from "moment";
 import mysql, { OkPacket, RowDataPacket } from "mysql2";
+import { industryOptions } from "../common/selectOptions";
 import {
   Message,
   User,
@@ -10,6 +11,8 @@ import {
   UnreadNotification,
   StripePrice,
   Conversation,
+  Industry,
+  Occupation
 } from "../types/types";
 
 export namespace DAO {
@@ -741,6 +744,63 @@ export namespace DAO {
         .query(
           'UPDATE messages SET `read`="1" WHERE id IN (' + ids.join(", ") + ");"
         );
+    }
+  }
+
+  /**
+   * Contains functions for interacting with Industries in the database
+   */
+  export class Industries {
+    /**
+     * Gets all Industries
+     * @returns {Industry[]}
+     */
+    static async getAll(): Promise<Industry[]> {
+      var query = `SELECT ind.id, ind.name, occ.id as occupation_id, occ.name as occupation_name FROM industries AS ind left outer JOIN occupations AS occ on ind.id = occ.industry_id`;
+      var [results] = await connection.promise().query(query);
+
+      var id : number = -1;
+      var result : Industry[] = [];
+      var temp : Occupation[] = [];
+
+      for (let i = 0; i < (results as Array<RowDataPacket>).length; i++) {
+        if (results[i].id != id) {
+          if (id != -1) {
+            result.push({
+              id: results[i - 1].id,
+              name: results[i - 1].name,
+              occupations: temp
+            });
+            temp = [];
+          }
+          temp.push({
+            id: -1,
+            name: "Other"
+          })
+          if (results[i].occupation_id && results[i].occupation_name) {
+            temp.push({
+              id: results[i].occupation_id,
+              name: results[i].occupation_name
+            })
+          }
+          id = results[i].id
+        } else {
+          temp.push({
+            id: results[i].occupation_id,
+            name: results[i].occupation_name
+          })
+        }
+        if (i === (results as Array<RowDataPacket>).length - 1) {
+          result.push({
+            id: results[i].id,
+            name: results[i].name,
+            occupations: temp
+          });
+          temp = []
+        }
+      }
+
+      return result;
     }
   }
 }

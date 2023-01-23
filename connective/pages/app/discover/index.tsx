@@ -23,6 +23,7 @@ import {
   ProfileApiResponse,
   IApiResponseError,
 } from "../../../types/apiResponseTypes";
+import { DAO } from "../../../lib/dao";
 
 function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   return (
@@ -35,7 +36,7 @@ function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   );
 }
 
-export default function Messages({ user }) {
+export default function Messages({ user, industries }) {
   const router = useRouter();
   const discoverRef = useRef(null);
 
@@ -256,8 +257,10 @@ export const getServerSideProps = withIronSession(
       return { props: {} };
     }
 
+    const industries = await DAO.Industries.getAll();
+
     return {
-      props: { user },
+      props: { user, industries },
     };
   },
   {
