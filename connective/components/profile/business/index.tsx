@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { industries } from "../../../common/selectOptions";
 import Avatar from "../../avatar";
 import { User } from "../../../types/types";
 import {
