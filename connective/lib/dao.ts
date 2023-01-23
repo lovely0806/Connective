@@ -44,15 +44,19 @@ export namespace DAO {
      * @param {string} email The users email
      * @returns {User} The user object
      */
-    static async getByEmail(email: string): Promise<User> {
+    static async getByEmail(email: string): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
 
+      if(Array.isArray(results) && results.length == 0) return false
+      var selectedUser = results[0]
+      if(typeof(selectedUser) == "undefined") return false
+      
       const result = {
-        ...results[0],
-        email_verified: results[0].email_verified == 1,
-        is_signup_with_google: results[0].is_signup_with_google == 1,
-        show_on_discover: results[0].show_on_discover == 1,
+        ...selectedUser,
+        email_verified: selectedUser.email_verified == 1,
+        is_signup_with_google: selectedUser.is_signup_with_google == 1,
+        show_on_discover: selectedUser.show_on_discover == 1,
       } as User;
       return result;
     }

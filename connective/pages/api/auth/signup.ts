@@ -20,7 +20,7 @@ export default async function handler(
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
 
-    var user = await DAO.Users.getByEmail(email);
+    var user = await DAO.Users.getByEmail(email); //Will return false if user does not exist, or a User object if they do exist
 
     if (user) {
       res.status(500).json({
