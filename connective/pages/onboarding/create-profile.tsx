@@ -16,7 +16,6 @@ import {
   individual as ValidateIndividual,
 } from "../../util/validation/onboarding";
 import Head from "next/head";
-import { industries } from "../../common/selectOptions";
 import { SelectField } from "../../components/select-field/selectField";
 import {
   AccountType,

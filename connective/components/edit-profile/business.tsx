@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import FileUpload from "../file-upload";
 import Select from "react-select";
 import Util from "../../util";
-import { industryOptions } from "../../common/selectOptions";
 import {
   IApiResponseError,
   ProfileApiResponse,
