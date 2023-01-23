@@ -759,13 +759,13 @@ export namespace DAO {
       var query = `SELECT ind.id, ind.name, occ.id as occupation_id, occ.name as occupation_name FROM industries AS ind left outer JOIN occupations AS occ on ind.id = occ.industry_id`;
       var [results] = await connection.promise().query(query);
 
-      var id : number = -1;
+      var temp_id : number = -1;      // Id for comparison
       var result : Industry[] = [];
       var temp : Occupation[] = [];
 
       for (let i = 0; i < (results as Array<RowDataPacket>).length; i++) {
-        if (results[i].id != id) {
-          if (id != -1) {
+        if (results[i].id != temp_id) {
+          if (temp_id != -1) {
             result.push({
               id: results[i - 1].id,
               name: results[i - 1].name,
@@ -783,7 +783,7 @@ export namespace DAO {
               name: results[i].occupation_name
             })
           }
-          id = results[i].id
+          temp_id = results[i].id
         } else {
           temp.push({
             id: results[i].occupation_id,

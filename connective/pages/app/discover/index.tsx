@@ -9,7 +9,6 @@ import Image from "next/image";
 import { Recache } from "recache-client";
 import Head from "next/head";
 import ReactPaginate from "react-paginate";
-import { industries } from "../../../common/selectOptions";
 import DiscoverList from "../../../components/discover/list";
 import {
   Business,
