@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { withIronSession } from "next-iron-session";
 import Sidebar from "../../../components/sidebar";
