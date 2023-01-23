@@ -27,7 +27,7 @@ export default async function handler(
         success: false,
         error: "Email already exists",
       } as IApiResponseError);
-    } else {
+    } else if (typeof(user) == "boolean") {
       const stripe_account = await stripe.accounts.create({ type: "express" });
 
       await DAO.Users.add(username, hash, email, stripe_account.id);
