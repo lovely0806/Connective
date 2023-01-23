@@ -51,7 +51,7 @@ export namespace DAO {
       if(Array.isArray(results) && results.length == 0) return false
       var selectedUser = results[0]
       if(typeof(selectedUser) == "undefined") return false
-      
+
       const result = {
         ...selectedUser,
         email_verified: selectedUser.email_verified == 1,
