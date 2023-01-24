@@ -21,7 +21,7 @@ export default withIronSession(
           .json({ success: false, error: "Account does not exist" });
       }
 
-      if (user) {
+      if (typeof(user) != "boolean") {
         if (!user.email_verified) {
           return res
             .status(500)

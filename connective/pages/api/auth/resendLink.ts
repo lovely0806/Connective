@@ -13,7 +13,7 @@ export default async function handler(
   try {
     const { email } = req.body;
     let user = await DAO.Users.getByEmail(email);
-    if (user) {
+    if (typeof(user) != "boolean" && user) {
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastLinkSentTime = user.verification_timestamp;
         const diff = moment().diff(lastLinkSentTime, "minutes");

@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { industries } from "../../../common/selectOptions";
 import Avatar from "../../avatar";
-import { User } from "../../../types/types";
+import { User, Industry } from "../../../types/types";
 import {
   IApiResponseError,
   ProfileApiResponse,
@@ -11,10 +10,11 @@ import {
 
 type Props = {
   user: User;
+  industries: Industry[];
   id: number;
 };
 
-export default function BusinessProfile({ user, id }: Props) {
+export default function BusinessProfile({ user, industries, id }: Props) {
   const router = useRouter();
 
   const [data, setData] = useState<any>(null);

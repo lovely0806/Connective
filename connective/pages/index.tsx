@@ -7,8 +7,19 @@ import Footer from "../components/landing-page/Footer/Footer";
 import Hero from "../components/landing-page/Header/Hero";
 import Navbar from "../components/landing-page/Header/Navbar";
 import Offers from "../components/landing-page/Offers/Offers";
+import {Recache} from "recache-client"
+import {useEffect} from "react"
 
 export default function Home() {
+  useEffect(() => {
+    try {
+      Recache.logEvent_AutodetectIp("landing")
+    } catch (e) {
+      console.log(e)
+    }
+    
+  }, [])
+
   return (
     <div>
       <Head>

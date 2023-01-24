@@ -9,7 +9,6 @@ import Image from "next/image";
 import { Recache } from "recache-client";
 import Head from "next/head";
 import ReactPaginate from "react-paginate";
-import { industries } from "../../../common/selectOptions";
 import DiscoverList from "../../../components/discover/list";
 import {
   Business,
@@ -23,6 +22,7 @@ import {
   ProfileApiResponse,
   IApiResponseError,
 } from "../../../types/apiResponseTypes";
+import { DAO } from "../../../lib/dao";
 
 function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   return (
@@ -35,7 +35,7 @@ function Items({ currentItems }: { currentItems: Array<ReactNode> }) {
   );
 }
 
-export default function Messages({ user }) {
+export default function Messages({ user, industries }) {
   const router = useRouter();
   const discoverRef = useRef(null);
 
@@ -107,6 +107,14 @@ export default function Messages({ user }) {
     setDefaultIndustry(temp);
     setSelectedIndustry(temp);
   };
+
+  useEffect(() => {
+    try {
+      Recache.logEvent_AutodetectIp("discover")
+    } catch (e) {
+      console.log(e)
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof user == "undefined") {
@@ -248,8 +256,10 @@ export const getServerSideProps = withIronSession(
       return { props: {} };
     }
 
+    const industries = await DAO.Industries.getAll();
+
     return {
-      props: { user },
+      props: { user, industries },
     };
   },
   {
