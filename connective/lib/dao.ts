@@ -786,32 +786,37 @@ export namespace DAO {
             result.push({
               id: results[i - 1].id,
               name: results[i - 1].name,
-              occupations: temp
+              occupations: temp,
+              typename: "Industry"
             });
             temp = [];
           }
           temp.push({
             id: -1,
-            name: "Other"
+            name: "Other",
+            typename: "Occupation"
           })
           if (results[i].occupation_id && results[i].occupation_name) {
             temp.push({
               id: results[i].occupation_id,
-              name: results[i].occupation_name
+              name: results[i].occupation_name,
+              typename: "Occupation"
             })
           }
           temp_id = results[i].id
         } else {
           temp.push({
             id: results[i].occupation_id,
-            name: results[i].occupation_name
+            name: results[i].occupation_name,
+            typename: "Occupation"
           })
         }
         if (i === (results as Array<RowDataPacket>).length - 1) {
           result.push({
             id: results[i].id,
             name: results[i].name,
-            occupations: temp
+            occupations: temp,
+            typename: "Industry"
           });
           temp = []
         }

@@ -14,6 +14,7 @@ export type DiscoverUser = {
   logo: string;
   description: string;
   status: string;
+  typename: "DiscoverUser";
 };
 
 export type User = {
@@ -36,6 +37,7 @@ export type User = {
   description?: string;
   logo?: string;
   status?: string;
+  typename: "User";
 };
 
 export type ListItem = {
@@ -56,6 +58,7 @@ export type ListItem = {
   buyers?: number;
   logo?: string;
   username?: string;
+  typename: "ListItem";
 };
 
 export type Message = {
@@ -66,11 +69,13 @@ export type Message = {
   read?: boolean;
   notified?: boolean;
   timestamp?: string;
+  typename: "Message";
 };
 
 export type UnreadNotification = {
   id: number;
   email: string;
+  typename: "UnreadNotification";
 };
 
 export type Conversation = {
@@ -80,11 +85,13 @@ export type Conversation = {
   location: string;
   logo: string;
   unread?: number;
+  typename: "Conversation";
 };
 
 export type StripePrice = {
   price: number;
   stripeID: string;
+  typename: "StripePrice";
 };
 
 export type Business = {
@@ -100,6 +107,7 @@ export type Business = {
   profileViews: number;
   listViews: number;
   status: string;
+  typename: "Business";
 };
 
 export type Individual = {
@@ -112,33 +120,39 @@ export type Individual = {
   profileViews: number;
   listViews: number;
   status: string;
+  typename: "Individual";
 };
 
 export type Occupation = {
   id: number;
   name: string;
+  typename: "Occupation";
 };
 
 export type Industry = {
   id: number;
   name: string;
   occupations: Occupation[];
+  typename: "Industry";
 };
 
 export type EmailContent = {
   subject: string;
   msg: string;
+  typename: "EmailContent";
 };
 
 export interface IValidationItem {
   name: string;
   success: boolean;
   error?: string;
+  typename: "IValidationItem";
 }
 
 export class ValidationResponse {
   success: boolean;
   fields: IValidationItem[];
+  typename: "ValidationResponse";
 
   constructor() {
     this.success = true;
