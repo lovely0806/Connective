@@ -41,7 +41,7 @@ class Connection {
     }
 
     sendMessage(message: Message) {
-        if (UserIdsBySocketKeys.get(this.socket.id)) {
+        // if (UserIdsBySocketKeys.get(this.socket.id)) {
             if (typeof Events.NEW_MESSAGE_TO_ID === 'function') {
                 this.io.sockets.emit(
                     Events.NEW_MESSAGE_TO_ID(
@@ -52,21 +52,21 @@ class Connection {
                     }
                 );
             }
-        }
+        // }
     }
 
     disconnect() {
         console.log('client disconnect')
-        UserIdsBySocketKeys.delete(this.socket.id);
+        // UserIdsBySocketKeys.delete(this.socket.id);
     }
 }
 
 export const socketMiddleware = (io: Server) => {
-    io.use(authHandler);
+    // io.use(authHandler);
     io.on(Events.CONNECTION as string, (socket: Socket) => {
         const { token = '' } = socket.handshake.query || {};
-        createMapOfSocketIdByUserId(token as string, socket.id);
-        socketService.removeTokenFromConnectionKeys(token as string);
+        // createMapOfSocketIdByUserId(token as string, socket.id);
+        // socketService.removeTokenFromConnectionKeys(token as string);
         new Connection(io, socket);
     });
 };
