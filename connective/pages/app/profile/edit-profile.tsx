@@ -7,8 +7,9 @@ import EditBusinessProfile from "../../../components/edit-profile/business";
 import EditIndividualProfile from "../../../components/edit-profile/individual";
 import Util from "../../../util";
 import Head from "next/head";
+import { DAO } from "../../../lib/dao";
 
-export default function EditProfile({ user }) {
+export default function EditProfile({ user, industries }) {
   const router = useRouter();
 
   const [accountType, setAccountType] = useState<string>();
@@ -36,7 +37,7 @@ export default function EditProfile({ user }) {
       <Sidebar user={user}></Sidebar>
       <div className="h-screen w-screen overflow-y-scroll">
         {accountType == "Business" && (
-          <EditBusinessProfile user={user}></EditBusinessProfile>
+          <EditBusinessProfile user={user} industries={industries}></EditBusinessProfile>
         )}
         {accountType == "Individual" && (
           <EditIndividualProfile user={user}></EditIndividualProfile>
@@ -54,8 +55,10 @@ export const getServerSideProps = withIronSession(
       return { props: {} };
     }
 
+    const industries = await DAO.Industries.getAll();
+
     return {
-      props: { user },
+      props: { user, industries },
     };
   },
   {

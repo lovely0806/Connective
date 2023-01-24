@@ -28,7 +28,7 @@ export default (req: NextApiRequest, res: NextApiResponse<Response>) =>
         var hash = bcrypt.hashSync(accessToken, salt);
 
         let user = await DAO.Users.getByEmail(email);
-        if (user) {
+        if (typeof(user) != "boolean") {
           if (user.is_signup_with_google) {
             DAO.Users.updatePasswordHash(hash, email);
           } else {
