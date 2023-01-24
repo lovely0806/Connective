@@ -1,7 +1,7 @@
 import {DAO} from "../../lib/dao";
 import {describe, expect, test, beforeAll, afterAll} from "@jest/globals";
 
-describe("DAO.Users", () => {
+describe("Get by email", () => {
     test("Get user by email which exists", async () => {
         let User = await DAO.Users.getByEmail("kkingsbe@gmail.com");
         console.log(User)
