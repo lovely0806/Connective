@@ -10,6 +10,8 @@ import {
   UnreadNotification,
   StripePrice,
   Conversation,
+  Industry,
+  Occupation
 } from "../types/types";
 
 export namespace DAO {
@@ -42,15 +44,19 @@ export namespace DAO {
      * @param {string} email The users email
      * @returns {User} The user object
      */
-    static async getByEmail(email: string): Promise<User> {
+    static async getByEmail(email: string): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
 
+      if(Array.isArray(results) && results.length == 0) return false
+      var selectedUser = results[0]
+      if(typeof(selectedUser) == "undefined") return false
+
       const result = {
-        ...results[0],
-        email_verified: results[0].email_verified == 1,
-        is_signup_with_google: results[0].is_signup_with_google == 1,
-        show_on_discover: results[0].show_on_discover == 1,
+        ...selectedUser,
+        email_verified: selectedUser.email_verified == 1,
+        is_signup_with_google: selectedUser.is_signup_with_google == 1,
+        show_on_discover: selectedUser.show_on_discover == 1,
       } as User;
       return result;
     }
@@ -733,14 +739,71 @@ export namespace DAO {
 
     /**
      * Updates read flag to read message
-     * @param ids message id array
+     * @param {sender, receiver} ids of sender and receiver
      */
-    static async updateReadMessage(ids: Array<number>): Promise<void> {
+    static async updateReadMessage({sender, receiver}: {sender: number, receiver: number}): Promise<void> {
       await connection
         .promise()
         .query(
-          'UPDATE messages SET `read`="1" WHERE id IN (' + ids.join(", ") + ");"
+          'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',[sender,receiver]
         );
+    }
+  }
+
+  /**
+   * Contains functions for interacting with Industries in the database
+   */
+  export class Industries {
+    /**
+     * Gets all Industries
+     * @returns {Industry[]}
+     */
+    static async getAll(): Promise<Industry[]> {
+      var query = `SELECT ind.id, ind.name, occ.id as occupation_id, occ.name as occupation_name FROM industries AS ind left outer JOIN occupations AS occ on ind.id = occ.industry_id`;
+      var [results] = await connection.promise().query(query);
+
+      var temp_id : number = -1;      // Id for comparison
+      var result : Industry[] = [];
+      var temp : Occupation[] = [];
+
+      for (let i = 0; i < (results as Array<RowDataPacket>).length; i++) {
+        if (results[i].id != temp_id) {
+          if (temp_id != -1) {
+            result.push({
+              id: results[i - 1].id,
+              name: results[i - 1].name,
+              occupations: temp
+            });
+            temp = [];
+          }
+          temp.push({
+            id: -1,
+            name: "Other"
+          })
+          if (results[i].occupation_id && results[i].occupation_name) {
+            temp.push({
+              id: results[i].occupation_id,
+              name: results[i].occupation_name
+            })
+          }
+          temp_id = results[i].id
+        } else {
+          temp.push({
+            id: results[i].occupation_id,
+            name: results[i].occupation_name
+          })
+        }
+        if (i === (results as Array<RowDataPacket>).length - 1) {
+          result.push({
+            id: results[i].id,
+            name: results[i].name,
+            occupations: temp
+          });
+          temp = []
+        }
+      }
+
+      return result;
     }
   }
 }

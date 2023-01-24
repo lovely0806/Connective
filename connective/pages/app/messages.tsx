@@ -8,7 +8,7 @@ import Avatar from "../../components/avatar";
 import { User, Message, Conversation } from "../../types/types";
 import {
   MessagesApiResponse,
-  IApiResponseError,
+  IApiResponseError, 
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
 import {Recache} from "recache-client"
@@ -17,6 +17,10 @@ type PropsMessage = {
   text: string;
   sent: boolean;
 };
+import { io } from "socket.io-client";
+import { Events } from "../../common/events";
+
+let socketIO;
 
 const Message = ({ text, sent }: PropsMessage) => {
   if (sent) {
@@ -135,166 +139,193 @@ type PropsChat = {
   getConversations: () => Promise<void>;
 };
 
-const Chat = ({
-  users,
-  selectedUser,
-  user,
-  conversations,
-  getConversations,
-}: PropsChat) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [userOptions, setUserOptions] = useState<
-    Array<{ value: number; label: string }>
-  >([]);
-  const [text, setText] = useState<string>("");
-  let prevMessages = 0;
+const Chat = ({users, selectedUser, user, conversations, getConversations}) => {
+  const [messages, setMessages] = useState([])
+  const [isNewMessageArrived,setIsNewMessageArrived] = useState(false);
+  const [showError,setShowError] =useState(false);
+  const [socketToken, setSocketToken] = useState('')
+  const timeoutRef = useRef<any>(null);
+  const [userOptions, setUserOptions] = useState([])
+  const [text, setText] = useState("")
+  let prevMessages = 0
+
+  const scrollWindow=()=>{
+    document.getElementById("messages-container").scroll({ top: document.getElementById("messages-container").scrollHeight, behavior: "smooth"})
+  }
 
   useEffect(() => {
-    let temp = [];
-    users.forEach((user: { id: number; username: string; email: string }) => {
-      temp.push({
-        value: user.id,
-        label: user.username + " (" + user.email + ")",
-      });
-    });
-    setUserOptions(temp);
-  }, [users]);
+      let temp = []
+      users.forEach(user => {
+          temp.push({value: user.id, label: user.username + " (" + user.email + ")"})
+      })
+      setUserOptions(temp)
+  }, [users])
 
-  useEffect(() => {
-    if (selectedUser != null) getMessages();
-    else setMessages([]);
-
-    let intervalId = setInterval(() => {
-      if (selectedUser != null) getMessages();
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [selectedUser]);
-
-  const sendMessage = async () => {
-    // @ts-ignore
-    if (document.getElementById("message-input").value != "") {
-      await axios.post("/api/messages/" + selectedUser.id, { text });
-      // @ts-ignore
-      document.getElementById("message-input").value = "";
-
-      //Re-fetch the list of conversations if the message was sent to a new conversation
-      if (
-        conversations.filter((a: { id: number }) => a.id == selectedUser.id)
-          .length == 0
-      ) {
-        getConversations();
-      }
-      setMessages([...messages, { sender: user.id, text }]);
+  useEffect(()=>{
+    if(user?.id && !socketToken){
+      (async()=>{
+        try {
+          const { data: { key } } = await axios.get(`${process.env.NEXT_PUBLIC_SOCKET_HOST}/socket/connection/key/${user.id}`,
+          { withCredentials: true })
+          setSocketToken(key)
+        } catch (error) {
+          setShowError(true);
+        }
+      })()
     }
-  };
+  },[user, socketToken])
 
-  const getMessages = async () => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
-      await axios.get("/api/messages/" + selectedUser.id)
-    ).data;
-    if (res.type == "IApiResponseError") {
-      throw res;
-    } else {
-      if (res.messages.length > prevMessages) {
-        document.getElementById("messages-container").scroll({
-          top: document.getElementById("messages-container").scrollHeight,
-          behavior: "smooth",
+
+  
+  useEffect(()=>{
+    if (user && selectedUser && socketToken){
+      if(!socketIO){
+        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST,{ query: { token:socketToken }, })
+        
+        socketIO.on(Events.DISCONNECT, () => {
+          setShowError(true);
+          socketIO = null;
+          setSocketToken('');
         });
+        if (typeof Events.NEW_MESSAGE_TO_ID === 'function') {
+          socketIO.on(Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),(msg)=>{
+            console.log('from socket',{msg});
+            setMessages((prevMsgs)=>{
+              const msgs = [...prevMsgs]
+              msgs.push(msg)
+              return msgs
+            })
+            setIsNewMessageArrived(true);
+            readMessages({sender:selectedUser.id, receiver:user.id})
+          })
+        }
       }
-      prevMessages = res.messages.length;
-      setMessages(res.messages);
-
-      const unReadMesssages = res.messages.filter((message) => {
-        return (
-          !message.read &&
-          message.receiver == user.id &&
-          message.sender == selectedUser.id
-        );
-      });
-      await axios("/api/messages/unread-messages-mailer", {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-      await readMessages(unReadMesssages);
     }
-  };
+  },[user, selectedUser, socketToken]);
 
-  const readMessages = async (unReadMesssages: Array<Message>) => {
-    await axios.post("/api/messages/read-message", {
+  useEffect(()=>{
+    if(isNewMessageArrived){
+      scrollWindow()
+      setIsNewMessageArrived(false);
+    }
+  },[isNewMessageArrived])  
+
+  useEffect(() => {
+      if(selectedUser != null){
+        getMessages();
+      } else {
+        setMessages([])
+      }
+
+  }, [selectedUser])
+
+  useEffect(()=>{
+      if(showError){
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          setShowError(false)
+        }, 1500);
+      }
+  },[showError])
+
+  const sendMessage = async() => {
+    if((document.getElementById("message-input") as HTMLInputElement).value != ""){
+      try {
+        if(socketIO.connected){
+          (document.getElementById("message-input") as HTMLInputElement).value = ""
+          setMessages([...messages, {sender: user.id, text}])
+          setIsNewMessageArrived(true);
+          socketIO.emit(Events.SEND_MESSAGE,{receiver:selectedUser.id, sender:user.id, text})
+          await axios.post("/api/messages/" + selectedUser.id, {text})
+          //Re-fetch the list of conversations if the message was sent to a new conversation
+          console.log(conversations.filter(a => a.id == selectedUser.id))
+          if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
+              getConversations()
+          }
+        } else {
+          setShowError(true)
+        }
+      } catch (e) {
+        setShowError(true);
+      }
+    }
+      
+  }
+  const getMessages = async () => {
+      let temp = messages
+      const {data} = await axios.get("/api/messages/" + selectedUser.id)
+      prevMessages = data.length
+      setMessages(data.messages)
+      setIsNewMessageArrived(true);
+      console.log('message data from api',{data});
+      
+      const emailz = await axios('/api/messages/unread-messages-mailer', {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+      })
+
+      // console.log(emailz);
+
+      await readMessages({sender:selectedUser.id, receiver:user.id})
+  }
+  
+  const readMessages = async ({sender,receiver}) => {
+    const data = {
+      sender,
+      receiver
+    }
+    await axios.post('/api/messages/read-message', {
       header: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       },
-      data: unReadMesssages,
+      data
     });
   };
 
   // Send message on pressing Enter key
   const messageInputRef = useRef(null);
   useEffect(() => {
-    const keyDownHandler = (event: { key: string }) => {
-      if (
-        event.key === "Enter" &&
-        document.activeElement === messageInputRef.current
-      ) {
+    const keyDownHandler = event => {
+      if (event.key === 'Enter' && document.activeElement === messageInputRef.current) {
         document.getElementById("message-submit-button").click();
       }
     };
-    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener('keydown', keyDownHandler);
     return () => {
-      document.removeEventListener("keydown", keyDownHandler);
+      document.removeEventListener('keydown', keyDownHandler);
     };
   }, []);
+  
+  
 
   return (
-    <div className="flex flex-col h-full w-4/5 rounded-r-lg">
-      {selectedUser && (
-        <div className="flex flex-row w-full p-2">
-          <p className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">
-            {selectedUser?.username + " (" + selectedUser?.email + ")"}
-          </p>
-        </div>
-      )}
-      <div
-        id="messages-container"
-        className="h-full overflow-y-scroll p-5 flex flex-col gap-10"
-      >
-        {messages.map((item, index) => {
-          return (
-            <Message
-              key={index}
-              text={item.text}
-              sent={item.sender == user.id}
-            ></Message>
-          );
-        })}
+      <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
+          {selectedUser && (
+            <div  className="flex flex-row w-full p-2">
+                <p  className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">{selectedUser?.username + " (" + selectedUser?.email + ")"}</p>
+            </div>
+          )}
+          
+          <div id="messages-container"  className="h-full overflow-y-scroll p-5 flex flex-col gap-10">
+              {messages?.map((item, index) => {
+                  return (
+                      <Message text={item.text} sent={item.sender == user.id}></Message>
+                  )
+              })}
+          </div>
+          {selectedUser && (
+              <div  className="flex flex-row p-5 gap-5">
+                  <input ref={messageInputRef} id="message-input" placeholder="Type something..." onChange={(e)=>{setText(e.target.value)}}  className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
+                  <button id="message-submit-button" className="w-fit px-10" onClick={sendMessage}>Send</button>
+              </div>
+          )}
+          {showError && <div className="ml-3 text-sm font-normal text-red-400 mb-4">Error connecting to server!</div>}
       </div>
-      {selectedUser && (
-        <div className="flex flex-row p-5 gap-5">
-          <input
-            ref={messageInputRef}
-            id="message-input"
-            placeholder="Type something..."
-            onChange={(e) => {
-              setText(e.target.value);
-            }}
-            className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
-          ></input>
-          <button
-            id="message-submit-button"
-            className="w-fit px-10"
-            onClick={sendMessage}
-          >
-            Send
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
+  )
+}
 
 
 
@@ -423,12 +454,6 @@ export default function Messages({ user }) {
   useEffect(() => {
     getUsers();
     getConversations();
-
-    let intervalId = setInterval(() => {
-      getConversations();
-    }, 5000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   return (

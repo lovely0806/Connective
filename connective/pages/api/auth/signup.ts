@@ -20,20 +20,20 @@ export default async function handler(
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
 
-    var user = await DAO.Users.getByEmail(email);
+    var user = await DAO.Users.getByEmail(email); //Will return false if user does not exist, or a User object if they do exist
 
     if (user) {
       res.status(500).json({
         success: false,
         error: "Email already exists",
       } as IApiResponseError);
-    } else {
+    } else if (typeof(user) == "boolean") {
       const stripe_account = await stripe.accounts.create({ type: "express" });
 
-      await DAO.Users.add(username, hash, email, stripe_account.id);
+      let userID = await DAO.Users.add(username, hash, email, stripe_account.id);
       await ActivityFeed.Auth.handleAuth(
         "user_signup",
-        `user ${user[0].id} has signed up`
+        `user ${userID} has signed up`
       );
       res.status(200).json({ success: true } as AuthApiResponse.ISignup);
     }

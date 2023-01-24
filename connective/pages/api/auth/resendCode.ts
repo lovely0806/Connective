@@ -13,7 +13,7 @@ export default async function handler(
     const { email } = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
     let user = await DAO.Users.getByEmail(email);
-    if (user) {
+    if (typeof(user) != "boolean") {
       if (user.send_code_attempt && user.send_code_attempt == 2) {
         const lastCodeSentTime = user.last_code_sent_time;
         const diff = moment().diff(lastCodeSentTime, "minutes");

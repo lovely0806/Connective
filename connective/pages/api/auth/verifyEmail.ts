@@ -13,7 +13,7 @@ export default async function handler(
     const { code, email } = req.body;
     let user = await DAO.Users.getByEmail(email);
 
-    if (user) {
+    if (typeof(user) != "boolean") {
       if (user.verify_email_otp === code) {
         await DAO.Users.updateVerificationStatus(true, email);
         return res

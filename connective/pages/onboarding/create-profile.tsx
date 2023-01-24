@@ -16,7 +16,6 @@ import {
   individual as ValidateIndividual,
 } from "../../util/validation/onboarding";
 import Head from "next/head";
-import { industries } from "../../common/selectOptions";
 import { SelectField } from "../../components/select-field/selectField";
 import {
   AccountType,
@@ -24,8 +23,9 @@ import {
   ValidationResponse,
 } from "../../types/types";
 import {Recache} from "recache-client"
+import { DAO } from "../../lib/dao";
 
-export default function CreateProfile({ user }) {
+export default function CreateProfile({ user, industries }) {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [url, setUrl] = useState<string>("");
@@ -515,8 +515,10 @@ export const getServerSideProps = withIronSession(
       return { props: {} };
     }
 
+    const industries = await DAO.Industries.getAll();
+
     return {
-      props: { user },
+      props: { user, industries },
     };
   },
   {

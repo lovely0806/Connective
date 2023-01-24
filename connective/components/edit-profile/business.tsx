@@ -5,13 +5,18 @@ import { useRouter } from "next/router";
 import FileUpload from "../file-upload";
 import Select from "react-select";
 import Util from "../../util";
-import { industryOptions } from "../../common/selectOptions";
 import {
   IApiResponseError,
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
+import { Industry, User } from "../../types/types";
 
-export default function EditProfile({ user }) {
+type Props = {
+  user: User;
+  industries: Industry[];
+};
+
+export default function EditProfile({ user, industries } : Props) {
   const [name, setName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [nameError, setNameError] = useState<string>("");
@@ -48,11 +53,11 @@ export default function EditProfile({ user }) {
           setDescription(business.description);
           setLocation(business.location);
           setUrl(business.website);
-          const selectedIndustry = industryOptions.find(
-            (industry) => industry.value == business.industry
+          const selectedIndustry = industries.find(
+            (industry) => industry.id == business.industry
           );
-          setIndustry(selectedIndustry.value);
-          setIndustryName(selectedIndustry.label);
+          setIndustry(selectedIndustry.id);
+          setIndustryName(selectedIndustry.name);
           setSize(business.size);
           setSrc(business.logo);
           setStatus(business.status);
@@ -98,11 +103,11 @@ export default function EditProfile({ user }) {
   }, [pfp]);
 
   const handleChangeIndustry = (value: number) => {
-    const selectedIndustry = industryOptions.find(
-      (industry) => industry.value == value
+    const selectedIndustry = industries.find(
+      (industry) => industry.id == value
     );
-    setIndustryName(selectedIndustry.label);
-    setIndustry(selectedIndustry.value);
+    setIndustryName(selectedIndustry.name);
+    setIndustry(selectedIndustry.id);
   };
 
   const submit = async () => {
@@ -226,7 +231,7 @@ export default function EditProfile({ user }) {
                 onChange={(e) => {
                   handleChangeIndustry(Number(e.value));
                 }}
-                options={industryOptions as any}
+                options={industries as any}
                 placeholder="Choose your industry"
                 value={{ value: industryName, label: industryName }}
               ></Select>

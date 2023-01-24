@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { withIronSession } from "next-iron-session";
 import Sidebar from "../../../components/sidebar";
@@ -8,8 +7,9 @@ import Util from "../../../util";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {Recache} from "recache-client"
+import { DAO } from "../../../lib/dao";
 
-export default function Profile({ user }) {
+export default function Profile({ user, industries }) {
   const [accountType, setAccountType] = useState<string>();
   const router = useRouter();
   const { id } = router.query;
@@ -41,6 +41,7 @@ export default function Profile({ user }) {
         {accountType == "Business" && (
           <BusinessProfile
             user={user}
+            industries={industries}
             id={Number(id.toString())}
           ></BusinessProfile>
         )}
@@ -63,8 +64,10 @@ export const getServerSideProps = withIronSession(
       return { props: {} };
     }
 
+    const industries = await DAO.Industries.getAll();
+
     return {
-      props: { user },
+      props: { user, industries },
     };
   },
   {

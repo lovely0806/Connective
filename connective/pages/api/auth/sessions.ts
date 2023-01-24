@@ -35,7 +35,7 @@ export default withIronSession(
           } as IApiResponseError);
       }
 
-      if (user) {
+      if (typeof(user) != "boolean") {
         if (!user.email_verified) {
           return res
             .status(500)
@@ -46,7 +46,7 @@ export default withIronSession(
         }
       }
 
-      if (bcrypt.compareSync(accessToken, user.password_hash.toString())) {
+      if (typeof(user) != "boolean" && bcrypt.compareSync(accessToken, user.password_hash.toString())) {
         // @ts-ignore
         req.session.set("user", { email, id: user.id });
         // @ts-ignore
@@ -93,7 +93,7 @@ export default withIronSession(
         } as IApiResponseError);
     }
 
-    if (user) {
+    if (typeof(user) != "boolean") {
       if (!user.email_verified) {
         return res
           .status(500)
@@ -104,7 +104,7 @@ export default withIronSession(
       }
     }
 
-    if (bcrypt.compareSync(password, user.password_hash.toString())) {
+    if (typeof(user) != "boolean" && bcrypt.compareSync(password, user.password_hash.toString())) {
       // @ts-ignore
       req.session.set("user", { email, id: user.id, rememberme });
       // @ts-ignore

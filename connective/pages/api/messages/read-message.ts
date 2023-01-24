@@ -10,11 +10,9 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(403).json({ success: false, error: "Not signed in" });
     }
     if (req.method == "POST") {
-      const IDs = req.body.data.map((message: { id: number }) => {
-        return message.id;
-      });
-      if (IDs.length > 0) {
-        await DAO.Messages.updateReadMessage(IDs);
+      const { sender, receiver } = req.body.data
+      if(sender && receiver){
+        await DAO.Messages.updateReadMessage({sender, receiver});
       }
       res.status(200).json({ success: true });
     }
