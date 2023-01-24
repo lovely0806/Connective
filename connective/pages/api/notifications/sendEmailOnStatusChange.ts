@@ -1,11 +1,9 @@
-const mysql = require("mysql2");
 import { withIronSession } from "next-iron-session";
 import { sendEmail } from "../../../lib/notifications/sendEmail";
 import { DAO } from "../../../lib/dao";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { status, profile } = req.body;
     const sessionUser = req.session.get().user;
     const userId = sessionUser.id;
