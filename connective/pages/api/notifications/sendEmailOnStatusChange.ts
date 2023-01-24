@@ -1,14 +1,14 @@
 const mysql = require("mysql2");
+import { withIronSession } from "next-iron-session";
 import { sendEmail } from "../../../lib/notifications/sendEmail";
 import { DAO } from "../../../lib/dao";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
-    const { userId, status, profile } = req.body;
+    const { status, profile } = req.body;
+    const sessionUser = req.session.get().user;
+    const userId = sessionUser.id;
 
     let user = null;
     if (profile === "Individual") {
@@ -19,10 +19,7 @@ export default async function handler(
 
     if (user) {
       const industry: number = user.industry;
-      let users = await DAO.Notifications.getUsersOfSameIndustry(
-        industry,
-        profile
-      );
+      let users = await DAO.Users.getByIndustry(industry, profile);
 
       if (users.length) {
         users = users.filter((user) => user.user_id != userId);
@@ -38,6 +35,16 @@ Team Connective`;
     }
     res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(200).json({ success: false, error: error.message });
+    return res.status(400).json({ success: false, error: error.message });
   }
 }
+
+export default withIronSession(handler, {
+  password: process.env.APPLICATION_SECRET,
+  cookieName: "Connective",
+  // if your localhost is served on http:// then disable the secure flag
+  cookieOptions: {
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  },
+});

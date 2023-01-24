@@ -125,7 +125,7 @@ export type Industry = {
   occupations: Occupation[];
 };
 
-export type UsersOfSameIndustry = {
+export type TruncatedUser = {
   id: number;
   name: string;
   email: string;

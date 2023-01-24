@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const { secretKey } = req.query;
 
     if (secretKey !== process.env.APPSMITH_SECRET_KEY) {
-      return res.status(400).json({ success: false, error: "unauthorized" });
+      return res.status(403).json({ success: false, error: "unauthorized" });
     }
     if (!userId || !profile) {
       return res
@@ -26,10 +26,7 @@ export default async function handler(req, res) {
 
     if (user) {
       const industry: number = user.industry;
-      let users = await DAO.Notifications.getUsersOfSameIndustry(
-        industry,
-        profile
-      );
+      let users = await DAO.Users.getByIndustry(industry, profile);
 
       if (users.length) {
         users = users.filter((user) => user.user_id != userId);
@@ -45,6 +42,6 @@ Connective Team`;
     }
     res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(200).json({ success: false, error: error.message });
+    return res.status(400).json({ success: false, error: error.message });
   }
 }

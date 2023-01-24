@@ -13,7 +13,7 @@ import {
   Conversation,
   Industry,
   Occupation,
-  UsersOfSameIndustry,
+  TruncatedUser,
 } from "../types/types";
 
 export namespace DAO {
@@ -261,6 +261,21 @@ export namespace DAO {
             "YYYY/MM/DD HH:mm:ss"
           )}" WHERE email='${email}';`
         );
+    }
+
+    /**
+     * Gets a users by their industry
+     * @param {string} industry The users industry
+     * @param {string} profile The users profile
+     * @returns {Array<TruncatedUser>} The user object
+     */
+    static async getByIndustry(
+      industry: string,
+      profile: string
+    ): Promise<Array<TruncatedUser>> {
+      const query = `SELECT ${profile}.user_id, ${profile}.name, Users.email FROM ${profile} INNER JOIN Users ON ${profile}.user_id = Users.id WHERE industry='${industry}'`;
+      const [users] = await connection.promise().query(query);
+      return users;
     }
   }
 
@@ -827,23 +842,6 @@ export namespace DAO {
       }
 
       return result;
-    }
-  }
-
-  export class Notifications {
-    /**
-     * Gets a users by their industry
-     * @param {string} industry The users industry
-     * @param {string} profile The users profile
-     * @returns {Array<DiscoverUser>} The user object
-     */
-    static async getUsersOfSameIndustry(
-      industry,
-      profile
-    ): Promise<Array<DiscoverUser>> {
-      const query = `SELECT ${profile}.user_id, ${profile}.name, Users.email FROM ${profile} INNER JOIN Users ON ${profile}.user_id = Users.id WHERE industry='${industry}'`;
-      const [users] = await connection.promise().query(query);
-      return users;
     }
   }
 }
