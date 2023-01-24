@@ -30,10 +30,10 @@ export default async function handler(
     } else if (typeof(user) == "boolean") {
       const stripe_account = await stripe.accounts.create({ type: "express" });
 
-      await DAO.Users.add(username, hash, email, stripe_account.id);
+      let userID = await DAO.Users.add(username, hash, email, stripe_account.id);
       await ActivityFeed.Auth.handleAuth(
         "user_signup",
-        `user ${user[0].id} has signed up`
+        `user ${userID} has signed up`
       );
       res.status(200).json({ success: true } as AuthApiResponse.ISignup);
     }
