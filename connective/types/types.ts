@@ -125,6 +125,12 @@ export type Industry = {
   occupations: Occupation[];
 };
 
+export type UsersOfSameIndustry = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 export type EmailContent = {
   subject: string;
   msg: string;

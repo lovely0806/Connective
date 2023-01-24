@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
-import { sendEmail } from "./sendEmail";
+import { sendEmail } from "../../../lib/notifications/sendEmail";
+import { DAO } from "../../../lib/dao";
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,18 +8,22 @@ export default async function handler(
 ) {
   try {
     const connection = mysql.createConnection(process.env.DATABASE_URL);
-    const { userId, status } = req.body;
-    const [result] = await connection
-      .promise()
-      .query(`SELECT * FROM Individual WHERE user_id='${userId}'`);
-    if (result.length) {
-      const user = result[0];
+    const { userId, status, profile } = req.body;
+
+    let user = null;
+    if (profile === "Individual") {
+      user = await DAO.Individual.getByUserId(userId);
+    } else {
+      user = await DAO.Business.getByUserId(userId);
+    }
+
+    if (user) {
       const industry: number = user.industry;
-      let [users] = await connection
-        .promise()
-        .query(
-          `SELECT * FROM Individual INNER JOIN Users ON Individual.user_id = Users.id WHERE industry='${industry}'`
-        );
+      let users = await DAO.Notifications.getUsersOfSameIndustry(
+        industry,
+        profile
+      );
+
       if (users.length) {
         users = users.filter((user) => user.user_id != userId);
         users.forEach(async (user) => {

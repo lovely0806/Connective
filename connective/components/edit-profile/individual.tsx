@@ -47,7 +47,7 @@ export default function EditProfile({ user }: Props) {
         setLocation(individual.location);
         setStatus(individual.status);
         setLoaded(true);
-        setCurruntStatus(res.data.status);
+        setCurruntStatus(individual.status);
       }
     });
   };
@@ -112,6 +112,7 @@ export default function EditProfile({ user }: Props) {
             await axios.post("/api/notifications/sendEmailOnStatusChange", {
               userId,
               status,
+              profile: "Individual",
             });
           }
           router.push(`/app/profile/${userId}`);

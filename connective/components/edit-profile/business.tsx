@@ -168,6 +168,7 @@ export default function EditProfile({ user, industries }: Props) {
             await axios.post("/api/notifications/sendEmailOnStatusChange", {
               userId,
               status,
+              profile: "Business",
             });
           }
           router.push(`/app/profile/${userId}`);
