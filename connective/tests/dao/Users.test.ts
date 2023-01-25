@@ -56,13 +56,8 @@ describe("Get by email", () => {
         expect(User).toBe(false);
     })
 
-<<<<<<< HEAD
-    test("User verified his email", async () => {
-        let User = await DAO.Users.getByEmail("spreadmycode@outlook.com");
-=======
     test("Get user with verified email", async () => {
         let User = await DAO.Users.getByEmail("kkingsbe@gmail.com");
->>>>>>> 67515ae1590763f863d5744f9bc749e13cbffed5
         console.log(User);
 
         //Make sure getByEmail found user
