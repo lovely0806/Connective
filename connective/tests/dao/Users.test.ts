@@ -57,7 +57,7 @@ describe("Get by email", () => {
     })
 
     test("User verified his email", async () => {
-        let User = await DAO.Users.getByEmail("kkingsbe@gmail.com");
+        let User = await DAO.Users.getByEmail("spreadmycode@outlook.com");
         console.log(User);
 
         //Make sure getByEmail found user
@@ -72,7 +72,6 @@ describe("Get by email", () => {
             expect(User.stripeID).not.toBeNull();
             expect(User.show_on_discover).not.toBeNull();
             expect(User.verification_timestamp).not.toBeNull();
-            expect(User.verify_email_otp).not.toBeNull();
             expect(User.send_code_attempt).not.toBeNull();
             expect(User.is_signup_with_google).toBe(false);
         }
@@ -125,7 +124,7 @@ describe("Get All", () => {
 
 describe("Get by Email and VerificationId", () => {
     test("Get user with existing email and verification_id",async () => {
-        let User = await DAO.Users.getByEmailAndVerificationId("tikitaka.mou@gmail.com", "62dee2ac-c673-4bd9-8098-ba3f1849852b");
+        let User = await DAO.Users.getByEmailAndVerificationId("spreadmycode@outlook.com", "6f2d6c73-3831-4b88-8445-9b35c6363487");
 
         expect(typeof(User)).not.toBe("boolean")
 
@@ -137,7 +136,7 @@ describe("Get by Email and VerificationId", () => {
             expect(User.verification_timestamp).not.toBeNull();
             expect(User.email_verified).toBe(true);
             expect(User.is_signup_with_google).toBe(false);
-            expect(User.show_on_discover).toBe(false);
+            expect(User.show_on_discover).toBe(true);
         }
     })
 })
@@ -211,5 +210,78 @@ describe("update verification status", () => {
         expect(User.verify_email_otp).toBeNull();
         expect(User.email).not.toBeNull();
         expect(User.email_verified).toBe(false);
+    })
+})
+
+describe("set opt code", () => {
+    test("set verify_email_opt",async () => {
+        let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
+        await DAO.Users.setOtpCode("7777", "johndoe@xxx.com");
+        let User = await DAO.Users.getByEmail("johndoe@xxx.com") as User;
+
+        expect(User.verify_email_otp).toBe("7777");
+
+        var query = `Delete from Users where id = ${Id}`;
+        await connection.promise().query(query);
+    })
+})
+
+describe("update opt code", () => {
+    test("update verify_email_opt and send_code_attempt",async () => {
+        let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
+        await DAO.Users.updateOtpCode("7777", 2, "johndoe@xxx.com");
+        let User = await DAO.Users.getByEmail("johndoe@xxx.com") as User;
+
+        expect(User.verify_email_otp).toBe("7777");
+        expect(User.send_code_attempt).toBe(2);
+
+        var query = `Delete from Users where id = ${Id}`;
+        await connection.promise().query(query);
+    })
+})
+
+describe("update verification_id", () => {
+    test("update verification_id",async () => {
+        let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
+        await DAO.Users.updateVerificationId("6f2d6c73-3831-4b88-8445-9b35c6363487", "johndoe@xxx.com");
+        let User = await DAO.Users.getByEmail("johndoe@xxx.com") as User;
+
+        expect(User.verification_id).toEqual("6f2d6c73-3831-4b88-8445-9b35c6363487");
+
+        var query = `Delete from Users where id = ${Id}`;
+        await connection.promise().query(query);
+    })
+})
+
+describe("update verification", () => {
+    test("update verification",async () => {
+        let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
+        await DAO.Users.updateVerification("6f2d6c73-3831-4b88-8445-9b35c6363487", 2, "johndoe@xxx.com");
+        let User = await DAO.Users.getByEmail("johndoe@xxx.com") as User;
+
+        expect(User.verification_id).toEqual("6f2d6c73-3831-4b88-8445-9b35c6363487");
+        expect(User.send_code_attempt).toEqual(2);
+
+        var query = `Delete from Users where id = ${Id}`;
+        await connection.promise().query(query);
+    })
+})
+
+describe("get users by industry", () => {
+    test("Get user by industry which exists",async () => {
+        let User = await DAO.Users.getByIndustry("1", "Individual");
+
+        expect(typeof(User)).not.toBe("boolean");
+
+        if(typeof(User) != "boolean") {
+            expect(User.length).toBeGreaterThan(0);
+        }
+    })
+
+    test("Get user by industry which not exist",async () => {
+        let User = await DAO.Users.getByIndustry("5", "Individual");
+
+        expect(typeof(User)).toBe("boolean");
+        expect(User).toBe(false);
     })
 })
