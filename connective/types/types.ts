@@ -136,6 +136,12 @@ export type Industry = {
   typename: "Industry";
 };
 
+export type TruncatedUser = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 export type EmailContent = {
   subject: string;
   msg: string;
