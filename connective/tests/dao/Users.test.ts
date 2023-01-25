@@ -52,12 +52,17 @@ describe("Get by email", () => {
         let User = await DAO.Users.getByEmail("abcdefg");
         console.log(User);
 
-        //Make sure getByEmail found user
+        //Make sure getByEmail does not find user
         expect(User).toBe(false);
     })
 
+<<<<<<< HEAD
     test("User verified his email", async () => {
         let User = await DAO.Users.getByEmail("spreadmycode@outlook.com");
+=======
+    test("Get user with verified email", async () => {
+        let User = await DAO.Users.getByEmail("kkingsbe@gmail.com");
+>>>>>>> 67515ae1590763f863d5744f9bc749e13cbffed5
         console.log(User);
 
         //Make sure getByEmail found user
@@ -77,7 +82,7 @@ describe("Get by email", () => {
         }
     })
 
-    test("User has not verified his email", async () => {
+    test("Get user with no verified email", async () => {
         let User = await DAO.Users.getByEmail("kyguy@gmail.com");
         console.log(User);
 
@@ -94,7 +99,7 @@ describe("Get by email", () => {
         }
     })
 
-    test("User signed up with google", async () => {
+    test("Get user which has used google sso", async () => {
         let User = await DAO.Users.getByEmail("devispei@gmail.com");
         console.log(User);
 
@@ -122,7 +127,7 @@ describe("Get All", () => {
     })
 })
 
-describe("Get by Email and VerificationId", () => {
+describe("Get by Email and Verification Id", () => {
     test("Get user with existing email and verification_id",async () => {
         let User = await DAO.Users.getByEmailAndVerificationId("spreadmycode@outlook.com", "6f2d6c73-3831-4b88-8445-9b35c6363487");
 
@@ -141,8 +146,8 @@ describe("Get by Email and VerificationId", () => {
     })
 })
 
-describe("add new user", () => {
-    test("add new user without google",async () => {
+describe("Add new user", () => {
+    test("Add new user with google SSO",async () => {
         let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0");
         let User = await DAO.Users.getById(Id as number);
 
@@ -164,7 +169,7 @@ describe("add new user", () => {
         await connection.promise().query(query);
     })
 
-    test("add new user with google",async () => {
+    test("Add new user without google SSO",async () => {
         let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
         let User = await DAO.Users.getById(Id as number);
 
@@ -187,8 +192,8 @@ describe("add new user", () => {
     })
 })
 
-describe("update verification status", () => {
-    test("update status to true",async () => {
+describe("Update verification status", () => {
+    test("Set status to true",async () => {
         await DAO.Users.updateVerificationStatus(true, "tikitaka.mou@gmail.com");
         let User = await DAO.Users.getByEmail("tikitaka.mou@gmail.com") as User;
 
@@ -200,7 +205,7 @@ describe("update verification status", () => {
         expect(User.email_verified).toBe(true);
     })
 
-    test("update status to false",async () => {
+    test("Set status to false",async () => {
         await DAO.Users.updateVerificationStatus(false, "tikitaka.mou@gmail.com");
         let User = await DAO.Users.getByEmail("tikitaka.mou@gmail.com") as User;
 
