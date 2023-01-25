@@ -26,7 +26,7 @@ export namespace DAO {
     /**
      * Gets a user by their id
      * @param {number} id The users email
-     * @returns {User} The user object
+     * @returns {User | boolean} The user object, or false if not found
      */
     static async getById(id: number): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE id=?;`;
@@ -48,7 +48,7 @@ export namespace DAO {
     /**
      * Gets a user by their email
      * @param {string} email The users email
-     * @returns {User} The user object
+     * @returns {User | boolean} The user object, or false if not found
      */
     static async getByEmail(email: string): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE email=?;`;
@@ -90,7 +90,7 @@ export namespace DAO {
      * Gets a user by their email and verification id
      * @param {string} email The users email
      * @param {string} verificationId The users verification id
-     * @returns {User} The user object
+     * @returns {User | boolean} The user object, or false if not found
      */
     static async getByEmailAndVerificationId(
       email: string,
@@ -145,10 +145,16 @@ export namespace DAO {
           ]);
         return result.insertId;
       } else {
-        var [result] = await connection
-          .promise()
-          .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
-        return result.insertId;
+        try {
+          var [result] = await connection
+            .promise()
+            .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
+          return result.insertId;
+        } catch (e) {
+          console.log("DAO.Users.add:")
+          console.log(e)
+          return false
+        }
       }
     }
 
@@ -275,14 +281,19 @@ export namespace DAO {
      * Gets a users by their industry
      * @param {string} industry The users industry
      * @param {string} profile The users profile
-     * @returns {Array<TruncatedUser>} The user object
+     * @returns {Array<TruncatedUser> | boolean} An array of Users, or false if not found
      */
     static async getByIndustry(
       industry: string,
       profile: string
-    ): Promise<Array<TruncatedUser>> {
+    ): Promise<Array<TruncatedUser> | boolean> {
       const query = `SELECT ${profile}.user_id, ${profile}.name, Users.email FROM ${profile} INNER JOIN Users ON ${profile}.user_id = Users.id WHERE industry='${industry}'`;
       const [users] = await connection.promise().query(query);
+
+      if(Array.isArray(users) && users.length == 0) {
+        return false
+      }
+
       return users as TruncatedUser[];
     }
   }
@@ -319,13 +330,14 @@ export namespace DAO {
     static async isBusiness(id: number): Promise<boolean> {
       var query = `SELECT COUNT(id) FROM Business WHERE user_id=?;`;
       let [res] = await connection.promise().query(query, [id]);
+
       return res[0]["count(id)"] > 0;
     }
 
     /**
      * Gets a business by its user id
      * @param {number} userId The businesses user id
-     * @returns {Business} A Business object representing the business
+     * @returns {Business | boolean} A Business object representing the business, or false if not found
      */
     static async getByUserId(userId: number): Promise<Business_Type | boolean> {
       var query = `SELECT * FROM Business WHERE user_id=?;`;
@@ -333,7 +345,6 @@ export namespace DAO {
 
       if (Array.isArray(result) && result.length == 0) return false;
       var selectedBusiness = result[0];
-      if (typeof selectedBusiness == "undefined") return false;
 
       return selectedBusiness as Business_Type;
     }
@@ -455,12 +466,13 @@ export namespace DAO {
     /**
      * Gets an individual by its user id
      * @param {number} userId The individuals user id
-     * @returns {Individual} An Indivual object representing the individual
+     * @returns {Individual | boolean} An Indivual object representing the individual, or false if not found
      */
     static async getByUserId(userId: number): Promise<Individual_Type | boolean> {
       var query = `SELECT * FROM Individual WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
 
+      if(Array.isArray(result) && result.length == 0) return false
       
       return result[0] as Individual_Type;
     }
