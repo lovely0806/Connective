@@ -118,7 +118,7 @@ describe("Get All", () => {
     test("Get all users",async () => {
         let Users = await DAO.Users.getAll();
 
-        // expect(Users.length).toBe(205);
+        expect(Users.length).toBeGreaterThan(0);
     })
 })
 
