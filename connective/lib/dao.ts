@@ -95,11 +95,15 @@ export namespace DAO {
     static async getByEmailAndVerificationId(
       email: string,
       verificationId: string
-    ): Promise<User> {
+    ): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE email=? AND verification_id=?;`;
       var [results] = await connection
         .promise()
         .query(query, [email, verificationId]);
+
+      if (Array.isArray(results) && results.length == 0) return false;
+      var selectedUser = results[0];
+      if (typeof selectedUser == "undefined") return false;
 
       const result = {
         ...results[0],
@@ -323,10 +327,15 @@ export namespace DAO {
      * @param {number} userId The businesses user id
      * @returns {Business} A Business object representing the business
      */
-    static async getByUserId(userId: number): Promise<Business_Type> {
+    static async getByUserId(userId: number): Promise<Business_Type | boolean> {
       var query = `SELECT * FROM Business WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
-      return result[0] as Business_Type;
+
+      if (Array.isArray(result) && result.length == 0) return false;
+      var selectedBusiness = result[0];
+      if (typeof selectedBusiness == "undefined") return false;
+
+      return selectedBusiness as Business_Type;
     }
 
     /**
@@ -439,6 +448,7 @@ export namespace DAO {
     static async isIndividual(id: number): Promise<boolean> {
       var query = `SELECT COUNT(id) FROM Individual WHERE user_id=?;`;
       let [res] = await connection.promise().query(query, [id]);
+      
       return res[0]["count(id)"] > 0;
     }
 
@@ -447,9 +457,11 @@ export namespace DAO {
      * @param {number} userId The individuals user id
      * @returns {Individual} An Indivual object representing the individual
      */
-    static async getByUserId(userId: number): Promise<Individual_Type> {
+    static async getByUserId(userId: number): Promise<Individual_Type | boolean> {
       var query = `SELECT * FROM Individual WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
+
+      
       return result[0] as Individual_Type;
     }
 
