@@ -28,9 +28,13 @@ export namespace DAO {
      * @param {number} id The users email
      * @returns {User} The user object
      */
-    static async getById(id: number): Promise<User> {
+    static async getById(id: number): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE id=?;`;
       var [results] = await connection.promise().query(query, [id]);
+
+      if (Array.isArray(results) && results.length == 0) return false;
+      var selectedUser = results[0];
+      if (typeof selectedUser == "undefined") return false;
 
       const result = {
         ...results[0],
