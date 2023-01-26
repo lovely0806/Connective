@@ -121,6 +121,8 @@ export type Individual = {
   listViews: number;
   status: string;
   typename: "Individual";
+  industry: string;
+  occupation: string;
 };
 
 export type Occupation = {
