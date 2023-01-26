@@ -57,8 +57,8 @@ export default function EditProfile({ user, industries }: Props) {
           const selectedIndustry = industries.find(
             (industry) => industry.id == business.industry
           );
-          setIndustry(selectedIndustry.value);
-          setIndustryName(selectedIndustry.label);
+          setIndustry(selectedIndustry.id);
+          setIndustryName(selectedIndustry.name);
           setSize(res.data.size);
           setSrc(res.data.logo);
           setStatus(res.data.status);
