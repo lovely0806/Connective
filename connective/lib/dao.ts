@@ -11,7 +11,7 @@ import {
   StripePrice,
   Conversation,
   Industry,
-  Occupation
+  Occupation,
 } from "../types/types";
 
 export namespace DAO {
@@ -48,9 +48,9 @@ export namespace DAO {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
 
-      if(Array.isArray(results) && results.length == 0) return false
-      var selectedUser = results[0]
-      if(typeof(selectedUser) == "undefined") return false
+      if (Array.isArray(results) && results.length == 0) return false;
+      var selectedUser = results[0];
+      if (typeof selectedUser == "undefined") return false;
 
       const result = {
         ...selectedUser,
@@ -730,6 +730,35 @@ export namespace DAO {
     }
 
     /**
+     * Gets all conversations from the given user
+     * @param {number} userId The users id
+     * @returns An array of conversations
+     */
+    static async getConversationsWithUnReadCount(
+      userId: number
+    ): Promise<Conversation[]> {
+      var query1 =
+        `SELECT distinct profile.id, profile.email, profile.username, profile.location, profile.logo, coalesce(c.unread_count,0) as "unread" 
+        FROM(
+          (
+            SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo 
+              FROM Users JOIN Business on Users.id = Business.user_id 
+            UNION ALL 
+            SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo 
+              FROM Users JOIN Individual on Users.id = Individual.user_id
+          ) as profile 
+          JOIN (select distinct sender, receiver from messages where sender = ? or receiver = ? ) as mes
+        ) 
+        LEFT JOIN ( select count(id) as "unread_count",sender from messages where receiver = ? and ` +
+        "`read`='0'" +
+        ` group by sender) as c on c.sender = profile.id where (profile.id = mes.sender or profile.id = mes.receiver) and profile.id != ?;`;
+      var [conversations] = await connection
+        .promise()
+        .query<RowDataPacket[]>(query1, [userId, userId, userId, userId]);
+      return conversations as Conversation[];
+    }
+
+    /**
      * Gets all unread & unnotified messages accross all users
      * @returns {{id: number, email: string}[]} All unread and unnotified messages
      */
@@ -755,11 +784,18 @@ export namespace DAO {
      * Updates read flag to read message
      * @param {sender, receiver} ids of sender and receiver
      */
-    static async updateReadMessage({sender, receiver}: {sender: number, receiver: number}): Promise<void> {
+    static async updateReadMessage({
+      sender,
+      receiver,
+    }: {
+      sender: number;
+      receiver: number;
+    }): Promise<void> {
       await connection
         .promise()
         .query(
-          'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',[sender,receiver]
+          'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',
+          [sender, receiver]
         );
     }
   }
@@ -776,9 +812,9 @@ export namespace DAO {
       var query = `SELECT ind.id, ind.name, occ.id as occupation_id, occ.name as occupation_name FROM industries AS ind left outer JOIN occupations AS occ on ind.id = occ.industry_id`;
       var [results] = await connection.promise().query(query);
 
-      var temp_id : number = -1;      // Id for comparison
-      var result : Industry[] = [];
-      var temp : Occupation[] = [];
+      var temp_id: number = -1; // Id for comparison
+      var result: Industry[] = [];
+      var temp: Occupation[] = [];
 
       for (let i = 0; i < (results as Array<RowDataPacket>).length; i++) {
         if (results[i].id != temp_id) {
@@ -786,34 +822,34 @@ export namespace DAO {
             result.push({
               id: results[i - 1].id,
               name: results[i - 1].name,
-              occupations: temp
+              occupations: temp,
             });
             temp = [];
           }
           temp.push({
             id: -1,
-            name: "Other"
-          })
+            name: "Other",
+          });
           if (results[i].occupation_id && results[i].occupation_name) {
             temp.push({
               id: results[i].occupation_id,
-              name: results[i].occupation_name
-            })
+              name: results[i].occupation_name,
+            });
           }
-          temp_id = results[i].id
+          temp_id = results[i].id;
         } else {
           temp.push({
             id: results[i].occupation_id,
-            name: results[i].occupation_name
-          })
+            name: results[i].occupation_name,
+          });
         }
         if (i === (results as Array<RowDataPacket>).length - 1) {
           result.push({
             id: results[i].id,
             name: results[i].name,
-            occupations: temp
+            occupations: temp,
           });
-          temp = []
+          temp = [];
         }
       }
 
