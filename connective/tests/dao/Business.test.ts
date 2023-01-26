@@ -59,7 +59,7 @@ describe("Add new business", () => {
       expect(typeof(Id)).toBe("number");
       expect(Id).toBeGreaterThan(0);
       expect(Business.id).toBe(Id);
-      expect(Business.user_id).toBe(500);
+      expect(Business.user_id).toBe(50000);
       expect(Business.company_name).toBe("DYB");
       expect(Business.description).toBe("DYB com");
       expect(Business.logo).toBe("logo_url");
@@ -72,5 +72,46 @@ describe("Add new business", () => {
 
     var query = `Delete from Business where id = ${Id}`;
     await connection.promise().query(query);
+  })
+})
+
+// describe("Update Business", () => {
+//   test("Set with given data",async () => {
+//     let Id = await DAO.Business.add(60000, "DYB", "DYB com", "logo_url", "DYB.com", "Paris", "1", "100-200", "status");
+//     await DAO.Business.update(60000, "BYD", true, "logo", "BYD com", "Lyon", 0, "1-5", "BYD.com", "update");
+
+//     let Business = await DAO.Business.getByUserId(60000);
+
+//     console.log(Business);
+//     expect(typeof(Business)).not.toBe("boolean");
+
+//     if(typeof(Business) != "boolean") {
+//       expect(Business.user_id).toBe(60000);
+//       expect(Business.company_name).toBe("BYD");
+//       expect(Business.description).toBe("BYD com");
+//       expect(Business.logo).toBe("logo");
+//       expect(Business.website).toBe("BY.com");
+//       expect(Business.location).toBe("Lyon");
+//       expect(Business.industry).toBe("0");
+//       expect(Business.size).toBe("1-5");
+//       expect(Business.status).toBe("update");
+//     }
+
+//     var query = `Delete from Business where id = ${Id}`;
+//     await connection.promise().query(query);
+//   })
+// })
+
+describe("Increments the number of views", () => {
+  test("increment ProfileViews", async () => {
+    var query = `Select profileViews from Business where user_id=412;`;
+    let [prevValue] = await connection.promise().query(query);
+
+    await DAO.Business.incrementProfileViews(412);
+
+    var query = `Select profileViews from Business where user_id=412;`;
+    let [currentValue] = await connection.promise().query(query);
+
+    expect(currentValue[0].profileViews).toBe(prevValue[0].profileViews + 1);
   })
 })

@@ -33,7 +33,6 @@ describe("Get by Id", () => {
 describe("Get by email", () => {
     test("Get user by email which exists and has not verified email", async () => {
         let User = await DAO.Users.getByEmail("kkingsbe@gmail.com");
-        console.log(User)
 
         //Make sure getByEmail found user
         expect(typeof(User)).not.toBe("boolean")
@@ -50,7 +49,6 @@ describe("Get by email", () => {
     //TODO: Implement
     test("Get user by email which does not exist", async () => {
         let User = await DAO.Users.getByEmail("abcdefg");
-        console.log(User);
 
         //Make sure getByEmail does not find user
         expect(User).toBe(false);
@@ -58,7 +56,6 @@ describe("Get by email", () => {
 
     test("User verified his email", async () => {
         let User = await DAO.Users.getByEmail("spreadmycode@outlook.com");
-        console.log(User);
 
         //Make sure getByEmail found user
         expect(typeof(User)).not.toBe("boolean")
@@ -79,7 +76,6 @@ describe("Get by email", () => {
 
     test("Get user with no verified email", async () => {
         let User = await DAO.Users.getByEmail("kyguy@gmail.com");
-        console.log(User);
 
         //Make sure getByEmail found user
         expect(typeof(User)).not.toBe("boolean")
@@ -96,7 +92,6 @@ describe("Get by email", () => {
 
     test("Get user which has used google sso", async () => {
         let User = await DAO.Users.getByEmail("devispei@gmail.com");
-        console.log(User);
 
         //Make sure getByEmail found user
         expect(typeof(User)).not.toBe("boolean")

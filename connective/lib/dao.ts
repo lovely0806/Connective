@@ -420,12 +420,12 @@ export namespace DAO {
       url: string,
       status: string
     ): Promise<void> {
-      var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      var query = `UPDATE Business SET company_name = ?, ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
       await connection
         .promise()
         .execute(query, [
           name,
-          pfpChanged ? "logo =" + `'${pfp}',` : "",
+          pfpChanged ? "logo =" + `${pfp},` : "",
           description,
           location,
           industry,
@@ -473,7 +473,7 @@ export namespace DAO {
       var [result] = await connection.promise().query(query, [userId]);
 
       if(Array.isArray(result) && result.length == 0) return false
-      
+
       return result[0] as Individual_Type;
     }
 
