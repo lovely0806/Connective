@@ -304,7 +304,7 @@ export namespace DAO {
      * @returns {DiscoverUser[]} All users who are displayed on the discover page
      */
     static async getAll(): Promise<Array<DiscoverUser>> {
-      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id`;
+      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`;
       var [results] = await connection.promise().query(query);
 
       const result = (results as Array<RowDataPacket>).map((value) => {
@@ -420,12 +420,12 @@ export namespace DAO {
       url: string,
       status: string
     ): Promise<void> {
-      var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      var query = `UPDATE Business SET company_name = ?, ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
       await connection
         .promise()
         .execute(query, [
           name,
-          pfpChanged ? "logo =" + `'${pfp}',` : "",
+          pfpChanged ? "logo =" + `${pfp},` : "",
           description,
           location,
           industry,
@@ -473,7 +473,7 @@ export namespace DAO {
       var [result] = await connection.promise().query(query, [userId]);
 
       if(Array.isArray(result) && result.length == 0) return false
-      
+
       return result[0] as Individual_Type;
     }
 
