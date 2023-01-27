@@ -11,12 +11,12 @@ export function business(
   let res = new ValidationResponse();
 
   res.fields = [
-    { name: "name", success: true },
-    { name: "size", success: true },
-    { name: "industry", success: true },
-    { name: "occupation", success: true },
-    { name: "description", success: true },
-    { name: "status", success: true },
+    { name: "name", success: true, typename: "IValidationItem" },
+    { name: "size", success: true, typename: "IValidationItem" },
+    { name: "industry", success: true, typename: "IValidationItem" },
+    { name: "occupation", success: true, typename: "IValidationItem" },
+    { name: "description", success: true, typename: "IValidationItem" },
+    { name: "status", success: true, typename: "IValidationItem" },
   ];
 
   if (name == "") {
@@ -57,11 +57,11 @@ export function individual(
   let res = new ValidationResponse();
 
   res.fields = [
-    { name: "name", success: true },
-    { name: "description", success: true },
-    { name: "industry", success: true },
-    { name: "occupation", success: true },
-    { name: "status", success: true },
+    { name: "name", success: true, typename: "IValidationItem" },
+    { name: "description", success: true, typename: "IValidationItem" },
+    { name: "industry", success: true, typename: "IValidationItem" },
+    { name: "occupation", success: true, typename: "IValidationItem" },
+    { name: "status", success: true, typename: "IValidationItem" },
   ];
 
   if (name == "") {
