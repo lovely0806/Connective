@@ -23,7 +23,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       const result = await DAO.Users.getById(user.id);
       // @ts-ignore
       connection.close();
-      if (result) {
+      if (typeof(result) != "boolean" &&result) {
         const acc = await stripe.accounts.retrieve({
           stripeAccount: result.stripeID,
         });
