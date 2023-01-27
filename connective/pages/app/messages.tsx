@@ -22,7 +22,7 @@ import { Events } from "../../common/events";
 
 let socketIO;
 
-const Message = ({ text, sent }: PropsMessage) => {
+const MessageFun = ({ text, sent }: PropsMessage) => {
   if (sent) {
     return (
       <div className="ml-auto bg-blue-100 w-3/5 p-2 rounded-lg shadow-md">

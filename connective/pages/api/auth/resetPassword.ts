@@ -20,7 +20,7 @@ export default async function handler(
     }
 
     if (user) {
-      if (user.verification_timestamp) {
+      if (typeof(user) != "boolean" && user.verification_timestamp) {
         const diff = moment().diff(user.verification_timestamp, "minutes");
 
         if (diff > 15) {

@@ -16,7 +16,7 @@ type Props = {
   industries: Industry[];
 };
 
-export default function EditProfile({ user, industries } : Props) {
+export default function EditProfile({ user, industries }: Props) {
   const [name, setName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [nameError, setNameError] = useState<string>("");
@@ -34,6 +34,7 @@ export default function EditProfile({ user, industries } : Props) {
   const [processing, setProcessing] = useState<boolean>(false);
   const [pfpChanged, setPfpChanged] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
+  const [curruntStatus, setCurruntStatus] = useState<string>("");
 
   useEffect(() => {
     setLoaded(false);
@@ -58,9 +59,10 @@ export default function EditProfile({ user, industries } : Props) {
           );
           setIndustry(selectedIndustry.id);
           setIndustryName(selectedIndustry.name);
-          setSize(business.size);
-          setSrc(business.logo);
-          setStatus(business.status);
+          setSize(res.data.size);
+          setSrc(res.data.logo);
+          setStatus(res.data.status);
+          setCurruntStatus(res.data.status);
           setLoaded(true);
         }
       });
@@ -159,9 +161,16 @@ export default function EditProfile({ user, industries } : Props) {
         size,
         status,
       })
-      .then((res) => {
+      .then(async (res) => {
         if (res.status == 200) {
           console.log("success");
+          if (status !== curruntStatus) {
+            await axios.post("/api/notifications/sendEmailOnStatusChange", {
+              userId,
+              status,
+              profile: "Business",
+            });
+          }
           router.push(`/app/profile/${userId}`);
         }
       })

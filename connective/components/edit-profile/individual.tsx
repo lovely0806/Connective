@@ -27,7 +27,7 @@ export default function EditProfile({ user }: Props) {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [processing, setProcessing] = useState<boolean>(false);
   const [pfpChanged, setPfpChanged] = useState<boolean>(false);
-
+  const [curruntStatus, setCurruntStatus] = useState<string>("");
   useEffect(() => {
     setLoaded(false);
     getProfile();
@@ -47,6 +47,7 @@ export default function EditProfile({ user }: Props) {
         setLocation(individual.location);
         setStatus(individual.status);
         setLoaded(true);
+        setCurruntStatus(individual.status);
       }
     });
   };
@@ -104,9 +105,16 @@ export default function EditProfile({ user }: Props) {
         location,
         status,
       })
-      .then((res) => {
+      .then(async (res) => {
         if (res.status == 200) {
           console.log("success");
+          if (status !== curruntStatus) {
+            await axios.post("/api/notifications/sendEmailOnStatusChange", {
+              userId,
+              status,
+              profile: "Individual",
+            });
+          }
           router.push(`/app/profile/${userId}`);
         }
       })
