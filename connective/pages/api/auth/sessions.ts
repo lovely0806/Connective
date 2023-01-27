@@ -132,7 +132,6 @@ export default withIronSession(
     cookieName: "Connective",
     cookieOptions: {
       secure: process.env.NODE_ENV === "production",
-    sameSite: 'none',
     },
     password: process.env.APPLICATION_SECRET,
   }

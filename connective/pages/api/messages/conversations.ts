@@ -16,7 +16,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         .json({ success: false, error: "Not signed in" } as IApiResponseError);
     }
     if (req.method == "GET") {
-      let conversations = await DAO.Messages.getConversations(user.id);
+      let conversations = await DAO.Messages.getConversationsWithUnReadCount(user.id);
       res
         .status(200)
         .json({ conversations } as MessagesApiResponse.IConversations);
@@ -33,7 +33,6 @@ export default withIronSession(handler, {
   // if your localhost is served on http:// then disable the secure flag
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",
-    sameSite: 'none',
   },
 });
 
