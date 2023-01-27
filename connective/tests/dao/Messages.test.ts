@@ -26,20 +26,23 @@ describe("Gets all messages between one user and another", () => {
  * test for add function of Messages class
 */
 describe("Adds a new message to the database", () => {
-  test("get messages by other user",async () => {
+  test("Add a message",async () => {
     let Id = await DAO.Messages.add(71, 168, "This is one for the test");
-    var query = `Select * from messages where id = ${Id}`;
-    let [message] = await connection.promise().query(query);
+    let message = await DAO.Messages.getById(Id.toString())
 
     expect(typeof(Id)).toBe("number");
-    expect(Id).toBeGreaterThan(0);
-    expect(message[0].id).toBe(Id);
-    expect(message[0].sender).toBe(71);
-    expect(message[0].receiver).toBe(168);
-    expect(message[0].text).toBe("This is one for the test");
-    expect(message[0].read).toBe("0");
-    expect(message[0].notified).toBe("0");
-
+    expect(typeof(message)).not.toBe("boolean")
+    if(typeof(message) != "boolean") {
+      expect(Id).toBeGreaterThan(0);
+      expect(message.id).toBe(Id);
+      expect(message.sender).toBe(71);
+      expect(message.receiver).toBe(168);
+      expect(message.text).toBe("This is one for the test");
+      expect(message.read).toBe("0");
+      expect(message.notified).toBe("0");
+    }
+    
+    //Post-test cleanup
     var query = `Delete from messages where id = ${Id}`;
     await connection.promise().query(query);
   })
@@ -62,35 +65,28 @@ describe("Gets all conversations from the given user", () => {
   })
 })
 
-// /**
-//  * test for getUnnotified function of Messages class
-// */
-// describe("Gets all unread & unnotified messages accross all users", () => {
-//   test("get unnotified messages",async () => {
-//     let messages: Array<Message> = await DAO.Messages.getUnnotified();
-//     console.log(messages);
-
-//     // expect(urls.length).toBeGreaterThan(0);
-//   })
-// })
-
 /**
  * test for updateNotifyForSentMessage function of Messages class
 */
-describe("Updates notified flag to present sent", () => {
-  test("undate notify",async () => {
-    var query = `Select notified from messages where id = 900`;
-    let [values] = await connection.promise().query(query);
-    let originValue: string = values[0].notified;
+describe("Updates notified flag", () => {
+  test("update notify",async () => {
+    let message = await DAO.Messages.getById("900")
+    expect(typeof(message)).not.toBe("boolean")
 
-    await DAO.Messages.updateNotifyForSentMessage(900);
-    var query = `Select * from messages where id = 900`;
-    let [messages] = await connection.promise().query(query);
+    if(typeof(message) != "boolean") {
+      let originValue = message.notified;
 
-    expect(messages[0].notified).toBe('1');
+      await DAO.Messages.updateNotifyForSentMessage(900);
+      message = await DAO.Messages.getById("900")
+      
+      if(typeof(message) != "boolean") {
+        expect(message.notified).toBe(true);
+      }
 
-    var recoverQuery ="UPDATE messages SET `notified` = " + originValue + " WHERE id = 900";
-    await connection.promise().query(recoverQuery);
+      //Post-test cleanup
+      var recoverQuery ="UPDATE messages SET `notified` = ? WHERE id = 900";
+      await connection.promise().query(recoverQuery, [originValue ? 1 : 0]);
+    }
   })
 })
 

@@ -1,5 +1,3 @@
-import { int } from "aws-sdk/clients/datapipeline";
-
 export enum AccountType {
   BUSINESS = "business",
   INDIVIDUAL = "individual",

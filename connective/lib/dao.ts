@@ -814,6 +814,27 @@ export namespace DAO {
           [sender, receiver]
         );
     }
+
+    /**
+     * Gets a message by its id
+     * @param {string} id The messages id
+     */
+    static async getById(id: string): Promise<Message | boolean> {
+      var query = `SELECT * from messages where id = ?`;
+      let [res] = await connection.promise().query<OkPacket>(query, [id]) as RowDataPacket[];
+
+      try {
+        const message = {
+              ...res,
+              notified: res.notified == 1,
+              read: res.read == 1,
+            } as Message;
+
+        return message
+      } catch (e) {
+        return false
+      }
+    }
   }
 
   /**

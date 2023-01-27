@@ -22,7 +22,7 @@ describe("Get by Id", () => {
         }
     })
 
-    test("Get user by Id which not exist",async () => {
+    test("Get user by Id which does not exist",async () => {
         let User = await DAO.Users.getById(5);
 
         expect(typeof(User)).toBe("boolean");
@@ -155,6 +155,7 @@ describe("Add new user", () => {
             expect(User.show_on_discover).toBe(false);
         }
 
+        //Post-test cleanup
         var query = `Delete from Users where id = ${Id}`;
         await connection.promise().query(query);
     })
@@ -177,6 +178,7 @@ describe("Add new user", () => {
             expect(User.show_on_discover).toBe(false);
         }
 
+        //Post-test cleanup
         var query = `Delete from Users where id = ${Id}`;
         await connection.promise().query(query);
     })
@@ -208,21 +210,22 @@ describe("Update verification status", () => {
     })
 })
 
-describe("set opt code", () => {
-    test("set verify_email_opt",async () => {
+describe("set otp code", () => {
+    test("set verify_email_otp",async () => {
         let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
         await DAO.Users.setOtpCode("7777", "johndoe@xxx.com");
         let User = await DAO.Users.getByEmail("johndoe@xxx.com") as User;
 
         expect(User.verify_email_otp).toBe("7777");
 
+        //Post-test cleanup
         var query = `Delete from Users where id = ${Id}`;
         await connection.promise().query(query);
     })
 })
 
-describe("update opt code", () => {
-    test("update verify_email_opt and send_code_attempt",async () => {
+describe("update otp code", () => {
+    test("update verify_email_otp and send_code_attempt",async () => {
         let Id = await DAO.Users.add("John Doe", "$2a$10$e6pO/qYuFpKBwSBQTbz6oO55baOWV4HZbl/tl57a2O8IBYNrk0Bqq", "johndoe@xxx.com", "acct_1MRTOGBRAJesAWt0", true);
         await DAO.Users.updateOtpCode("7777", 2, "johndoe@xxx.com");
         let User = await DAO.Users.getByEmail("johndoe@xxx.com") as User;
@@ -230,6 +233,7 @@ describe("update opt code", () => {
         expect(User.verify_email_otp).toBe("7777");
         expect(User.send_code_attempt).toBe(2);
 
+        //Post-test cleanup
         var query = `Delete from Users where id = ${Id}`;
         await connection.promise().query(query);
     })
@@ -243,6 +247,7 @@ describe("update verification_id", () => {
 
         expect(User.verification_id).toEqual("6f2d6c73-3831-4b88-8445-9b35c6363487");
 
+        //Post-test cleanup
         var query = `Delete from Users where id = ${Id}`;
         await connection.promise().query(query);
     })
@@ -263,20 +268,24 @@ describe("update verification", () => {
 })
 
 describe("get users by industry", () => {
-    test("Get user by industry which exists",async () => {
-        let User = await DAO.Users.getByIndustry("1", "Individual");
+    test("Get users by industry which exists",async () => {
+        let Users = await DAO.Users.getByIndustry("1", "Individual");
 
-        expect(typeof(User)).not.toBe("boolean");
+        expect(typeof(Users)).not.toBe("boolean");
 
-        if(typeof(User) != "boolean") {
-            expect(User.length).toBeGreaterThan(0);
+        if(typeof(Users) != "boolean") {
+            expect(Users.length).toBeGreaterThan(0);
+            let testUser = Users[0]
+            expect(testUser.email).not.toBeNull()
+            expect(testUser.name).not.toBeNull()
+            expect(testUser.id).not.toBeNull()
         }
     })
 
-    test("Get user by industry which not exist",async () => {
-        let User = await DAO.Users.getByIndustry("5", "Individual");
+    test("Get users by industry which does not exist",async () => {
+        let Users = await DAO.Users.getByIndustry("5", "Individual");
 
-        expect(typeof(User)).toBe("boolean");
-        expect(User).toBe(false);
+        expect(typeof(Users)).toBe("boolean");
+        expect(Users).toBe(false);
     })
 })
