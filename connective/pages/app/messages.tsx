@@ -370,7 +370,7 @@ const Chat = ({
       >
         {messages?.map((item, index) => {
           return (
-            <Message text={item.text} sent={item.sender == user.id}></Message>
+            <MessageFun text={item.text} sent={item.sender == user.id}></MessageFun>
           );
         })}
       </div>
@@ -510,22 +510,6 @@ export default function Messages({ user }) {
       // setSum(unreadMessages?.reduce((a, v) => a + v, 0));
     } catch (e) {
       console.log(e);
-    }
-  };
-
-  const getUnreadMessages = async (id: number) => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
-      await axios.get("/api/messages/" + id)
-    ).data;
-    if (res.type == "IApiResponseError") {
-      throw res;
-    } else {
-      if (res.messages) {
-        const unReadMesssages = res.messages.filter((message: Message) => {
-          return !message.read && message.receiver == user.id;
-        }).length;
-        return unReadMesssages;
-      }
     }
   };
 
