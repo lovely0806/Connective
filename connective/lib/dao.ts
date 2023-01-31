@@ -1,5 +1,6 @@
 import moment from "moment";
 import mysql, { OkPacket, RowDataPacket } from "mysql2";
+import Query from "mysql2/typings/mysql/lib/protocol/sequences/Query";
 import {
   Message,
   User,
@@ -11,7 +12,8 @@ import {
   StripePrice,
   Conversation,
   Industry,
-  Occupation
+  Occupation,
+  TruncatedUser,
 } from "../types/types";
 
 export namespace DAO {
@@ -24,11 +26,15 @@ export namespace DAO {
     /**
      * Gets a user by their id
      * @param {number} id The users email
-     * @returns {User} The user object
+     * @returns {User | boolean} The user object, or false if not found
      */
-    static async getById(id: number): Promise<User> {
+    static async getById(id: number): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE id=?;`;
       var [results] = await connection.promise().query(query, [id]);
+
+      if (Array.isArray(results) && results.length == 0) return false;
+      var selectedUser = results[0];
+      if (typeof selectedUser == "undefined") return false;
 
       const result = {
         ...results[0],
@@ -42,15 +48,15 @@ export namespace DAO {
     /**
      * Gets a user by their email
      * @param {string} email The users email
-     * @returns {User} The user object
+     * @returns {User | boolean} The user object, or false if not found
      */
     static async getByEmail(email: string): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE email=?;`;
       var [results] = await connection.promise().query(query, [email]);
 
-      if(Array.isArray(results) && results.length == 0) return false
-      var selectedUser = results[0]
-      if(typeof(selectedUser) == "undefined") return false
+      if (Array.isArray(results) && results.length == 0) return false;
+      var selectedUser = results[0];
+      if (typeof selectedUser == "undefined") return false;
 
       const result = {
         ...selectedUser,
@@ -84,16 +90,20 @@ export namespace DAO {
      * Gets a user by their email and verification id
      * @param {string} email The users email
      * @param {string} verificationId The users verification id
-     * @returns {User} The user object
+     * @returns {User | boolean} The user object, or false if not found
      */
     static async getByEmailAndVerificationId(
       email: string,
       verificationId: string
-    ): Promise<User> {
+    ): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE email=? AND verification_id=?;`;
       var [results] = await connection
         .promise()
         .query(query, [email, verificationId]);
+
+      if (Array.isArray(results) && results.length == 0) return false;
+      var selectedUser = results[0];
+      if (typeof selectedUser == "undefined") return false;
 
       const result = {
         ...results[0],
@@ -135,10 +145,16 @@ export namespace DAO {
           ]);
         return result.insertId;
       } else {
-        var [result] = await connection
-          .promise()
-          .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
-        return result.insertId;
+        try {
+          var [result] = await connection
+            .promise()
+            .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
+          return result.insertId;
+        } catch (e) {
+          console.log("DAO.Users.add:")
+          console.log(e)
+          return false
+        }
       }
     }
 
@@ -260,6 +276,26 @@ export namespace DAO {
           )}" WHERE email='${email}';`
         );
     }
+
+    /**
+     * Gets a users by their industry
+     * @param {string} industry The users industry
+     * @param {string} profile The users profile
+     * @returns {Array<TruncatedUser> | boolean} An array of Users, or false if not found
+     */
+    static async getByIndustry(
+      industry: string,
+      profile: string
+    ): Promise<Array<TruncatedUser> | boolean> {
+      const query = `SELECT ${profile}.user_id, ${profile}.name, Users.email FROM ${profile} INNER JOIN Users ON ${profile}.user_id = Users.id WHERE industry='${industry}'`;
+      const [users] = await connection.promise().query(query);
+
+      if(Array.isArray(users) && users.length == 0) {
+        return false
+      }
+
+      return users as TruncatedUser[];
+    }
   }
 
   export class Discover {
@@ -268,7 +304,7 @@ export namespace DAO {
      * @returns {DiscoverUser[]} All users who are displayed on the discover page
      */
     static async getAll(): Promise<Array<DiscoverUser>> {
-      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id`;
+      var query = `SELECT Users.show_on_discover, Users.id, Users.email, Business.industry, Business.company_name as username, Business.logo, Business.description, Business.status FROM Users JOIN Business on Users.id = Business.user_id UNION ALL SELECT Users.show_on_discover, Users.id, Users.email, Individual.industry, Individual.name as username, Individual.profile_picture AS logo, Individual.bio AS description, Individual.status FROM Users JOIN Individual on Users.id = Individual.user_id;`;
       var [results] = await connection.promise().query(query);
 
       const result = (results as Array<RowDataPacket>).map((value) => {
@@ -294,18 +330,23 @@ export namespace DAO {
     static async isBusiness(id: number): Promise<boolean> {
       var query = `SELECT COUNT(id) FROM Business WHERE user_id=?;`;
       let [res] = await connection.promise().query(query, [id]);
+
       return res[0]["count(id)"] > 0;
     }
 
     /**
      * Gets a business by its user id
      * @param {number} userId The businesses user id
-     * @returns {Business} A Business object representing the business
+     * @returns {Business | boolean} A Business object representing the business, or false if not found
      */
-    static async getByUserId(userId: number): Promise<Business_Type> {
+    static async getByUserId(userId: number): Promise<Business_Type | boolean> {
       var query = `SELECT * FROM Business WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
-      return result[0] as Business_Type;
+
+      if (Array.isArray(result) && result.length == 0) return false;
+      var selectedBusiness = result[0];
+
+      return selectedBusiness as Business_Type;
     }
 
     /**
@@ -379,12 +420,12 @@ export namespace DAO {
       url: string,
       status: string
     ): Promise<void> {
-      var query = `UPDATE Business SET company_name = ?, ?, description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      var query = `UPDATE Business SET company_name = ?, ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
       await connection
         .promise()
         .execute(query, [
           name,
-          pfpChanged ? "logo =" + `'${pfp}',` : "",
+          pfpChanged ? "logo =" + `${pfp},` : "",
           description,
           location,
           industry,
@@ -418,17 +459,21 @@ export namespace DAO {
     static async isIndividual(id: number): Promise<boolean> {
       var query = `SELECT COUNT(id) FROM Individual WHERE user_id=?;`;
       let [res] = await connection.promise().query(query, [id]);
+      
       return res[0]["count(id)"] > 0;
     }
 
     /**
      * Gets an individual by its user id
      * @param {number} userId The individuals user id
-     * @returns {Individual} An Indivual object representing the individual
+     * @returns {Individual | boolean} An Indivual object representing the individual, or false if not found
      */
-    static async getByUserId(userId: number): Promise<Individual_Type> {
+    static async getByUserId(userId: number): Promise<Individual_Type | boolean> {
       var query = `SELECT * FROM Individual WHERE user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
+
+      if(Array.isArray(result) && result.length == 0) return false
+
       return result[0] as Individual_Type;
     }
 
@@ -679,15 +724,15 @@ export namespace DAO {
      * @returns An array of conversations
      */
     static async getConversations(userId: number): Promise<Conversation[]> {
-      var query1 = `SELECT distinct profile.id, profile.email, profile.username, profile.location, profile.logo 
+      var query1 = `SELECT distinct profile.id, profile.email, profile.username, profile.location, profile.logo
         FROM(
           (
-            SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo 
-              FROM Users JOIN Business on Users.id = Business.user_id 
-            UNION ALL 
-            SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo 
+            SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo
+              FROM Users JOIN Business on Users.id = Business.user_id
+            UNION ALL
+            SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo
               FROM Users JOIN Individual on Users.id = Individual.user_id
-          ) as profile 
+          ) as profile
           JOIN (select distinct sender, receiver from messages where sender = ? or receiver = ? ) as mes
         ) where (profile.id = mes.sender or profile.id = mes.receiver) and profile.id != ?;`;
       var [conversations] = await connection
@@ -755,12 +800,40 @@ export namespace DAO {
      * Updates read flag to read message
      * @param {sender, receiver} ids of sender and receiver
      */
-    static async updateReadMessage({sender, receiver}: {sender: number, receiver: number}): Promise<void> {
+    static async updateReadMessage({
+      sender,
+      receiver,
+    }: {
+      sender: number;
+      receiver: number;
+    }): Promise<void> {
       await connection
         .promise()
         .query(
-          'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',[sender,receiver]
+          'UPDATE messages SET `read` = "1" WHERE sender=? AND receiver=?',
+          [sender, receiver]
         );
+    }
+
+    /**
+     * Gets a message by its id
+     * @param {string} id The messages id
+     */
+    static async getById(id: string): Promise<Message | boolean> {
+      var query = `SELECT * from messages where id = ?`;
+      let [res] = await connection.promise().query<OkPacket>(query, [id]) as RowDataPacket[];
+
+      try {
+        const message = {
+              ...res,
+              notified: res.notified == 1,
+              read: res.read == 1,
+            } as Message;
+
+        return message
+      } catch (e) {
+        return false
+      }
     }
   }
 
@@ -776,9 +849,9 @@ export namespace DAO {
       var query = `SELECT ind.id, ind.name, occ.id as occupation_id, occ.name as occupation_name FROM industries AS ind left outer JOIN occupations AS occ on ind.id = occ.industry_id`;
       var [results] = await connection.promise().query(query);
 
-      var temp_id : number = -1;      // Id for comparison
-      var result : Industry[] = [];
-      var temp : Occupation[] = [];
+      var temp_id: number = -1; // Id for comparison
+      var result: Industry[] = [];
+      var temp: Occupation[] = [];
 
       for (let i = 0; i < (results as Array<RowDataPacket>).length; i++) {
         if (results[i].id != temp_id) {
@@ -786,34 +859,39 @@ export namespace DAO {
             result.push({
               id: results[i - 1].id,
               name: results[i - 1].name,
-              occupations: temp
+              occupations: temp,
+              typename: "Industry"
             });
             temp = [];
           }
           temp.push({
             id: -1,
-            name: "Other"
+            name: "Other",
+            typename: "Occupation"
           })
           if (results[i].occupation_id && results[i].occupation_name) {
             temp.push({
               id: results[i].occupation_id,
-              name: results[i].occupation_name
+              name: results[i].occupation_name,
+              typename: "Occupation"
             })
           }
-          temp_id = results[i].id
+          temp_id = results[i].id;
         } else {
           temp.push({
             id: results[i].occupation_id,
-            name: results[i].occupation_name
+            name: results[i].occupation_name,
+            typename: "Occupation"
           })
         }
         if (i === (results as Array<RowDataPacket>).length - 1) {
           result.push({
             id: results[i].id,
             name: results[i].name,
-            occupations: temp
+            occupations: temp,
+            typename: "Industry"
           });
-          temp = []
+          temp = [];
         }
       }
 

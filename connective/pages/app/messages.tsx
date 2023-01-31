@@ -143,7 +143,7 @@ const Chat = ({users, selectedUser, user, conversations, getConversations}) => {
   const [messages, setMessages] = useState([])
   const [isNewMessageArrived,setIsNewMessageArrived] = useState(false);
   const [showError,setShowError] =useState(false);
-  const [socketToken, setSocketToken] = useState('')
+  const [socketToken, setSocketToken] = useState('temp')
   const timeoutRef = useRef<any>(null);
   const [userOptions, setUserOptions] = useState([])
   const [text, setText] = useState("")
@@ -161,19 +161,19 @@ const Chat = ({users, selectedUser, user, conversations, getConversations}) => {
       setUserOptions(temp)
   }, [users])
 
-  useEffect(()=>{
-    if(user?.id && !socketToken){
-      (async()=>{
-        try {
-          const { data: { key } } = await axios.get(`${process.env.NEXT_PUBLIC_SOCKET_HOST}/socket/connection/key/${user.id}`,
-          { withCredentials: true })
-          setSocketToken(key)
-        } catch (error) {
-          setShowError(true);
-        }
-      })()
-    }
-  },[user, socketToken])
+  // useEffect(()=>{
+  //   if(user?.id && !socketToken){
+  //     (async()=>{
+  //       try {
+  //         const { data: { key } } = await axios.get(`${process.env.NEXT_PUBLIC_SOCKET_HOST}/socket/connection/key/${user.id}`,
+  //         { withCredentials: true })
+  //         setSocketToken(key)
+  //       } catch (error) {
+  //         setShowError(true);
+  //       }
+  //     })()
+  //   }
+  // },[user, socketToken])
 
 
   
