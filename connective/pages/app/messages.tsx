@@ -8,10 +8,10 @@ import Avatar from "../../components/avatar";
 import { User, Message, Conversation } from "../../types/types";
 import {
   MessagesApiResponse,
-  IApiResponseError, 
+  IApiResponseError,
   ProfileApiResponse,
 } from "../../types/apiResponseTypes";
-import {Recache} from "recache-client"
+import { Recache } from "recache-client";
 
 type PropsMessage = {
   text: string;
@@ -22,7 +22,7 @@ import { Events } from "../../common/events";
 
 let socketIO;
 
-const Message = ({ text, sent }: PropsMessage) => {
+const MessageFun = ({ text, sent }: PropsMessage) => {
   if (sent) {
     return (
       <div className="ml-auto bg-blue-100 w-3/5 p-2 rounded-lg shadow-md">
@@ -55,15 +55,14 @@ const Conversations = ({
   const [filteredConversations, setFilteredConversations] = useState<
     Array<Conversation>
   >([]);
-  
+
   useEffect(() => {
     try {
-      Recache.logEvent_AutodetectIp("messages")
+      Recache.logEvent_AutodetectIp("messages");
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-    
-  }, [])
+  }, []);
 
   useEffect(() => {
     setFilteredConversations([...conversations]);
@@ -119,9 +118,9 @@ const Conversations = ({
               />
             )}
             <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
-            {unreadMessages[item.id] > 0 ? (
+            {item.id !== selectedUser.id && item.unread > 0 ? (
               <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
-                {unreadMessages[item.id]}
+                {item.unread}
               </span>
             ) : null}
           </div>
@@ -139,27 +138,40 @@ type PropsChat = {
   getConversations: () => Promise<void>;
 };
 
-const Chat = ({users, selectedUser, user, conversations, getConversations}) => {
-  const [messages, setMessages] = useState([])
-  const [isNewMessageArrived,setIsNewMessageArrived] = useState(false);
-  const [showError,setShowError] =useState(false);
-  const [socketToken, setSocketToken] = useState('temp')
+const Chat = ({
+  users,
+  selectedUser,
+  user,
+  conversations,
+  getConversations,
+  setConversations,
+}) => {
+  const [messages, setMessages] = useState([]);
+  const [isNewMessageArrived, setIsNewMessageArrived] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [socketToken, setSocketToken] = useState("abcd");
   const timeoutRef = useRef<any>(null);
-  const [userOptions, setUserOptions] = useState([])
-  const [text, setText] = useState("")
-  let prevMessages = 0
+  const [userOptions, setUserOptions] = useState([]);
+  const [text, setText] = useState("");
+  let prevMessages = 0;
 
-  const scrollWindow=()=>{
-    document.getElementById("messages-container").scroll({ top: document.getElementById("messages-container").scrollHeight, behavior: "smooth"})
-  }
+  const scrollWindow = () => {
+    document.getElementById("messages-container").scroll({
+      top: document.getElementById("messages-container").scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
-      let temp = []
-      users.forEach(user => {
-          temp.push({value: user.id, label: user.username + " (" + user.email + ")"})
-      })
-      setUserOptions(temp)
-  }, [users])
+    let temp = [];
+    users.forEach((user) => {
+      temp.push({
+        value: user.id,
+        label: user.username + " (" + user.email + ")",
+      });
+    });
+    setUserOptions(temp);
+  }, [users]);
 
   // useEffect(()=>{
   //   if(user?.id && !socketToken){
@@ -175,159 +187,221 @@ const Chat = ({users, selectedUser, user, conversations, getConversations}) => {
   //   }
   // },[user, socketToken])
 
+  useEffect(() => {
+    if (user && selectedUser && socketToken) {
+      if (!socketIO) {
+        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST);
 
-  
-  useEffect(()=>{
-    if (user && selectedUser && socketToken){
-      if(!socketIO){
-        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST,{ query: { token:socketToken }, })
-        
         socketIO.on(Events.DISCONNECT, () => {
           setShowError(true);
           socketIO = null;
-          setSocketToken('');
+          setSocketToken("");
         });
-        if (typeof Events.NEW_MESSAGE_TO_ID === 'function') {
-          socketIO.on(Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),(msg)=>{
-            console.log('from socket',{msg});
-            setMessages((prevMsgs)=>{
-              const msgs = [...prevMsgs]
-              msgs.push(msg)
-              return msgs
-            })
-            setIsNewMessageArrived(true);
-            readMessages({sender:selectedUser.id, receiver:user.id})
-          })
-        }
       }
+      if (typeof Events.NEW_MESSAGE_TO_ID === "function") {
+        socketIO.on(
+          Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`),
+          (msg) => {
+            setMessages((prevMsgs) => {
+              const msgs = [...prevMsgs];
+              msgs.push(msg);
+              return msgs;
+            });
+            setIsNewMessageArrived(true);
+            readMessages({ sender: selectedUser.id, receiver: user.id });
+          }
+        );
+      }
+      if (typeof Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID === "function") {
+        socketIO.on(
+          Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID(user.id),
+          (conversations) => {
+            const mappedConversations = conversations.map((conversation) => {
+              if (conversation.id === selectedUser?.id) {
+                return {
+                  ...conversation,
+                  unread: 0,
+                };
+              }
+              return conversation;
+            });
+            setConversations(mappedConversations);
+          }
+        );
+      }
+      return () => {
+        if (typeof Events.NEW_MESSAGE_TO_ID === "function") {
+          socketIO?.off(
+            Events.NEW_MESSAGE_TO_ID(`${selectedUser.id}_${user.id}`)
+          );
+        }
+        if (typeof Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID === "function") {
+          socketIO?.off(Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID(user.id));
+        }
+      };
     }
-  },[user, selectedUser, socketToken]);
-
-  useEffect(()=>{
-    if(isNewMessageArrived){
-      scrollWindow()
-      setIsNewMessageArrived(false);
-    }
-  },[isNewMessageArrived])  
+  }, [user, selectedUser, socketToken]);
 
   useEffect(() => {
-      if(selectedUser != null){
-        getMessages();
-      } else {
-        setMessages([])
+    if (isNewMessageArrived) {
+      scrollWindow();
+      setIsNewMessageArrived(false);
+    }
+  }, [isNewMessageArrived]);
+
+  useEffect(() => {
+    if (selectedUser != null) {
+      getMessages();
+      const clonedConversations = [...conversations];
+      const foundIndex = clonedConversations.findIndex(({ id }) => {
+        return selectedUser.id === id;
+      });
+
+      if (foundIndex > -1) {
+        clonedConversations[foundIndex].unread = 0;
       }
+      setConversations(clonedConversations);
+    } else {
+      setMessages([]);
+    }
+  }, [selectedUser]);
 
-  }, [selectedUser])
+  useEffect(() => {
+    if (showError) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowError(false);
+      }, 1500);
+    }
+  }, [showError]);
 
-  useEffect(()=>{
-      if(showError){
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => {
-          setShowError(false)
-        }, 1500);
-      }
-  },[showError])
-
-  const sendMessage = async() => {
-    if((document.getElementById("message-input") as HTMLInputElement).value != ""){
+  const sendMessage = async () => {
+    if (
+      (document.getElementById("message-input") as HTMLInputElement).value != ""
+    ) {
       try {
-        if(socketIO.connected){
-          (document.getElementById("message-input") as HTMLInputElement).value = ""
-          setMessages([...messages, {sender: user.id, text}])
+        if (socketIO.connected) {
+          (document.getElementById("message-input") as HTMLInputElement).value =
+            "";
+          setMessages([...messages, { sender: user.id, text }]);
           setIsNewMessageArrived(true);
-          socketIO.emit(Events.SEND_MESSAGE,{receiver:selectedUser.id, sender:user.id, text})
-          await axios.post("/api/messages/" + selectedUser.id, {text})
+          await axios.post("/api/messages/" + selectedUser.id, { text });
+          socketIO.emit(Events.SEND_MESSAGE, {
+            receiver: selectedUser.id,
+            sender: user.id,
+            text,
+          });
           //Re-fetch the list of conversations if the message was sent to a new conversation
-          console.log(conversations.filter(a => a.id == selectedUser.id))
-          if(conversations.filter(a => a.id == selectedUser.id).length == 0) {
-              getConversations()
+
+          if (
+            conversations.filter((a) => a.id == selectedUser.id).length == 0
+          ) {
+            getConversations();
           }
         } else {
-          setShowError(true)
+          setShowError(true);
         }
       } catch (e) {
         setShowError(true);
       }
     }
-      
-  }
+  };
   const getMessages = async () => {
-      let temp = messages
-      const {data} = await axios.get("/api/messages/" + selectedUser.id)
-      prevMessages = data.length
-      setMessages(data.messages)
-      setIsNewMessageArrived(true);
-      console.log('message data from api',{data});
-      
-      const emailz = await axios('/api/messages/unread-messages-mailer', {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-      })
+    let temp = messages;
+    const { data } = await axios.get("/api/messages/" + selectedUser.id);
+    prevMessages = data.length;
+    setMessages(data.messages);
+    setIsNewMessageArrived(true);
 
-      // console.log(emailz);
+    const emailz = await axios("/api/messages/unread-messages-mailer", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
 
-      await readMessages({sender:selectedUser.id, receiver:user.id})
-  }
-  
-  const readMessages = async ({sender,receiver}) => {
+    await readMessages({ sender: selectedUser.id, receiver: user.id });
+  };
+
+  const readMessages = async ({ sender, receiver }) => {
     const data = {
       sender,
-      receiver
-    }
-    await axios.post('/api/messages/read-message', {
+      receiver,
+    };
+    await axios.post("/api/messages/read-message", {
       header: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      data
+      data,
     });
   };
 
   // Send message on pressing Enter key
   const messageInputRef = useRef(null);
   useEffect(() => {
-    const keyDownHandler = event => {
-      if (event.key === 'Enter' && document.activeElement === messageInputRef.current) {
+    const keyDownHandler = (event) => {
+      if (
+        event.key === "Enter" &&
+        document.activeElement === messageInputRef.current
+      ) {
         document.getElementById("message-submit-button").click();
       }
     };
-    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener("keydown", keyDownHandler);
     return () => {
-      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener("keydown", keyDownHandler);
     };
   }, []);
-  
-  
 
   return (
-      <div  className="flex flex-col h-full w-4/5 rounded-r-lg">
-          {selectedUser && (
-            <div  className="flex flex-row w-full p-2">
-                <p  className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">{selectedUser?.username + " (" + selectedUser?.email + ")"}</p>
-            </div>
-          )}
-          
-          <div id="messages-container"  className="h-full overflow-y-scroll p-5 flex flex-col gap-10">
-              {messages?.map((item, index) => {
-                  return (
-                      <Message text={item.text} sent={item.sender == user.id}></Message>
-                  )
-              })}
-          </div>
-          {selectedUser && (
-              <div  className="flex flex-row p-5 gap-5">
-                  <input ref={messageInputRef} id="message-input" placeholder="Type something..." onChange={(e)=>{setText(e.target.value)}}  className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"></input>
-                  <button id="message-submit-button" className="w-fit px-10" onClick={sendMessage}>Send</button>
-              </div>
-          )}
-          {showError && <div className="ml-3 text-sm font-normal text-red-400 mb-4">Error connecting to server!</div>}
+    <div className="flex flex-col h-full w-4/5 rounded-r-lg">
+      {selectedUser && (
+        <div className="flex flex-row w-full p-2">
+          <p className="font-medium text-lg w-full mt-2 pb-2 border-b-2 border-slate-100">
+            {selectedUser?.username + " (" + selectedUser?.email + ")"}
+          </p>
+        </div>
+      )}
+
+      <div
+        id="messages-container"
+        className="h-full overflow-y-scroll p-5 flex flex-col gap-10"
+      >
+        {messages?.map((item, index) => {
+          return (
+            <Message text={item.text} sent={item.sender == user.id}></Message>
+          );
+        })}
       </div>
-  )
-}
-
-
+      {selectedUser && (
+        <div className="flex flex-row p-5 gap-5">
+          <input
+            ref={messageInputRef}
+            id="message-input"
+            placeholder="Type something..."
+            onChange={(e) => {
+              setText(e.target.value);
+            }}
+            className="outline-none w-full pl-[32px] pr-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+          ></input>
+          <button
+            id="message-submit-button"
+            className="w-fit px-10"
+            onClick={sendMessage}
+          >
+            Send
+          </button>
+        </div>
+      )}
+      {showError && (
+        <div className="ml-3 text-sm font-normal text-red-400 mb-4">
+          Error connecting to server!
+        </div>
+      )}
+    </div>
+  );
+};
 
 const UserDetails = ({ selectedUser }) => {
   return (
@@ -421,15 +495,19 @@ export default function Messages({ user }) {
       const data: MessagesApiResponse.IConversations = (
         await axios.get("/api/messages/conversations")
       ).data;
-      let tempConversations = data.conversations;
-      let conversations = [...tempConversations];
-      conversations?.map(async (conversation, index) => {
-        let unread = await getUnreadMessages(conversation.id);
-        conversation.unread = unread;
-        unreadMessages[conversation.id] = unread;
+      // let tempConversations = data.conversations;
+      let conversations = data.conversations;
+      conversations = conversations.map((conversation) => {
+        if (conversation.id === selectedUser?.id) {
+          return {
+            ...conversation,
+            unread: 0,
+          };
+        }
+        return conversation;
       });
       setConversations(conversations);
-      setSum(unreadMessages?.reduce((a, v) => a + v, 0));
+      // setSum(unreadMessages?.reduce((a, v) => a + v, 0));
     } catch (e) {
       console.log(e);
     }
@@ -471,6 +549,7 @@ export default function Messages({ user }) {
           selectedUser={selectedUser}
           conversations={conversations}
           getConversations={getConversations}
+          setConversations={setConversations}
         ></Chat>
         <UserDetails selectedUser={selectedUser}></UserDetails>
       </div>

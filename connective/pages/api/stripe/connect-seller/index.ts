@@ -22,7 +22,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       const result = await DAO.Users.getById(user.id);
       // @ts-ignore
       connection.close();
-      if (result) {
+      if (typeof(result) != "boolean" &&result) {
         // fetch stripeID from the db;
         const accountLink = await stripe.accountLinks.create({
           account: result.stripeID,
@@ -57,6 +57,5 @@ export default withIronSession(handler, {
   // if your localhost is served on http:// then disable the secure flag
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",
-    sameSite: 'none',
   },
 });
