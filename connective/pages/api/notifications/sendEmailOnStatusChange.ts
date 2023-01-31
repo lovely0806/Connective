@@ -1,8 +1,9 @@
+import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import { sendEmail } from "../../../lib/notifications/sendEmail";
 import { DAO } from "../../../lib/dao";
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function handler(req, res) {
   try {
     const { status, profile } = req.body;
     const sessionUser = req.session.get().user;
@@ -16,11 +17,11 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (user) {
-      const industry: number = user.industry;
+      const industry: string = user.industry;
       let users = await DAO.Users.getByIndustry(industry, profile);
 
-      if (users.length) {
-        users = users.filter((user) => user.user_id != userId);
+      if (typeof(users) != "boolean" && users.length) {
+        users = users.filter((user) => user.id != userId);
         users.forEach(async (user) => {
           const subject = "Connective: Status updated";
           const template = `Hello There!<br/>

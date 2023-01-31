@@ -775,6 +775,35 @@ export namespace DAO {
     }
 
     /**
+     * Gets all conversations from the given user
+     * @param {number} userId The users id
+     * @returns An array of conversations
+     */
+    static async getConversationsWithUnReadCount(
+      userId: number
+    ): Promise<Conversation[]> {
+      var query1 =
+        `SELECT distinct profile.id, profile.email, profile.username, profile.location, profile.logo, coalesce(c.unread_count,0) as "unread" 
+        FROM(
+          (
+            SELECT Users.id, Users.email, Business.company_name as username, Business.location, Business.logo 
+              FROM Users JOIN Business on Users.id = Business.user_id 
+            UNION ALL 
+            SELECT Users.id, Users.email, Individual.name as username, Individual.location, Individual.profile_picture AS logo 
+              FROM Users JOIN Individual on Users.id = Individual.user_id
+          ) as profile 
+          JOIN (select distinct sender, receiver from messages where sender = ? or receiver = ? ) as mes
+        ) 
+        LEFT JOIN ( select count(id) as "unread_count",sender from messages where receiver = ? and ` +
+        "`read`='0'" +
+        ` group by sender) as c on c.sender = profile.id where (profile.id = mes.sender or profile.id = mes.receiver) and profile.id != ?;`;
+      var [conversations] = await connection
+        .promise()
+        .query<RowDataPacket[]>(query1, [userId, userId, userId, userId]);
+      return conversations as Conversation[];
+    }
+
+    /**
      * Gets all unread & unnotified messages accross all users
      * @returns {{id: number, email: string}[]} All unread and unnotified messages
      */

@@ -25,11 +25,11 @@ export default async function handler(req, res) {
     }
 
     if (user) {
-      const industry: number = user.industry;
+      const industry: string = user.industry;
       let users = await DAO.Users.getByIndustry(industry, profile);
 
-      if (users.length) {
-        users = users.filter((user) => user.user_id != userId);
+      if (typeof(users) != "boolean" && users.length) {
+        users = users.filter((user) => user.id != userId);
         users.forEach(async (user) => {
           const subject = "Connective: Status updated";
           const template = `Hello There!<br/>
