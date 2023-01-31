@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 console.log(process.env.URL);
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
   images: {
     domains: ["connective-data.s3.amazonaws.com", "avatars.dicebear.com"],
@@ -12,7 +12,8 @@ const nextConfig = {
     EMAIL_USER: process.env.EMAIL_USER,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
-    GOOGLE_ID:process.env.GOOGLE_ID,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   },
 };
 
