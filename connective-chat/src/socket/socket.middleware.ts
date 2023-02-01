@@ -39,7 +39,7 @@ class Connection {
     socket.on(Events.DISCONNECT as string, () => this.disconnect());
     socket.on(
       Events.SEND_UNREAD_CONVERSATION_TO_RECEIVER as string,
-      (message) => this.sendUnReadConversationToReceiver(message)
+      (message: ConversationToReceiver) => this.sendUnReadConversationToReceiver(message)
     );
   }
 
