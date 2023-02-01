@@ -24,6 +24,7 @@ export default function SignUp() {
   const [otpError, setOtpError] = useState<string>("");
   const [tacError, setTacError] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isSubscribed, setSubscribed] = useState<boolean>(false);
   const [otpCode, setOtpCode] = useState<string>("");
   const [emailVerified, setEmailVerified] = useState<boolean>(false);
   const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
@@ -124,7 +125,12 @@ export default function SignUp() {
     await axios({
       method: "post",
       url: "/api/auth/signup",
-      data: { username: name, email, password },
+      data: {
+        username: name,
+        email,
+        password,
+        is_subscribed: isSubscribed,
+      },
     })
       .then(async (res) => {
         const randomOtp = Math.floor(1000 + Math.random() * 9000);
@@ -219,6 +225,16 @@ export default function SignUp() {
               )}
             </div>
           </div>
+        </div>
+        <div className="flex flex-row gap-[8px] mt-[24px] 1bp:gap-[14px] items-center">
+          <input
+            className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
+            type="checkbox"
+            onClick={() => setSubscribed(!isSubscribed)}
+          ></input>
+          <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
+            Subscribe me to newsletter
+          </p>
         </div>
         <div className="flex flex-row gap-[8px] my-[24px] 1bp:gap-[14px] items-center">
           <input

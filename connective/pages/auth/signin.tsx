@@ -178,7 +178,7 @@ export default function SignIn() {
               Sign in
             </p>
 
-            <p className="text-[#414141] mt-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-10">
+            <p className="text-[#414141] my-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-10">
               Welcome back! Please enter your details
             </p>
 
