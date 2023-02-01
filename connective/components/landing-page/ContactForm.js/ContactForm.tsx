@@ -71,6 +71,7 @@ const ContactForm = () => {
     const send = await Api.email("SMTP", {
       subject: `${enteredName} contacted you`,
       msg: mailMessage,
+      typename: "EmailContent"
     });
 
     if (send) {
