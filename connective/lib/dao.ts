@@ -128,7 +128,7 @@ export namespace DAO {
       password_hash: string,
       email: string,
       stripeID: string,
-      is_subscribed: number,
+      is_subscribed: boolean = false,
       isSignupWithGoogle: boolean = false
     ): Promise<number | boolean> {
       var query = `INSERT INTO Users (username, password_hash, email, stripeID, is_subscribed) VALUES (?,?,?,?,?);`;
@@ -141,7 +141,7 @@ export namespace DAO {
             password_hash,
             email,
             stripeID,
-            is_subscribed,
+            Number(is_subscribed),
             1,
             1,
           ]);
@@ -155,7 +155,7 @@ export namespace DAO {
               password_hash,
               email,
               stripeID,
-              is_subscribed,
+              Number(is_subscribed),
             ]);
           return result.insertId;
         } catch (e) {

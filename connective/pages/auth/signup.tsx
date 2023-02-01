@@ -129,7 +129,7 @@ export default function SignUp() {
         username: name,
         email,
         password,
-        is_subscribed: Number(isSubscribed),
+        is_subscribed: isSubscribed,
       },
     })
       .then(async (res) => {
