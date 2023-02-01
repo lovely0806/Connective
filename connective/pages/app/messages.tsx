@@ -118,7 +118,7 @@ const Conversations = ({
               />
             )}
             <p className="my-auto ml-2 text-md font-medium">{item.username}</p>
-            {item.id !== selectedUser.id && item.unread > 0 ? (
+            {item.id !== selectedUser?.id && item.unread > 0 ? (
               <span className="ml-auto mr-2 bg-[#D0342C] rounded-full min-w-[25px] min-h-[25px] text-white flex items-center justify-center">
                 {item.unread}
               </span>
