@@ -105,6 +105,7 @@ export type Business = {
   profileViews: number;
   listViews: number;
   status: string;
+  is_subscribed: boolean;
   typename: "Business";
 };
 
@@ -118,6 +119,7 @@ export type Individual = {
   profileViews: number;
   listViews: number;
   status: string;
+  is_subscribed: boolean;
   typename: "Individual";
   industry: string;
   occupation: string;

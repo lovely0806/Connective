@@ -128,11 +128,12 @@ export namespace DAO {
       password_hash: string,
       email: string,
       stripeID: string,
+      is_subscribed: boolean = false,
       isSignupWithGoogle: boolean = false
     ): Promise<number | boolean> {
-      var query = `INSERT INTO Users (username, password_hash, email, stripeID) VALUES (?,?,?,?);`;
+      var query = `INSERT INTO Users (username, password_hash, email, stripeID, is_subscribed) VALUES (?,?,?,?,?);`;
       if (isSignupWithGoogle) {
-        query = `INSERT INTO Users (username, password_hash, email, stripeID, email_verified, is_signup_with_google) VALUES (?,?,?,?,?,?);`;
+        query = `INSERT INTO Users (username, password_hash, email, stripeID, is_subscribed, email_verified, is_signup_with_google) VALUES (?,?,?,?,?,?,?);`;
         var [result] = await connection
           .promise()
           .execute<OkPacket>(query, [
@@ -140,6 +141,7 @@ export namespace DAO {
             password_hash,
             email,
             stripeID,
+            Number(is_subscribed),
             1,
             1,
           ]);
@@ -148,12 +150,18 @@ export namespace DAO {
         try {
           var [result] = await connection
             .promise()
-            .execute<OkPacket>(query, [username, password_hash, email, stripeID]);
+            .execute<OkPacket>(query, [
+              username,
+              password_hash,
+              email,
+              stripeID,
+              Number(is_subscribed),
+            ]);
           return result.insertId;
         } catch (e) {
-          console.log("DAO.Users.add:")
-          console.log(e)
-          return false
+          console.log("DAO.Users.add:");
+          console.log(e);
+          return false;
         }
       }
     }
@@ -290,8 +298,8 @@ export namespace DAO {
       const query = `SELECT ${profile}.user_id, ${profile}.name, Users.email FROM ${profile} INNER JOIN Users ON ${profile}.user_id = Users.id WHERE industry='${industry}'`;
       const [users] = await connection.promise().query(query);
 
-      if(Array.isArray(users) && users.length == 0) {
-        return false
+      if (Array.isArray(users) && users.length == 0) {
+        return false;
       }
 
       return users as TruncatedUser[];
@@ -340,7 +348,7 @@ export namespace DAO {
      * @returns {Business | boolean} A Business object representing the business, or false if not found
      */
     static async getByUserId(userId: number): Promise<Business_Type | boolean> {
-      var query = `SELECT * FROM Business WHERE user_id=?;`;
+      var query = `SELECT b.*, u.is_subscribed FROM Business b, Users u WHERE u.id = b.user_id and b.user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
 
       if (Array.isArray(result) && result.length == 0) return false;
@@ -418,20 +426,22 @@ export namespace DAO {
       industry: number,
       size: string,
       url: string,
-      status: string
+      status: string,
+      isSubscribed: boolean
     ): Promise<void> {
-      var query = `UPDATE Business SET company_name = ?, ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      var query = `UPDATE Business INNER JOIN Users ON Users.id = Business.user_id SET Business.company_name = ?, Business.logo = ?, Business.description = ?, Business.location = ?, Business.industry = ?, Business.size = ?, Business.website = ?, Business.status = ?, Users.is_subscribed = ? WHERE Business.user_id = ?;`;
       await connection
         .promise()
         .execute(query, [
           name,
-          pfpChanged ? "logo =" + `${pfp},` : "",
+          pfpChanged ? `${pfp},` : "",
           description,
           location,
           industry,
           size,
           url,
           status,
+          Number(isSubscribed),
           userId,
         ]);
     }
@@ -459,7 +469,7 @@ export namespace DAO {
     static async isIndividual(id: number): Promise<boolean> {
       var query = `SELECT COUNT(id) FROM Individual WHERE user_id=?;`;
       let [res] = await connection.promise().query(query, [id]);
-      
+
       return res[0]["count(id)"] > 0;
     }
 
@@ -468,11 +478,13 @@ export namespace DAO {
      * @param {number} userId The individuals user id
      * @returns {Individual | boolean} An Indivual object representing the individual, or false if not found
      */
-    static async getByUserId(userId: number): Promise<Individual_Type | boolean> {
-      var query = `SELECT * FROM Individual WHERE user_id=?;`;
+    static async getByUserId(
+      userId: number
+    ): Promise<Individual_Type | boolean> {
+      var query = `SELECT i.*, u.is_subscribed FROM Individual i, Users u WHERE u.id = i.user_id and i.user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
 
-      if(Array.isArray(result) && result.length == 0) return false
+      if (Array.isArray(result) && result.length == 0) return false;
 
       return result[0] as Individual_Type;
     }
@@ -535,6 +547,7 @@ export namespace DAO {
      * @param bio
      * @param location
      * @param status
+     * @param is_subscribed
      */
     static async update(
       userId: number,
@@ -543,15 +556,20 @@ export namespace DAO {
       name: string,
       bio: string,
       location: string,
-      status: string
+      status: string,
+      isSubscribed: boolean
     ): Promise<void> {
       let query = "";
       if (pfpChanged) {
-        query = `UPDATE Individual SET name = '${name}', ${
-          pfpChanged ?? "profile_picture =" + `'${pfp}',`
-        } bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${userId}';`;
+        query = `UPDATE Individual i, Users u SET i.name = '${name}', ${
+          pfpChanged ?? "i.profile_picture =" + `'${pfp}',`
+        } i.bio = '${bio}', i.location = '${location}', i.status = '${status}', u.is_subscribed = '${Number(
+          isSubscribed
+        )}' WHERE u.id = i.user_id and i.user_id = '${userId}';`;
       } else {
-        query = `UPDATE Individual SET name = '${name}',bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${userId}';`;
+        query = `UPDATE Individual i, Users u SET i.name = '${name}', i.bio = '${bio}', i.location = '${location}', i.status = '${status}', u.is_subscribed = '${Number(
+          isSubscribed
+        )}' WHERE u.id = i.user_id and i.user_id = '${userId}';`;
       }
       await connection.promise().execute(query);
     }
@@ -850,18 +868,20 @@ export namespace DAO {
      */
     static async getById(id: string): Promise<Message | boolean> {
       var query = `SELECT * from messages where id = ?`;
-      let [res] = await connection.promise().query<OkPacket>(query, [id]) as RowDataPacket[];
+      let [res] = (await connection
+        .promise()
+        .query<OkPacket>(query, [id])) as RowDataPacket[];
 
       try {
         const message = {
-              ...res,
-              notified: res.notified == 1,
-              read: res.read == 1,
-            } as Message;
+          ...res,
+          notified: res.notified == 1,
+          read: res.read == 1,
+        } as Message;
 
-        return message
+        return message;
       } catch (e) {
-        return false
+        return false;
       }
     }
   }
@@ -889,36 +909,36 @@ export namespace DAO {
               id: results[i - 1].id,
               name: results[i - 1].name,
               occupations: temp,
-              typename: "Industry"
+              typename: "Industry",
             });
             temp = [];
           }
           temp.push({
             id: -1,
             name: "Other",
-            typename: "Occupation"
-          })
+            typename: "Occupation",
+          });
           if (results[i].occupation_id && results[i].occupation_name) {
             temp.push({
               id: results[i].occupation_id,
               name: results[i].occupation_name,
-              typename: "Occupation"
-            })
+              typename: "Occupation",
+            });
           }
           temp_id = results[i].id;
         } else {
           temp.push({
             id: results[i].occupation_id,
             name: results[i].occupation_name,
-            typename: "Occupation"
-          })
+            typename: "Occupation",
+          });
         }
         if (i === (results as Array<RowDataPacket>).length - 1) {
           result.push({
             id: results[i].id,
             name: results[i].name,
             occupations: temp,
-            typename: "Industry"
+            typename: "Industry",
           });
           temp = [];
         }

@@ -15,7 +15,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, is_subscribed } = req.body;
 
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
@@ -27,10 +27,16 @@ export default async function handler(
         success: false,
         error: "Email already exists",
       } as IApiResponseError);
-    } else if (typeof(user) == "boolean") {
+    } else if (typeof user == "boolean") {
       const stripe_account = await stripe.accounts.create({ type: "express" });
 
-      let userID = await DAO.Users.add(username, hash, email, stripe_account.id);
+      let userID = await DAO.Users.add(
+        username,
+        hash,
+        email,
+        stripe_account.id,
+        is_subscribed
+      );
       await ActivityFeed.Auth.handleAuth(
         "user_signup",
         `user ${userID} has signed up`
@@ -39,12 +45,10 @@ export default async function handler(
     }
   } catch (e) {
     console.log(e);
-    res
-      .status(500)
-      .json({
-        success: false,
-        error: e,
-        type: "ISignup",
-      } as AuthApiResponse.ISignup);
+    res.status(500).json({
+      success: false,
+      error: e,
+      type: "ISignup",
+    } as AuthApiResponse.ISignup);
   }
 }
