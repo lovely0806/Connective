@@ -1,10 +1,8 @@
-const mysql = require("mysql2");
 import { sendEmail } from "../../../lib/notifications/sendEmail";
 import { DAO } from "../../../lib/dao";
 
 export default async function handler(req, res) {
   try {
-    const connection = mysql.createConnection(process.env.DATABASE_URL);
     const { userId, profile } = req.body;
     const { secretKey } = req.query;
 
