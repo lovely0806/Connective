@@ -348,7 +348,7 @@ export namespace DAO {
      * @returns {Business | boolean} A Business object representing the business, or false if not found
      */
     static async getByUserId(userId: number): Promise<Business_Type | boolean> {
-      var query = `SELECT * FROM Business WHERE user_id=?;`;
+      var query = `SELECT b.*, u.is_subscribed FROM Business b, Users u WHERE u.id = b.user_id and b.user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
 
       if (Array.isArray(result) && result.length == 0) return false;
@@ -426,20 +426,22 @@ export namespace DAO {
       industry: number,
       size: string,
       url: string,
-      status: string
+      status: string,
+      isSubscribed: boolean
     ): Promise<void> {
-      var query = `UPDATE Business SET company_name = ?, ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      var query = `UPDATE Business INNER JOIN Users ON Users.id = Business.user_id SET Business.company_name = ?, Business.logo = ?, Business.description = ?, Business.location = ?, Business.industry = ?, Business.size = ?, Business.website = ?, Business.status = ?, Users.is_subscribed = ? WHERE Business.user_id = ?;`;
       await connection
         .promise()
         .execute(query, [
           name,
-          pfpChanged ? "logo =" + `${pfp},` : "",
+          pfpChanged ? `${pfp},` : "",
           description,
           location,
           industry,
           size,
           url,
           status,
+          Number(isSubscribed),
           userId,
         ]);
     }
@@ -479,7 +481,7 @@ export namespace DAO {
     static async getByUserId(
       userId: number
     ): Promise<Individual_Type | boolean> {
-      var query = `SELECT * FROM Individual WHERE user_id=?;`;
+      var query = `SELECT i.*, u.is_subscribed FROM Individual i, Users u WHERE u.id = i.user_id and i.user_id=?;`;
       var [result] = await connection.promise().query(query, [userId]);
 
       if (Array.isArray(result) && result.length == 0) return false;
@@ -545,6 +547,7 @@ export namespace DAO {
      * @param bio
      * @param location
      * @param status
+     * @param is_subscribed
      */
     static async update(
       userId: number,
@@ -553,15 +556,20 @@ export namespace DAO {
       name: string,
       bio: string,
       location: string,
-      status: string
+      status: string,
+      isSubscribed: boolean
     ): Promise<void> {
       let query = "";
       if (pfpChanged) {
-        query = `UPDATE Individual SET name = '${name}', ${
-          pfpChanged ?? "profile_picture =" + `'${pfp}',`
-        } bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${userId}';`;
+        query = `UPDATE Individual i, Users u SET i.name = '${name}', ${
+          pfpChanged ?? "i.profile_picture =" + `'${pfp}',`
+        } i.bio = '${bio}', i.location = '${location}', i.status = '${status}', u.is_subscribed = '${Number(
+          isSubscribed
+        )}' WHERE u.id = i.user_id and i.user_id = '${userId}';`;
       } else {
-        query = `UPDATE Individual SET name = '${name}',bio = '${bio}', location = '${location}', status = '${status}' WHERE user_id = '${userId}';`;
+        query = `UPDATE Individual i, Users u SET i.name = '${name}', i.bio = '${bio}', i.location = '${location}', i.status = '${status}', u.is_subscribed = '${Number(
+          isSubscribed
+        )}' WHERE u.id = i.user_id and i.user_id = '${userId}';`;
       }
       await connection.promise().execute(query);
     }

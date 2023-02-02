@@ -159,6 +159,10 @@ export default function SignUp() {
     setShowPassword((prevState) => !prevState);
   };
 
+  const changeSubscription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSubscribed(e.target.checked);
+  };
+
   return (
     <main className="flex flex-row min-h-screen min-w-screen gap-[90px] justify-center 2bp:gap-[50px]">
       <Head>
@@ -230,7 +234,8 @@ export default function SignUp() {
           <input
             className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
             type="checkbox"
-            onClick={() => setSubscribed(!isSubscribed)}
+            checked={isSubscribed}
+            onChange={changeSubscription}
           ></input>
           <p className="font-[Poppins] font-normal text-[12px] leading-[18px] text-[#0D1011] 1bp:text-[16px]">
             Subscribe me to newsletter

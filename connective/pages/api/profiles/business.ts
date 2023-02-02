@@ -83,6 +83,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         url,
         pfpChanged,
         status,
+        isSubscribed,
       } = req.body;
 
       await DAO.Business.update(
@@ -95,7 +96,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         industry,
         size,
         url,
-        status
+        status,
+        isSubscribed
       );
 
       res.status(200).json({ success: true });

@@ -34,6 +34,7 @@ export default function EditProfile({ user, industries }: Props) {
   const [processing, setProcessing] = useState<boolean>(false);
   const [pfpChanged, setPfpChanged] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
+  const [isSubscribed, setSubscribed] = useState<boolean>(false);
   const [curruntStatus, setCurruntStatus] = useState<string>("");
 
   useEffect(() => {
@@ -54,15 +55,16 @@ export default function EditProfile({ user, industries }: Props) {
           setDescription(business.description);
           setLocation(business.location);
           setUrl(business.website);
+          setSize(business.size);
+          setSrc(business.logo);
+          setStatus(business.status);
+          setCurruntStatus(business.status);
+          setSubscribed(business.is_subscribed);
           const selectedIndustry = industries.find(
             (industry) => industry.id == business.industry
           );
           setIndustry(selectedIndustry.id);
           setIndustryName(selectedIndustry.name);
-          setSize(res.data.size);
-          setSrc(res.data.logo);
-          setStatus(res.data.status);
-          setCurruntStatus(res.data.status);
           setLoaded(true);
         }
       });
@@ -160,6 +162,7 @@ export default function EditProfile({ user, industries }: Props) {
         industry,
         size,
         status,
+        isSubscribed,
       })
       .then(async (res) => {
         if (res.status == 200) {
@@ -183,6 +186,10 @@ export default function EditProfile({ user, industries }: Props) {
       });
 
     setProcessing(false);
+  };
+
+  const changeSubscription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSubscribed(e.target.checked);
   };
 
   return loaded ? (
@@ -273,6 +280,17 @@ export default function EditProfile({ user, industries }: Props) {
                 value={{ value: status, label: status }}
               ></Select>
             </div>
+          </div>
+          <div className="flex flex-row gap-4 items-center">
+            <input
+              className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
+              type="checkbox"
+              checked={isSubscribed}
+              onChange={changeSubscription}
+            ></input>
+            <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] 1bp:text-[16.5px]">
+              Subscribe to newsletter
+            </p>
           </div>
         </div>
 
