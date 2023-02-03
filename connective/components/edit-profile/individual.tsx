@@ -22,6 +22,7 @@ export default function EditProfile({ user }: Props) {
   const [description, setDescription] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [status, setStatus] = useState<string>("");
+  const [isSubscribed, setSubscribed] = useState<boolean>(false);
   const [pfp, setPfp] = useState<Blob>();
   const [src, setSrc] = useState<string>("");
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -46,6 +47,7 @@ export default function EditProfile({ user }: Props) {
         setDescription(individual.bio);
         setLocation(individual.location);
         setStatus(individual.status);
+        setSubscribed(individual.is_subscribed);
         setLoaded(true);
         setCurruntStatus(individual.status);
       }
@@ -104,6 +106,7 @@ export default function EditProfile({ user }: Props) {
         bio: description,
         location,
         status,
+        isSubscribed,
       })
       .then(async (res) => {
         if (res.status == 200) {
@@ -127,6 +130,10 @@ export default function EditProfile({ user }: Props) {
       });
 
     setProcessing(false);
+  };
+
+  const changeSubscription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSubscribed(e.target.checked);
   };
 
   return loaded ? (
@@ -182,6 +189,17 @@ export default function EditProfile({ user }: Props) {
             placeholder="Choose your Status"
             value={{ value: status, label: status }}
           ></Select>
+          <div className="flex flex-row gap-4 items-center">
+            <input
+              className="b-[#0D1011] b-[0.5px] w-[16px] h-[16px] 1bp:w-[20px] 1bp:h-[20px]"
+              type="checkbox"
+              checked={isSubscribed}
+              onChange={changeSubscription}
+            ></input>
+            <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] 1bp:text-[16.5px]">
+              Subscribe to newsletter
+            </p>
+          </div>
         </div>
 
         <button
