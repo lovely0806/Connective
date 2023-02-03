@@ -1,5 +1,12 @@
 import axios from "axios";
-import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+  createContext,
+} from "react";
 import Layout from "../../components/layout";
 import { withIronSession } from "next-iron-session";
 import { useRouter } from "next/router";
@@ -21,6 +28,11 @@ import { io } from "socket.io-client";
 import { Events } from "../../common/events";
 
 let socketIO;
+
+export const MessagesContext = createContext<{
+  conversations?: Conversation[];
+}>({ conversations: [] });
+export const MessagesProvider = MessagesContext.Provider;
 
 const MessageFun = ({ text, sent }: PropsMessage) => {
   if (sent) {
@@ -370,7 +382,10 @@ const Chat = ({
       >
         {messages?.map((item, index) => {
           return (
-            <MessageFun text={item.text} sent={item.sender == user.id}></MessageFun>
+            <MessageFun
+              text={item.text}
+              sent={item.sender == user.id}
+            ></MessageFun>
           );
         })}
       </div>
@@ -519,25 +534,27 @@ export default function Messages({ user }) {
   }, []);
 
   return (
-    <Layout user={user} title="Messages">
-      <div className="bg-white h-full overflow-clip mt-5 flex flex-row">
-        <Conversations
-          unreadMessages={unreadMessages}
-          selectedUser={selectedUser}
-          conversations={conversations}
-          setSelectedUser={setSelectedUser}
-        ></Conversations>
-        <Chat
-          user={user}
-          users={users}
-          selectedUser={selectedUser}
-          conversations={conversations}
-          getConversations={getConversations}
-          setConversations={setConversations}
-        ></Chat>
-        <UserDetails selectedUser={selectedUser}></UserDetails>
-      </div>
-    </Layout>
+    <MessagesProvider value={{ conversations }}>
+      <Layout user={user} title="Messages">
+        <div className="bg-white h-full overflow-clip mt-5 flex flex-row">
+          <Conversations
+            unreadMessages={unreadMessages}
+            selectedUser={selectedUser}
+            conversations={conversations}
+            setSelectedUser={setSelectedUser}
+          ></Conversations>
+          <Chat
+            user={user}
+            users={users}
+            selectedUser={selectedUser}
+            conversations={conversations}
+            getConversations={getConversations}
+            setConversations={setConversations}
+          ></Chat>
+          <UserDetails selectedUser={selectedUser}></UserDetails>
+        </div>
+      </Layout>
+    </MessagesProvider>
   );
 }
 

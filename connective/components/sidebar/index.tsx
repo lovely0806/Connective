@@ -1,14 +1,10 @@
-import { useRouter } from "next/router";
-import { useState, useEffect, MouseEventHandler } from "react";
 import axios from "axios";
-import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
-import {
-  IApiResponseError,
-  MessagesApiResponse,
-} from "../../types/apiResponseTypes";
-import { Message } from "../../types/types";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { MessagesContext } from "../../pages/app/messages";
 
 type Props = {
   text: string;
@@ -57,6 +53,7 @@ const SidebarItem = ({
 
 const Sidebar = ({ user }) => {
   const router = useRouter();
+  const { conversations } = useContext(MessagesContext);
   const { data: session } = useSession();
 
   const signout = async () => {
@@ -73,58 +70,17 @@ const Sidebar = ({ user }) => {
   };
 
   const [sum, setSum] = useState<number>();
-  const [unreadMessages, setUnreadMessages] = useState([]);
-
-  const getConversations = async () => {
-    try {
-      const data: MessagesApiResponse.IConversations = (
-        await axios.get("/api/messages/conversations")
-      ).data;
-      let conversations = data.conversations;
-      const sum: number = conversations?.reduce((previous, current) => current.unread + previous, 0) || 0
-      setSum(sum)
-    } catch (e) {
-      console.log(e);
-    }
-
-    // try {
-    //   const data: MessagesApiResponse.IConversations = (
-    //     await axios.get("/api/messages/conversations")
-    //   ).data;
-    //   let tempConversations = data.conversations;
-    //   let conversations = [...tempConversations];
-    //   conversations?.map(async (conversation, index) => {
-    //     let unread = await getUnreadMessages(conversation.id);
-    //     conversation.unread = unread;
-    //     unreadMessages[conversation.id] = unread;
-    //   });
-    //   console.log(conversations)
-    //   console.log(unreadMessages?.reduce((a, v) => a + v, 0))
-    //   setSum(unreadMessages?.reduce((a, v) => a + v, 0));
-    // } catch (e) {
-    //   console.log(e);
-    // }
-  };
-
-  const getUnreadMessages = async (id: number) => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
-      await axios.get("/api/messages/" + id)
-    ).data;
-    if (res.type == "IApiResponseError") {
-      throw res;
-    } else {
-      if (res.messages) {
-        const unReadMesssages = res.messages.filter((message: Message) => {
-          return !message.read && message.receiver == user.id;
-        }).length;
-        return unReadMesssages;
-      }
-    }
-  };
 
   useEffect(() => {
-    getConversations();
-  }, []);
+    if (conversations?.length) {
+      const sum: number =
+        conversations?.reduce(
+          (previous, current) => current.unread + previous,
+          0
+        ) || 0;
+      setSum(sum);
+    }
+  }, [conversations]);
 
   return (
     <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
