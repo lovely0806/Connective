@@ -72,7 +72,7 @@ const Sidebar = ({ user }) => {
     }
   };
 
-  const [sum, setSum] = useState();
+  const [sum, setSum] = useState<number>();
   const [unreadMessages, setUnreadMessages] = useState([]);
 
   const getConversations = async () => {
@@ -80,17 +80,30 @@ const Sidebar = ({ user }) => {
       const data: MessagesApiResponse.IConversations = (
         await axios.get("/api/messages/conversations")
       ).data;
-      let tempConversations = data.conversations;
-      let conversations = [...tempConversations];
-      conversations?.map(async (conversation, index) => {
-        let unread = await getUnreadMessages(conversation.id);
-        conversation.unread = unread;
-        unreadMessages[conversation.id] = unread;
-      });
-      setSum(unreadMessages?.reduce((a, v) => a + v, 0));
+      let conversations = data.conversations;
+      const sum: number = conversations?.reduce((previous, current) => current.unread + previous, 0) || 0
+      setSum(sum)
     } catch (e) {
       console.log(e);
     }
+
+    // try {
+    //   const data: MessagesApiResponse.IConversations = (
+    //     await axios.get("/api/messages/conversations")
+    //   ).data;
+    //   let tempConversations = data.conversations;
+    //   let conversations = [...tempConversations];
+    //   conversations?.map(async (conversation, index) => {
+    //     let unread = await getUnreadMessages(conversation.id);
+    //     conversation.unread = unread;
+    //     unreadMessages[conversation.id] = unread;
+    //   });
+    //   console.log(conversations)
+    //   console.log(unreadMessages?.reduce((a, v) => a + v, 0))
+    //   setSum(unreadMessages?.reduce((a, v) => a + v, 0));
+    // } catch (e) {
+    //   console.log(e);
+    // }
   };
 
   const getUnreadMessages = async (id: number) => {
