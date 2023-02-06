@@ -20,15 +20,15 @@ export async function handler(req, res) {
       const industry: string = user.industry;
       let users = await DAO.Users.getByIndustry(industry, profile);
 
-      if (typeof(users) != "boolean" && users.length) {
-        users = users.filter((user) => user.id != userId);
-        users.forEach(async (user) => {
+      if (typeof users != "boolean" && users.length) {
+        users = users.filter((user) => user.user_id != userId);
+        users.forEach(async (eachUser) => {
           const subject = "Connective: Status updated";
           const template = `Hello There!<br/>
-${user.name} on their platform updated the status to ${status} Please message them if they fit your affiliate partnership criteria.<br/>
-Thanks<br/>
-Team Connective`;
-          await sendEmail(subject, template, user.email);
+${user.name} on their platform updated the status to "${status}". Please message them if they fit your affiliate partnership criteria.<br/>
+Thanks,<br/>
+Team Connective.`;
+          await sendEmail(subject, template, eachUser.email);
         });
       }
     }
