@@ -23,7 +23,7 @@ export async function handler(req, res) {
       userName = user.company_name;
     }
 
-    if (typeof user != "boolean" && user) {
+    if (user) {
       const industry: string = String(user.industry);
       let users: Array<TruncatedUser> | boolean = await DAO.Users.getByIndustry(
         industry,
