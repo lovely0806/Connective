@@ -27,26 +27,25 @@ export default withIronSession(
 
       if (!user) {
         console.log("No account");
-        return res
-          .status(500)
-          .json({
-            success: false,
-            error: "Account does not exist",
-          } as IApiResponseError);
+        return res.status(500).json({
+          success: false,
+          error: "Account does not exist",
+        } as IApiResponseError);
       }
 
-      if (typeof(user) != "boolean") {
+      if (typeof user != "boolean") {
         if (!user.email_verified) {
-          return res
-            .status(500)
-            .json({
-              success: false,
-              error: "Email not verified",
-            } as IApiResponseError);
+          return res.status(500).json({
+            success: false,
+            error: "Email not verified",
+          } as IApiResponseError);
         }
       }
 
-      if (typeof(user) != "boolean" && bcrypt.compareSync(accessToken, user.password_hash.toString())) {
+      if (
+        typeof user != "boolean" &&
+        bcrypt.compareSync(accessToken, user.password_hash.toString())
+      ) {
         // @ts-ignore
         req.session.set("user", { email, id: user.id });
         // @ts-ignore
@@ -59,25 +58,21 @@ export default withIronSession(
         req.session.set("user", { email, id: user.id });
         // @ts-ignore
         await req.session.save();
-        
+
         await ActivityFeed.Auth.handleAuth(
           "user_login",
           `user ${user.id} has logged in`
         );
 
-        return res
-          .status(201)
-          .json({
-            accountExists:
-              isBusinessAccount || isIndividualAccount ? true : false,
-          } as AuthApiResponse.ISessions);
+        return res.status(201).json({
+          accountExists:
+            isBusinessAccount || isIndividualAccount ? true : false,
+        } as AuthApiResponse.ISessions);
       } else {
-        return res
-          .status(500)
-          .json({
-            success: false,
-            error: "Account does not exist",
-          } as IApiResponseError);
+        return res.status(500).json({
+          success: false,
+          error: "Account does not exist",
+        } as IApiResponseError);
       }
     }
 
@@ -85,26 +80,25 @@ export default withIronSession(
 
     if (!user) {
       console.log("No account");
-      return res
-        .status(500)
-        .json({
-          success: false,
-          error: "Account does not exist",
-        } as IApiResponseError);
+      return res.status(500).json({
+        success: false,
+        error: "Account does not exist",
+      } as IApiResponseError);
     }
 
-    if (typeof(user) != "boolean") {
+    if (typeof user != "boolean") {
       if (!user.email_verified) {
-        return res
-          .status(500)
-          .json({
-            success: false,
-            error: "Email not verified",
-          } as IApiResponseError);
+        return res.status(500).json({
+          success: false,
+          error: "Email not verified",
+        } as IApiResponseError);
       }
     }
 
-    if (typeof(user) != "boolean" && bcrypt.compareSync(password, user.password_hash.toString())) {
+    if (
+      typeof user != "boolean" &&
+      bcrypt.compareSync(password, user.password_hash.toString())
+    ) {
       // @ts-ignore
       req.session.set("user", { email, id: user.id, rememberme });
       // @ts-ignore
@@ -118,12 +112,9 @@ export default withIronSession(
         `user ${user.id} has logged in`
       );
 
-      return res
-        .status(201)
-        .json({
-          accountExists:
-            isBusinessAccount || isIndividualAccount ? true : false,
-        } as AuthApiResponse.ISessions);
+      return res.status(201).json({
+        accountExists: isBusinessAccount || isIndividualAccount ? true : false,
+      } as AuthApiResponse.ISessions);
     }
 
     return res.status(403).send("");

@@ -67,7 +67,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
     if (req.method == "PUT") {
       // console.log(user);
-      const { name, bio, pfp, location, pfpChanged, status } = req.body;
+      const { name, bio, pfp, location, pfpChanged, status, isSubscribed } =
+        req.body;
 
       await DAO.Individual.update(
         user.id,
@@ -76,7 +77,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         name,
         bio,
         location,
-        status
+        status,
+        isSubscribed
       );
 
       res.status(200).json({ success: true });
