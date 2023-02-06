@@ -420,7 +420,7 @@ export namespace DAO {
       url: string,
       status: string
     ): Promise<void> {
-      var query = `UPDATE Business SET company_name = ?, ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
+      var query = `UPDATE Business SET company_name = ?, logo = ? description = ?, location = ?, industry = ?, size = ?, website = ?, status = ? WHERE user_id = ?;`;
       await connection
         .promise()
         .execute(query, [
