@@ -100,7 +100,11 @@ exports.handler = async () => {
                     <p>Message them and start to grow your affiliate partner network.</p>
                     Thanks<br/>
                     Team Connective</p>`);
-        sendEmail(user.email, template.join(""));
+        sendEmail(user.email, template.join(""))
+          .then(() => {})
+          .catch(() => {
+            console.log(error);
+          });
       })
     );
   } catch (error) {

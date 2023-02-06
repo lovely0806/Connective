@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSession } from "next-iron-session";
 import { sendEmail } from "../../../lib/notifications/sendEmail";
 import { DAO } from "../../../lib/dao";
+import { Business, Individual, TruncatedUser } from "../../../types/types";
 
 export async function handler(req, res) {
   try {
@@ -9,26 +10,35 @@ export async function handler(req, res) {
     const sessionUser = req.session.get().user;
     const userId = sessionUser.id;
 
-    let user = null;
+    let user: Business | Individual | boolean = null;
+    let userName: string = "";
+
     if (profile === "Individual") {
       user = await DAO.Individual.getByUserId(userId);
+      if (typeof user == "boolean") return;
+      userName = user.name;
     } else {
       user = await DAO.Business.getByUserId(userId);
+      if (typeof user == "boolean") return;
+      userName = user.company_name;
     }
 
     if (user) {
-      const industry: string = user.industry;
-      let users = await DAO.Users.getByIndustry(industry, profile);
+      const industry: string = String(user.industry);
+      let users: Array<TruncatedUser> | boolean = await DAO.Users.getByIndustry(
+        industry,
+        profile
+      );
 
-      if (typeof(users) != "boolean" && users.length) {
-        users = users.filter((user) => user.id != userId);
-        users.forEach(async (user) => {
-          const subject = "Connective: Status updated";
-          const template = `Hello There!<br/>
-${user.name} on their platform updated the status to ${status} Please message them if they fit your affiliate partnership criteria.<br/>
-Thanks<br/>
-Team Connective`;
-          await sendEmail(subject, template, user.email);
+      if (typeof users != "boolean" && users.length) {
+        users = users.filter((user) => user.user_id != userId);
+        users.forEach(async (eachUser) => {
+          const subject: string = "Connective: Status updated";
+          const template: string = `Hello There!<br/>
+${userName} on their platform updated the status to "${status}". Please message them if they fit your affiliate partnership criteria.<br/>
+Thanks,<br/>
+Team Connective.`;
+          await sendEmail(subject, template, eachUser.email);
         });
       }
     }
