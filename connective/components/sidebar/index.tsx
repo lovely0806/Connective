@@ -3,8 +3,18 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import {
+  MouseEventHandler,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { MessagesContext } from "../../pages/app/messages";
+import { io } from "socket.io-client";
+import { Events } from "../../common/events";
+import { Conversation } from "../../types/types";
+import { MessagesApiResponse } from "../../types/apiResponseTypes";
 
 type Props = {
   text: string;
@@ -14,6 +24,8 @@ type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
   target?: string;
 };
+
+let socketIO;
 
 const SidebarItem = ({
   text,
@@ -54,6 +66,7 @@ const SidebarItem = ({
 const Sidebar = ({ user }) => {
   const router = useRouter();
   const { conversations } = useContext(MessagesContext);
+  const [sum, setSum] = useState<number>();
   const { data: session } = useSession();
 
   const signout = async () => {
@@ -69,18 +82,70 @@ const Sidebar = ({ user }) => {
     }
   };
 
-  const [sum, setSum] = useState<number>();
-
-  useEffect(() => {
-    if (conversations?.length) {
-      const sum: number =
+  const calculateUnReadMessages = useCallback(
+    (conversations: Conversation[]) => {
+      return (
         conversations?.reduce(
           (previous, current) => current.unread + previous,
           0
-        ) || 0;
+        ) || 0
+      );
+    },
+    []
+  );
+
+  const getConversations = useCallback(async () => {
+    try {
+      const data: MessagesApiResponse.IConversations = (
+        await axios.get("/api/messages/conversations")
+      ).data;
+      const sum = calculateUnReadMessages(data.conversations);
       setSum(sum);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      if (!socketIO) {
+        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST);
+
+        socketIO.on(Events.DISCONNECT, () => {
+          socketIO = null;
+        });
+      }
+
+      if (typeof Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID === "function") {
+        socketIO.on(
+          Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID(user.id),
+          (conversations: Conversation[]) => {
+            const sum: number = calculateUnReadMessages(conversations);
+            setSum(sum);
+          }
+        );
+      }
+      return () => {
+        if (typeof Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID === "function") {
+          socketIO?.off(Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID(user.id));
+        }
+      };
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (conversations?.length) {
+      const updatedSum: number = calculateUnReadMessages(conversations);
+      console.log({ updatedSum, sum });
+      if (updatedSum < sum) {
+        setSum(updatedSum);
+      }
     }
   }, [conversations]);
+
+  useEffect(() => {
+    getConversations();
+  }, [getConversations]);
 
   return (
     <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
