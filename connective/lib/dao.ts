@@ -416,7 +416,7 @@ export namespace DAO {
      * @param {string} url The new site url of the business
      * @param {string} status The new status for the business
      */
-    static async update(
+    static async update( 
       userId: number,
       name: string,
       pfpChanged: boolean,
