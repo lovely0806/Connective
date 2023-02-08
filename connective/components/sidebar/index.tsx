@@ -1,14 +1,20 @@
-import { useRouter } from "next/router";
-import { useState, useEffect, MouseEventHandler } from "react";
 import axios from "axios";
-import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import {
-  IApiResponseError,
-  MessagesApiResponse,
-} from "../../types/apiResponseTypes";
-import { Message } from "../../types/types";
+  MouseEventHandler,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { MessagesContext } from "../../pages/app/messages";
+import { io } from "socket.io-client";
+import { Events } from "../../common/events";
+import { Conversation } from "../../types/types";
+import { MessagesApiResponse } from "../../types/apiResponseTypes";
 
 type Props = {
   text: string;
@@ -18,6 +24,8 @@ type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
   target?: string;
 };
+
+let socketIO;
 
 const SidebarItem = ({
   text,
@@ -57,6 +65,8 @@ const SidebarItem = ({
 
 const Sidebar = ({ user }) => {
   const router = useRouter();
+  const { conversations } = useContext(MessagesContext);
+  const [sum, setSum] = useState<number>();
   const { data: session } = useSession();
 
   const signout = async () => {
@@ -72,46 +82,70 @@ const Sidebar = ({ user }) => {
     }
   };
 
-  const [sum, setSum] = useState();
-  const [unreadMessages, setUnreadMessages] = useState([]);
+  const calculateUnReadMessages = useCallback(
+    (conversations: Conversation[]) => {
+      return (
+        conversations?.reduce(
+          (previous, current) => current.unread + previous,
+          0
+        ) || 0
+      );
+    },
+    []
+  );
 
-  const getConversations = async () => {
+  const getConversations = useCallback(async () => {
     try {
       const data: MessagesApiResponse.IConversations = (
         await axios.get("/api/messages/conversations")
       ).data;
-      let tempConversations = data.conversations;
-      let conversations = [...tempConversations];
-      conversations?.map(async (conversation, index) => {
-        let unread = await getUnreadMessages(conversation.id);
-        conversation.unread = unread;
-        unreadMessages[conversation.id] = unread;
-      });
-      setSum(unreadMessages?.reduce((a, v) => a + v, 0));
+      const sum = calculateUnReadMessages(data.conversations);
+      setSum(sum);
     } catch (e) {
       console.log(e);
     }
-  };
+  }, []);
 
-  const getUnreadMessages = async (id: number) => {
-    const res: MessagesApiResponse.IGetOtherID | IApiResponseError = (
-      await axios.get("/api/messages/" + id)
-    ).data;
-    if (res.type == "IApiResponseError") {
-      throw res;
-    } else {
-      if (res.messages) {
-        const unReadMesssages = res.messages.filter((message: Message) => {
-          return !message.read && message.receiver == user.id;
-        }).length;
-        return unReadMesssages;
+  useEffect(() => {
+    if (user) {
+      if (!socketIO) {
+        socketIO = io(process.env.NEXT_PUBLIC_SOCKET_HOST);
+
+        socketIO.on(Events.DISCONNECT, () => {
+          socketIO = null;
+        });
+      }
+
+      if (typeof Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID === "function") {
+        socketIO.on(
+          Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID(user.id),
+          (conversations: Conversation[]) => {
+            const sum: number = calculateUnReadMessages(conversations);
+            setSum(sum);
+          }
+        );
+      }
+      return () => {
+        if (typeof Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID === "function") {
+          socketIO?.off(Events.NEW_UNREAD_CONVERSATION_RECEIVER_ID(user.id));
+        }
+      };
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (conversations?.length) {
+      const updatedSum: number = calculateUnReadMessages(conversations);
+      console.log({ updatedSum, sum });
+      if (updatedSum < sum) {
+        setSum(updatedSum);
       }
     }
-  };
+  }, [conversations]);
 
   useEffect(() => {
     getConversations();
-  }, []);
+  }, [getConversations]);
 
   return (
     <div className="z-10 h-fill min-w-[30vh] bg-[#061A40] flex flex-col text-white font-[Montserrat] px-[32px] py-[30px]">
