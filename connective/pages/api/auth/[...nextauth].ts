@@ -18,6 +18,7 @@ export default (req: NextApiRequest, res: NextApiResponse<Response>) =>
     secret: "connective",
     callbacks: {
       async signIn({ account, profile }) {
+        console.log(account)
         if (account.provider != "google") return false;
 
         const name = profile.name;
@@ -30,7 +31,7 @@ export default (req: NextApiRequest, res: NextApiResponse<Response>) =>
         let user = await DAO.Users.getByEmail(email);
         if (typeof(user) != "boolean") {
           if (user.is_signup_with_google) {
-            DAO.Users.updatePasswordHash(hash, email);
+            await DAO.Users.updatePasswordHash(hash, email);
           } else {
             return `/auth/signin?error=true`;
           }
@@ -38,7 +39,7 @@ export default (req: NextApiRequest, res: NextApiResponse<Response>) =>
           const stripe_account = await stripe.accounts.create({
             type: "express",
           });
-          DAO.Users.add(name, hash, email, stripe_account.id, true);
+          DAO.Users.add(name, hash, email, stripe_account.id, true, true);
         }
 
         return `/auth/signin?token=${accessToken}&email=${email}`;
