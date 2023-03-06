@@ -22,6 +22,9 @@ export default async function handler(
 
     var user = await DAO.Users.getByEmail(email); //Will return false if user does not exist, or a User object if they do exist
 
+    console.log("User: ")
+    console.log(user)
+    
     if (user) {
       res.status(500).json({
         success: false,
