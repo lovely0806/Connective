@@ -1,6 +1,5 @@
 import moment from "moment";
 import mysql, { OkPacket, RowDataPacket } from "mysql2";
-import Query from "mysql2/typings/mysql/lib/protocol/sequences/Query";
 import {
   Message,
   User,
@@ -378,13 +377,14 @@ export namespace DAO {
       url: string,
       location: string,
       industry: string,
+      occupation: string,
       size: string,
       status: string
     ): Promise<number> {
       var query = `INSERT INTO Business (
-                            user_id, company_name, description, logo, website, location, industry, size, status
+                            user_id, company_name, description, logo, website, location, industry, occupation, size, status
                         ) VALUES (
-                            ?, ?, ?, ?, ?, ?, ?, ?, ?
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                         );`;
       var [result] = await connection
         .promise()
@@ -396,6 +396,7 @@ export namespace DAO {
           url,
           location,
           industry,
+          occupation,
           size,
           status,
         ]);
