@@ -10,6 +10,8 @@ export function business(
 ): ValidationResponse {
   let res = new ValidationResponse();
 
+  console.log(industry)
+
   res.fields = [
     { name: "name", success: true, typename: "IValidationItem" },
     { name: "size", success: true, typename: "IValidationItem" },
@@ -19,16 +21,16 @@ export function business(
     { name: "status", success: true, typename: "IValidationItem" },
   ];
 
-  if (name == "") {
+  if (name === "") {
     res.invalidateField("name", "You must enter a name.");
   }
-  if (size == "") {
+  if (size === "") {
     res.invalidateField("size", "You must select your company size.");
   }
-  if (industry == "") {
+  if (industry === "") {
     res.invalidateField("industry", "You must select an industry.");
   }
-  if (occupation == "") {
+  if (occupation === "") {
     res.invalidateField("occupation", "You must select an occupation.");
   }
   if (description.length > 500) {
@@ -37,10 +39,10 @@ export function business(
       "Description must be less than 500 characters."
     );
   }
-  if (description == "") {
+  if (description === "") {
     res.invalidateField("description", "You must enter a description.");
   }
-  if (status == "") {
+  if (status === "") {
     res.invalidateField("status", "You must select a status.");
   }
 
