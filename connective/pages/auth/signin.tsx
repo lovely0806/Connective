@@ -146,17 +146,17 @@ export default function SignIn() {
         <div className="w-100 overflow-x-hidden flex overflow-y-scroll">
           <div className="w-3/4 mx-auto">
             <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px]">
-                <div className="cursor-pointer text-center mt-[44px]">
-                  <Link href="https://www.connective-app.xyz" passHref>
-                    <a>
-                      <Image
-                        src="/assets/logo.svg"
-                        alt="Connective logo"
-                        width="453.83px"
-                        height="89.57px"
-                      />
-                    </a>
-                  </Link>
+              <div className="cursor-pointer text-center mt-[44px]">
+                <Link href="https://www.connective-app.xyz" passHref>
+                  <a>
+                    <Image
+                      src="/assets/logo.svg"
+                      alt="Connective logo"
+                      width="453.83px"
+                      height="89.57px"
+                    />
+                  </a>
+                </Link>
               </div>
               <div className="mt-5 flex flex-col items-center">
                 <div className="text-center">
