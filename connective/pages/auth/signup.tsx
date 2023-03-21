@@ -166,7 +166,6 @@ const SignUp = () => {
               </div>
               <div className="flex justify-around">
                 <AuthButton isSignUp={false} type="google" />
-                <AuthButton isSignUp={false} type="google" />
               </div>
               <div className="mx-auto">
                 <GoogleSsoDivider />
