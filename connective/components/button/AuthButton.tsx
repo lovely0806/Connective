@@ -55,7 +55,7 @@ const AuthButton = ({ isSignUp = false, type }: Props) => {
         <button
           disabled={isWorking}
           onClick={() => signIn(type)}
-          className="flex justify-center items-center w-fit border-2 border-solid border-purple bg-slate-50 font-[Poppins] px-[28px] py-[10px] text-black text-[13px] leading-[18px] text-center rounded-full transition-all hover:scale-105 hover:shadow-lg disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:hover:scale-100 disabled:hover:shadow-none 1bp:text-[16px]"
+          className="flex justify-center  mr-[30px] items-center w-fit border-2 border-solid border-purple bg-slate-50 font-[Poppins] px-[28px] py-[10px] text-black text-[13px] leading-[18px] text-center rounded-full transition-all hover:scale-105 hover:shadow-lg disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:hover:scale-100 disabled:hover:shadow-none 1bp:text-[16px]"
         >
           <Image
             src={isGoogle ? googleIcon : facebookIcon}
