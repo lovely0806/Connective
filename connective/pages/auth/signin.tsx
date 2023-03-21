@@ -138,7 +138,7 @@ export default function SignIn() {
 
   return (
     <main className="flex flex-row-reverse justify-center h-[100vh] bg-[#FCF7FF]">
-      <Head children={''}>
+      <Head>
         <title>Signin - Connective</title>
       </Head>
       <LoginSidebar />
