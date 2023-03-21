@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import AuthService from 'services/authService'
 import InputField from 'components/input-field'
@@ -137,7 +138,7 @@ const SignUp = () => {
         <title>Signup - Connective</title>
       </Head>
       <OnboardingSidebar isSignUp />
-      <div className="w-7/12 flex overflow-hidden h-[100vh]">
+      <div className="w-100 flex overflow-hidden h-[100vh]">
         <div className="w-100 overflow-x-hidden flex overflow-y-scroll">
           <div className="mx-auto relative min-h-screen">
             <p className="absolute top-[35px] right-[50px] text-[#414141] mt-[12px] font-normal text-[14px] leading-[36px] font-[Poppins] 1bp:text-[18px] mb-[40px]">
@@ -151,14 +152,17 @@ const SignUp = () => {
             <div className="flex flex-col font-[Montserrat] mt-[92px] py-[30px] px-[50px]">
               <div className="mt-[2vw]">
                 <p className="font-bold text-center text-[44px] leading-[60px] text-black">
-                  Getting started with Connective!
+                  Getting started with <br/>Connective!
                 </p>
 
                 <p className="text-center text-[16px] leading-[37px] text-black mt-2 mb-4">
                   Sign up with your account
                 </p>
               </div>
-              <AuthButton isSignUp={true} type="google" />
+              <div className="flex justify-around">
+                <AuthButton isSignUp={false} type="google" />
+                <AuthButton isSignUp={false} type="google" />
+              </div>
               <div className="mx-auto">
                 <GoogleSsoDivider />
                 <div className="flex flex-col gap-4 mt-[28px]">
@@ -207,10 +211,19 @@ const SignUp = () => {
                 <p className="text-red-500 font-bold text-[12px]">{tacError}</p>
                 <button
                   onClick={submitAccount}
-                  className="h-[47px] bg-purple font-[500] font-[Poppins] mt-5 text-[#F2F4F5] text-[16px] leading-[18px] text-center rounded-full shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
+                  className="mb-5 h-[47px] bg-purple font-[500] font-[Poppins] mt-5 text-[#F2F4F5] text-[16px] leading-[18px] text-center rounded-full shadow-md transition-all hover:scale-105 hover:shadow-lg 1bp:text-[16px]"
                 >
                   Sign up
                 </button>
+
+                <p className="text-center text-[#414141] mt-[12px] font-normal text-[14px] leading-[36px] font-[Poppins] font-[400] 1bp:text-[18px] mb-[40px]">
+                  Have an account?{' '}
+                  <Link href="./signin">
+                    <span className="font-500 cursor-pointer text-purple">
+                      Sign in
+                    </span>
+                  </Link>
+                </p>
               </div>
             </div>
           </div>
