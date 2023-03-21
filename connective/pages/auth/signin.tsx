@@ -169,6 +169,7 @@ export default function SignIn() {
                 </div>
                 <div className="flex justify-between">
                   <AuthButton isSignUp={false} type="google" />
+                  <AuthButton isSignUp={false} type="google" />
                 </div>
                 <div className="w-3/5 4bp:w-full">
                   <GoogleSsoDivider />

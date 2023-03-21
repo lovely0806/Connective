@@ -8,9 +8,9 @@ const OnboardingSidebar = ({ isSignUp }: Props) => {
   return (
     <div
       className={`relative flex min-w-[550px] w-5/12 h-[100vh] bg-[url('/assets/journey.svg')] bg-no-repeat bg-center bg-cover flex flex-col p-[60px] mr-0 gap-[90px] relative z-[5]
-      ${isSignUp ? 'justify-end' : 'justify-start'}`}
+      ${isSignUp ? 'justify-end' : 'justify-start'}  xs: hidden lg:block`}
     >
-      <Link href="https://www.connective-app.xyz">
+      {/* <Link href="https://www.connective-app.xyz">
         <div className="absolute flex top-[35px] left-[50px] cursor-pointer items-center gap-[12px]">
           <Image
             className="w-[70px] h-[75px]"
@@ -24,9 +24,9 @@ const OnboardingSidebar = ({ isSignUp }: Props) => {
             Connective
           </h4>
         </div>
-      </Link>
+      </Link> */}
       {!isSignUp && (
-        <div className="z-[1] bg-[#fff2f2]/[0.13] px-[40px] py-[24px] w-fit mt-44 backdrop-blur-[35.5px] mix-blend-normal rounded-2xl">
+        <div className="absolute bottom-[40px] left-[20px] z-[1] bg-[#fff2f2]/[0.13] px-[40px] py-[24px] w-fit mt-44 backdrop-blur-[35.5px] mix-blend-normal rounded-2xl">
           <h1 className="max-w-[480px] font-[Montserrat] text-[#F2F4F5] font-bold text-[40px] leading-[52px] mb-[24px]">
             Register as a <br /> Company or Individual
           </h1>
@@ -36,7 +36,7 @@ const OnboardingSidebar = ({ isSignUp }: Props) => {
         </div>
       )}
       {isSignUp && (
-        <div className="z-[1] bg-[#fff2f2]/[0.13] px-[40px] py-[24px] w-fit mx-auto mb-20 backdrop-blur-[35.5px] mix-blend-normal rounded-2xl">
+        <div className="absolute bottom-[40px] left-[20px] z-[1] bg-[#fff2f2]/[0.13] px-[40px] py-[24px] w-fit mx-auto mb-20 backdrop-blur-[35.5px] mix-blend-normal rounded-2xl">
           <h1 className="max-w-[363px] font-[Montserrat] text-[#F2F4F5] font-bold text-[40px] leading-[52px] mb-[24px]">
             Start your journey with us
           </h1>
