@@ -6,6 +6,11 @@ module.exports = {
   ],
   theme: {
     screens: {
+      xs: "100px",
+      sm: "540px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
       '1bp': { min: '2074px' },
       '2bp': { max: '1241px' },
       '3bp': { min: '2300px' },

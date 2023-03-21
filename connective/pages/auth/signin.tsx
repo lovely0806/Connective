@@ -138,34 +138,25 @@ export default function SignIn() {
 
   return (
     <main className="flex flex-row-reverse justify-center h-[100vh] bg-[#FCF7FF]">
-      <Head>
+      <Head children={''}>
         <title>Signin - Connective</title>
       </Head>
       <LoginSidebar />
-
       <div className="w-100 flex overflow-hidden h-[100vh]">
         <div className="w-100 overflow-x-hidden flex overflow-y-scroll">
           <div className="w-3/4 mx-auto">
             <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px]">
-              <div className="flex justify-between items-center mb-5">
-                <div className="cursor-pointer">
+                <div className="cursor-pointer text-center mt-[44px]">
                   <Link href="https://www.connective-app.xyz" passHref>
                     <a>
                       <Image
                         src="/assets/logo.svg"
                         alt="Connective logo"
-                        width="173px"
-                        height="41px"
+                        width="453.83px"
+                        height="89.57px"
                       />
                     </a>
                   </Link>
-                </div>
-                <p className="font-[Poppins] font-normal text-[14px] leading-[36px] text-center text-[#414141] 1bp:text-[16px]">
-                  Don't have an account?{' '}
-                  <Link href="/auth/signup">
-                    <span className="text-purple cursor-pointer">Sign up!</span>
-                  </Link>
-                </p>
               </div>
               <div className="mt-5 flex flex-col items-center">
                 <div className="text-center">
@@ -176,7 +167,10 @@ export default function SignIn() {
                     Login into your account
                   </p>
                 </div>
-                <AuthButton isSignUp={false} type="google" />
+                <div className="flex justify-between">
+                  <AuthButton isSignUp={false} type="google" />
+                  <AuthButton isSignUp={false} type="google" />
+                </div>
                 <div className="w-3/5 4bp:w-full">
                   <GoogleSsoDivider />
                   <div className="relative flex flex-col gap-5 mt-10 items-center">
@@ -223,6 +217,24 @@ export default function SignIn() {
                   >
                     Login
                   </button>
+
+                  <p className="font-[Poppins] font-normal text-[14px] leading-[36px] text-center text-[#414141] 1bp:text-[16px] xs:mb-[30px]">
+                    Don't have an account?{' '}
+                    <Link href="/auth/signup">
+                      <span className="text-purple cursor-pointer">Sign up!</span>
+                    </Link>
+                  </p>
+                  <div className="xs:block lg:hidden">
+                    <p className="text-center font-bold text-[28px] leading-[39px] text-[#0D1011] mt-[62px]">
+                        Affiliate Partnerships
+                        simplified
+                    </p>
+
+                    <p className="text-center text-[14px] my-[12px] font-normal text-[16px] leading-[24px] font-[Poppins] 1bp:text-[18px] mb-10 mt-[21px]">
+                      Connective is a chat app designed for businesses<br/> 
+                      to form affiliate partnerships.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
