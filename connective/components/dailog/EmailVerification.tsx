@@ -1,5 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import axios from 'axios'
+import Link from 'next/link'
+import Image from 'next/image'
 
 type Props = {
   code: Dispatch<SetStateAction<string>>
@@ -131,11 +133,23 @@ const EmailVerification = ({
       >
         <div className="bg-white  rounded-2xl shadow-lg dark:bg-gray-800 dark:border-gray-700 font-[Poppins] ">
           <div className="p-[60px] flex flex-col items-center">
+            <div className="cursor-pointer text-center mt-[36px] mb-[30px]">
+              <Link href="https://www.connective-app.xyz" passHref>
+                <a>
+                  <Image
+                    src="/assets/logo.svg"
+                    alt="Connective logo"
+                    width="453.83px"
+                    height="89.57px"
+                  />
+                </a>
+              </Link>
+            </div>
             <div className="text-center">
-              <h1 className="block text-[40px] leading-[50px] font-bold text-gray-800 dark:text-white">
+              <h1 className="block text-[40px] mb-[50px] leading-[50px] font-bold text-gray-800 dark:text-white">
                 Verify your email address
               </h1>
-              <p className="mt-2 text-[20px] text-gray-600 max-w-xl dark:text-gray-400">
+              <p className="mt-2 text-[18px] text-gray-600 max-w-xl dark:text-gray-400">
                 We emailed you a 4-digit code to{' '}
                 <span className="font-bold">{email}</span>. Enter the code below
                 to confirm your email.
@@ -154,7 +168,7 @@ const EmailVerification = ({
                             type="text"
                             id={`code_${index}`}
                             name={`code${number}`}
-                            className="max-w-[125px] max-h-[125px] w-[8vw] h-[8vw] inline-block rounded-3xl mr-4 py-3 px-4 border-2 border-gray text-[44px] focus:border-purple focus:outline-none focus-visible:border-purple text-center"
+                            className="w-[80px] h-[80px] w-[8vw] h-[8vw] inline-block rounded-[8px] mr-4 py-3 px-4 border-2 border-gray text-[44px] focus:border-purple focus:outline-none focus-visible:border-purple text-center"
                             required
                             maxLength={4}
                             onChange={(e) => handleOnChangeNumber(e, index)}
@@ -176,7 +190,7 @@ const EmailVerification = ({
                   ) : null}
 
                   <p
-                    className="text-center font-[Poppins] text-[20px] text-black mt-3"
+                    className="text-center font-[Poppins] text-[18px] text-black mt-3"
                     id="email-error"
                     onClick={handleResendCode}
                   >
@@ -187,17 +201,20 @@ const EmailVerification = ({
                   </p>
                 </div>
 
-                <div className="w-full text-center mt-4">
-                  <div className="w-4/5 inline-block">
-                    <button
-                      type="button"
-                      className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-full border border-transparent font-[400] font-[Poppins] bg-dark-purple text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-[18px] dark:focus:ring-offset-gray-800"
-                      onClick={handleOnVerify}
-                      disabled={buttonDisabled}
-                    >
-                      Submit
-                    </button>
-                  </div>
+                <div className="w-4/5 inline-block">
+                  <button
+                    type="button"
+                    className="w-[370px] mx-auto mt-2 p-2.5 flex-1 text-white bg-purple rounded-full"
+                    onClick={handleOnVerify}
+                    disabled={buttonDisabled}
+                  >
+                    Submit
+                  </button>
+                  <button
+                    className="w-[370px] mx-auto mt-4 p-2.5 flex-1 text-purple bg-white border-2 border-solid border-purple rounded-full"
+                  >
+                    Back
+                  </button>
                 </div>
               </div>
             </div>
