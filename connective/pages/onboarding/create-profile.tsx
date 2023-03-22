@@ -237,6 +237,18 @@ export default function CreateProfile({ user, industries }) {
         <div className="w-100 overflow-x-hidden flex-none overflow-y-scroll">
           <div className="w-3/4 mx-auto">
             <div className="flex flex-col font-[Poppins] my-[40px]">
+              <div className="cursor-pointer text-center mt-[45px]">
+                <Link href="https://www.connective-app.xyz" passHref>
+                  <a>
+                    <Image
+                      src="/assets/logo.svg"
+                      alt="Connective logo"
+                      width="453.83px"
+                      height="89.57px"
+                    />
+                  </a>
+                </Link>
+              </div>
               <p className="text-[44px] font-[600] text-black text-center">
                 Create {isIndividual ? 'Company' : 'Individual'} Profile
               </p>
@@ -247,7 +259,7 @@ export default function CreateProfile({ user, industries }) {
                 isIndividual={isIndividual}
                 setIndividual={setIndividual}
               />
-              <div className="flex flex-col gap-3 mt-3">
+              <div className="flex flex-col gap-3 mt-16">
                 <InputField
                   name={'Name'}
                   placeholder={'Enter company name'}
@@ -292,6 +304,9 @@ export default function CreateProfile({ user, industries }) {
                     placeholder={'Enter company website URL'}
                     updateValue={setUrl}
                   />
+                </div>
+
+                <div className="flex flex-row gap-[24px]">
                   <InputField
                     name={'Location'}
                     placeholder={'Enter where your company is located'}
@@ -320,6 +335,8 @@ export default function CreateProfile({ user, industries }) {
                             : ''
                         }
                       />
+                    </div>
+                    <div className="flex flex-row w-full gap-10">
                       <SelectField
                         title="Occupation"
                         placeholder="Choose your occupation"
@@ -360,6 +377,8 @@ export default function CreateProfile({ user, industries }) {
                           }
                         />
                       )}
+                    </div>
+                    <div className="flex flex-row w-full gap-10">
                       <SelectField
                         title="Status"
                         placeholder="Choose your status"
@@ -392,6 +411,16 @@ export default function CreateProfile({ user, industries }) {
               >
                 Create Profile
               </button>
+
+              <div className="xs:block lg:hidden">
+                <h1 className="text-center w-full font-[Montserrat]  font-bold text-[40px] leading-[52px] mb-[24px] mt-[76px]">
+                  Register as a Company <br /> or Individual
+                </h1>
+                <p className="text-center w-full font-[Montserrat]  font-light text-[18px] leading-[150%]">
+                  And enjoy all the benefits that only<br/> Connective offers you.
+                </p>
+              </div>
+
             </div>
           </div>
         </div>
