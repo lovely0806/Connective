@@ -324,7 +324,12 @@ export default function CreateProfile({ user, industries }) {
                         }
                       />
 <<<<<<< HEAD
+<<<<<<< HEAD
                       {isIndividual &&
+=======
+                    </div>
+                    <div className="flex flex-row w-full gap-10">
+>>>>>>> 55fc9cc (mobile-company-profile)
 =======
                     </div>
                     <div className="flex flex-row w-full gap-10">
