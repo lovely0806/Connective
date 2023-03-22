@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import Avatar from '../avatar'
 
 type Props = {
@@ -102,6 +103,18 @@ const FileUpload = ({
             <div className="relative w-full w-[984px] max-w-3xl py-4 mx-auto rounded-xl bg-[#f5f5f5]">
               <div className="mt-3">
                 <div className="mt-2 text-center sm:ml-4 sm:text-left">
+                  <div className="cursor-pointer text-center mt-[76px] mb-[50px]">
+                    <Link href="https://www.connective-app.xyz" passHref>
+                      <a>
+                        <Image
+                          src="/assets/logo.svg"
+                          alt="Connective logo"
+                          width="453.83px"
+                          height="89.57px"
+                        />
+                      </a>
+                    </Link>
+                  </div>
                   <h1 className="text-[40px] font-bold font-[Poppins] leading-[60px] text-black">
                     Upload Profile Picture
                   </h1>
@@ -117,11 +130,17 @@ const FileUpload = ({
                   <div className="h-[1px] bg-gray/[0.2] w-full mt-20"></div>
                   <button
                     // onClick={() => setFile(undefined)}
-                    className="my-[30px] w-fit mx-auto bg-transparent border borders-gray flex items-center justify-center text-gray/[0.8] rounded-full px-[30px]"
+                    className="my-[30px] w-[70%] mx-auto bg-transparent border borders-gray flex items-center justify-center text-gray/[0.8] rounded-full px-[30px]"
                   >
                     <Image src="/assets/trash.svg" width={30} height={30} />
                     Delete Photo
                   </button>
+                  <button
+                    className="w-[70%] mx-auto mt-4 mb-10 p-2.5 flex-1 text-purple bg-white border-2 border-solid border-purple rounded-full"
+                  >
+                    Back
+                  </button>
+
                 </div>
               </div>
             </div>
