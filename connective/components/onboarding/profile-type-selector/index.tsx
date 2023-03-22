@@ -13,8 +13,8 @@ const ProfileTypeSelector = ({ isIndividual, setIndividual }: Props) => {
     'font-[Poppins] cursor-pointer bg-purple text-white flex flex-row gap-2 px-10 py-2  h-[47px] flex items-center justify-center rounded-full w-fill flex flex-row items-center justify-center'
 
   return (
-    <div className="flex flex-row gap-5 mx-auto">
-      <div className="w-[229px] rounded-lg">
+    <div className="flex justify-around flex-row w-full gap-[24]">
+      <div className="w-auto rounded-lg">
         <div
           onClick={() => setIndividual(false)}
           className={!isIndividual ? selectedClass : unselectedClass}
@@ -37,7 +37,7 @@ const ProfileTypeSelector = ({ isIndividual, setIndividual }: Props) => {
         </div>
       </div>
 
-      <div className="w-[229px] rounded-lg">
+      <div className="w-auto rounded-lg">
         <div
           onClick={() => setIndividual(true)}
           className={isIndividual ? selectedClass : unselectedClass}
