@@ -280,7 +280,7 @@ export default function CreateProfile({ user, industries }) {
                     setFile={setPfp}
                     src={src}
                     profilePicture={true}
-                  />
+                  /> 
                 </div>
 
                 <div className="flex flex-row gap-[24px]">
