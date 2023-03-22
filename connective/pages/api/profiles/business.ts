@@ -64,6 +64,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         url,
         location,
         industry,
+        occupation,
         size,
         status
       );
