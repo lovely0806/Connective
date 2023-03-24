@@ -4,7 +4,7 @@ export function business(
   name: string,
   size: string,
   industry: number | string,
-  occupation: string,
+  // occupation?: string,
   description: string,
   status: string,
 ): ValidationResponse {

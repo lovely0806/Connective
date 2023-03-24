@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Recache } from 'recache-client'
 import axios from 'axios'
+import Link from 'next/link'
+import Image from 'next/image'
 import { withIronSession } from 'next-iron-session'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
@@ -333,7 +335,7 @@ export default function CreateProfile({ user, industries }) {
                         onChange={(e) => {
                           setOccupation(e.value)
                         }}
-                        value={()=>occupations.find(e=>i.value.toString() === occupation)}
+                        value={()=>occupations.find(i=>i.value.toString() === occupation)}
                         errorText={
                           fieldErrors
                             ? fieldErrors.fields.filter(
@@ -378,7 +380,7 @@ export default function CreateProfile({ user, industries }) {
                         onChange={(e) => {
                           setStatus(e.value)
                         }}
-                        value={()=>statusOprtions.find(i=>i.value==status)}
+                        value={()=>statusOptions.find(i=>i.value==status)}
                         errorText={
                           fieldErrors
                             ? fieldErrors.fields.filter(

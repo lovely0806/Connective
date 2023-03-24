@@ -34,6 +34,7 @@ export type User = {
   industry?: string
   description?: string
   logo?: string
+  profile_picture?:string
   status?: string
   typename: 'User'
 }

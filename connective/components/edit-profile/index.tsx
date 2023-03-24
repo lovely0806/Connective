@@ -58,7 +58,6 @@ const EditProfile = ({ data, isBusiness, user, industries }: Props) => {
           userInfo.name,
           userInfo.size,
           userInfo.industry,
-          userInfo.occupation,
           userInfo.description,
           userInfo.status,
         )
