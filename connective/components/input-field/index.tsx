@@ -1,34 +1,41 @@
-import Image from "next/image";
-import dollarIcon from "../../public/assets/dollar.svg";
+import { useState } from 'react'
+import Image from 'next/image'
+import dollarIcon from '../../public/assets/dollar.svg'
 
 type Props = {
-  name: string;
-  placeholder?: string;
-  password?: boolean;
-  textarea?: boolean;
-  price?: boolean;
-  updateValue: (value: string) => void;
-  errorText?: string;
-  value?: string | number;
-  disabled?: boolean;
-};
+  name?: string
+  placeholder?: string
+  password?: boolean
+  textarea?: boolean
+  price?: boolean
+  updateValue?: (value: string) => void
+  errorText?: string
+  value?: string | number
+  disabled?: boolean
+  isFull?: boolean
+}
 
 const InputField = ({
   name,
   placeholder,
-  password,
   textarea,
   price,
+  password,
   updateValue,
   errorText,
   value,
   disabled,
+  isFull,
 }: Props) => {
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+
   return (
-    <div className="flex flex-col w-[100%]">
-      <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
-        {name}
-      </p>
+    <div className={`flex flex-col w-full ${isFull ? 'h-full' : ''}`}>
+      {name && (
+        <p className="text-[16px] leading-[15px] font-[500] text-[#111] font-[Montserrat] mb-3 1bp:text-[16.5px]">
+          {name}
+        </p>
+      )}
       {price && (
         <div className="relative flex items-center">
           <div className="absolute z-[10] pl-[12px] my-auto flex items-center">
@@ -42,7 +49,7 @@ const InputField = ({
           <input
             disabled={disabled}
             onChange={(e) => {
-              updateValue(e.target.value);
+              updateValue(e.target.value)
             }}
             type="number"
             min="0"
@@ -57,31 +64,58 @@ const InputField = ({
       {textarea && (
         <textarea
           onChange={(e) => {
-            updateValue(e.target.value);
+            updateValue(e.target.value)
           }}
-          className="outline-none w-full px-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+          className={`outline-none w-full px-[14px] text-[14px] ${
+            isFull ? 'h-full' : 'h-[47px]'
+          } border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300`}
           placeholder={placeholder}
           value={value}
-        ></textarea>
+        />
       )}
 
       {!textarea && !price && (
-        <input
-          onChange={(e) => {
-            updateValue(e.target.value);
-          }}
-          className="outline-none w-full px-[14px] text-[14px] h-[47px] border border-black/20 rounded-md focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
-          type={password ? "password" : ""}
-          placeholder={placeholder}
-          value={value}
-        ></input>
+        <>
+          <input
+            onChange={(e) => {
+              updateValue(e.target.value)
+            }}
+            className="outline-none w-full px-[14px] text-[14px] h-[47px] border border-black/20 rounded-full focus:outline-blue-200 transition-all hover:outline hover:outline-blue-300"
+            type={password && !showPassword ? 'password' : ''}
+            placeholder={placeholder}
+            value={value}
+          />
+          {password && (
+            <div
+              className="absolute right-[14px] bottom-[5px] cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {!showPassword && (
+                <Image
+                  src="/assets/eye-slash.svg"
+                  alt="eye slash"
+                  width="24px"
+                  height="24px"
+                />
+              )}
+              {showPassword && (
+                <Image
+                  src="/assets/eye.svg"
+                  alt="eye"
+                  width="24px"
+                  height="24px"
+                />
+              )}
+            </div>
+          )}
+        </>
       )}
 
       {errorText && (
-        <p className="text-red-500 font-bold text-[12px]">{errorText}</p>
+        <p className="text-red-500 font-[500] text-[12px]">{errorText}</p>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default InputField;
+export default InputField
