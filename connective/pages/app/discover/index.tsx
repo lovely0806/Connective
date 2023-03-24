@@ -186,7 +186,7 @@ export default function Messages({ user, industries }) {
           */}
         </div>
         <div
-          className="grid grid-cols-4 gap-10 w-full pb-20 items-stretch"
+          className="grid grid-cols-3 2bp:grid-cols-2 3bp:grid-cols-4 gap-10 w-full pb-20 items-stretch"
           ref={discoverRef}
         >
           <Items

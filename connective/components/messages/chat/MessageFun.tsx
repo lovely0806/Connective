@@ -38,7 +38,7 @@ const MessageFun = ({
       )}
       {isSender ? (
         <div>
-          <p className="ml-auto text-right bg-blue-100 w-fit rounded-t-xl rounded-bl-xl p-[18px]">
+          <p className="ml-auto text-right bg-[#F2E3FF] w-fit rounded-t-xl rounded-bl-xl p-[18px]">
             {text}
           </p>
           <div className="float-right mr-2 mt-1 text-[14px]">
