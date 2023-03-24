@@ -29,13 +29,13 @@ const DiscoverList = ({ id, title, description, imgURL, status }: Props) => {
   }
 
   return (
-    <div className="min-w-[320px] flex flex-col items-center h-full justify-center text-center w-full bg-white rounded-2xl gap-2 border border-gray p-3">
+    <div className="flex flex-col min-w-[300px] items-center h-full justify-center text-center w-full bg-white rounded-2xl gap-2 border border-gray p-3">
       <div className="text-sm min-h-[50px] w-full">
         {status ? (
           <div className="rounded-2xl p-2 w-full flex items-center justify-center w-fit bg-blueLight">
-            <Image src="/assets/alert.svg" height={17} width={17} />
+            <Image src="/assets/alert.svg" height={15} width={15} />
             {' '}
-            <p className="text-white text-xs"> {`Status: ${status}`}</p>
+            <p className="text-white text-[10px] ml-1"> {`Status: ${status}`}</p>
           </div>
         ) : null}
       </div>
@@ -52,8 +52,8 @@ const DiscoverList = ({ id, title, description, imgURL, status }: Props) => {
             <Avatar title={title} width={120} height={120} />
           )}
         </div>
-        <p className="text-xl font-bold">{title}</p>
-        <p className="text-sm flex-1 h-full">
+        <p className="text-md font-bold">{title}</p>
+        <p className="text-xs flex-1 h-full">
           {description.length > 195
             ? description.slice(0, 195) + '...'
             : description}
@@ -61,14 +61,14 @@ const DiscoverList = ({ id, title, description, imgURL, status }: Props) => {
       </div>
       <div className="w-full shrink-0 flex flex-col justify-center items-center gap-3 mt-2">
         <button
-          className="text-base font-normal text-white bg-purple font-[Poppins] flex justify-between items-center px-7 py-2 rounded-full"
+          className="text-sm font-normal text-white bg-purple font-[Poppins] flex justify-between items-center px-7 py-2 rounded-full"
           onClick={() => router.push(`${Routes.MESSAGES}?newUser=${id}`)}
         >
           <div>Start a chat</div>
           <Image src="/assets/spread.svg" width={22} height={5} />
         </button>
         <button
-          className="text-base font-normal text-purple bg-transparent border !border-purple font-[Poppins] flex justify-between  items-center px-7 py-2 rounded-full"
+          className="text-sm font-normal text-purple bg-transparent border !border-purple font-[Poppins] flex justify-between  items-center px-7 py-2 rounded-full"
           onClick={() => router.push(`${Routes.PROFILE}/${id}`)}
         >
           <div>View Profile</div>
