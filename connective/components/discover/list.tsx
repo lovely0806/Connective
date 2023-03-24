@@ -29,12 +29,13 @@ const DiscoverList = ({ id, title, description, imgURL, status }: Props) => {
   }
 
   return (
-    <div className="flex flex-col items-center h-full justify-center text-center w-full bg-white rounded-2xl gap-2 border border-gray p-3">
-      <div className="text-sm min-h-[50px]">
+    <div className="min-w-[320px] flex flex-col items-center h-full justify-center text-center w-full bg-white rounded-2xl gap-2 border border-gray p-3">
+      <div className="text-sm min-h-[50px] w-full">
         {status ? (
-          <div className="rounded-2xl p-2 flex items-center justify-center w-fit bg-blueLight">
+          <div className="rounded-2xl p-2 w-full flex items-center justify-center w-fit bg-blueLight">
             <Image src="/assets/alert.svg" height={17} width={17} />
-            <p className="text-white text-sm"> {`Status: ${status}`}</p>
+            {' '}
+            <p className="text-white text-xs"> {`Status: ${status}`}</p>
           </div>
         ) : null}
       </div>
