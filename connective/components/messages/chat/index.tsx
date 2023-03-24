@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { NextProgressbarSpinner } from 'nextjs-progressbar-spinner'
 import { io } from 'socket.io-client'
 import Image from 'next/image'
 import axios from 'axios'
@@ -87,7 +86,7 @@ const Chat = ({
           (msg) => {
             setMessages((prevMsgs) => {
               const msgs = [...prevMsgs]
-              msgs.push(msg)
+              msgs.push({...msg, timestamp: new Date()})
               return msgs
             })
             setIsNewMessageArrived(true)

@@ -30,6 +30,7 @@ export namespace DAO {
      */
     static async getById(id: number): Promise<User | boolean> {
       var query = `SELECT * FROM Users WHERE id=?;`
+      
       var [results] = await connection.promise().query(query, [id])
 
       if (Array.isArray(results) && results.length == 0) return false
@@ -51,8 +52,6 @@ export namespace DAO {
      * @returns {User | boolean} The user object, or false if not found
      */
     static async getByEmail(email: string): Promise<User | boolean> {
-      // var query = `SELECT * FROM Users JOIN Business on User.id = Business.userid WHERE email=?; `
-
       var query = `SELECT PROFILE.user_id, PROFILE.location, PROFILE.user_name, PROFILE.logo, Users.* FROM (
             SELECT user_id,  location, company_name AS user_name, logo 
               FROM Business 
@@ -61,7 +60,7 @@ export namespace DAO {
               FROM Individual
            ORDER BY user_id 
           ) as PROFILE
-          INNER JOIN Users ON Users.id = PROFILE.user_id WHERE email=?;`
+          Right JOIN Users ON Users.id = PROFILE.user_id WHERE email=?;`
 
       var [results] = await connection.promise().query(query, [email])
       if (Array.isArray(results) && results.length == 0) return false
@@ -82,7 +81,16 @@ export namespace DAO {
      * @returns {User[]}
      */
     static async getAll(): Promise<User[]> {
-      var query = `SELECT * FROM Users;`
+      // var query = `SELECT * FROM Users;`
+      var query = `SELECT PROFILE.user_id, PROFILE.location, PROFILE.user_name, PROFILE.logo, Users.* FROM (
+        SELECT user_id,  location, company_name AS user_name, logo 
+          FROM Business 
+        UNION ALL 
+        SELECT user_id,  location, NAME AS user_name, profile_picture AS logo
+          FROM Individual
+       ORDER BY user_id 
+      ) as PROFILE
+      inner JOIN Users ON Users.id = PROFILE.user_id;`
       var [results] = await connection.promise().query(query)
 
       const result = (results as Array<RowDataPacket>).map((value) => {
@@ -587,7 +595,7 @@ export namespace DAO {
       let query = ''
       if (pfpChanged) {
         query = `UPDATE Individual i, Users u SET i.name = '${name}', ${
-          pfpChanged ?? 'i.profile_picture =' + `'${pfp}',`
+          pfpChanged ? 'i.profile_picture =' + `'${pfp}',` : ','
         } i.bio = '${bio}', i.location = '${location}', i.status = '${status}', u.is_subscribed = '${Number(
           isSubscribed,
         )}' WHERE u.id = i.user_id and i.user_id = '${userId}';`
@@ -874,6 +882,7 @@ export namespace DAO {
     WHERE 
       rn = 1
     `
+
       var [conversations] = await connection
         .promise()
         .query<RowDataPacket[]>(query1, [userId, userId, userId, userId])

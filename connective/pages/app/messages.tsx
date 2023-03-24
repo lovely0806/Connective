@@ -2,11 +2,17 @@ import { useState, useEffect, createContext } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { withIronSession } from 'next-iron-session'
+import { Recache } from 'recache-client'
 
 import Layout from 'components/layout'
 import { Conversations, Chat, UserDetails } from 'components/messages'
-import { MessagesApiResponse, ProfileApiResponse } from 'types/apiResponseTypes'
+import {
+  MessagesApiResponse,
+  ProfileApiResponse,
+  IApiResponseError,
+} from 'types/apiResponseTypes'
 import { User, Conversation } from 'types/types'
+import {getFormatTime} from 'util/validation/onboarding'
 
 export const MessagesContext = createContext<{
   conversations?: Conversation[]
@@ -18,6 +24,7 @@ const Messages = ({ user }) => {
   const router = useRouter()
   const { newUser } = router.query
   const [users, setUsers] = useState<User[]>([])
+  const [userInfo, setUserInfo] = useState<any>()
   const [showUserdetail, setShowUserDetail] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<Conversation>()
 
@@ -49,6 +56,7 @@ const Messages = ({ user }) => {
     setUsers(data.users)
     if (newUser) {
       const temp = data.users.filter((item) => item.id.toString() == newUser)[0]
+      
       const selectedUser = {
         id: temp.id,
         email: temp.email,
@@ -57,6 +65,13 @@ const Messages = ({ user }) => {
         logo: temp.logo,
       } as Conversation
       setSelectedUser(selectedUser)
+    }
+    const res: ProfileApiResponse.IDiscoverProfiles | IApiResponseError = (
+      await Recache.cached(137, axios.get, ['/api/profiles'])
+    ).data
+    if (res.type == 'IApiResponseError') throw res
+    else {
+      setUserInfo(res.users.find((item) => item.id === user.id))
     }
   }
 
@@ -76,6 +91,7 @@ const Messages = ({ user }) => {
         }
         return conversation
       })
+      
       setConversations(conversations)
       // setSum(unreadMessages?.reduce((a, v) => a + v, 0));
     } catch (e) {
@@ -90,7 +106,10 @@ const Messages = ({ user }) => {
 
   return (
     <MessagesProvider value={{ conversations }}>
-      <Layout user={user} title="Messages">
+      <Layout
+        user={{ ...user, logo: userInfo?.logo, name: userInfo?.username }}
+        title="Messages"
+      >
         <div className="bg-white h-full overflow-clip flex flex-row">
           <Conversations
             unreadMessages={unreadMessages}
@@ -103,7 +122,10 @@ const Messages = ({ user }) => {
             userList={users}
             user={user}
             selectedUser={selectedUser}
-            conversations={conversations}
+            conversations={
+              !!newUser ? [...conversations,{...selectedUser, unread: 0, timestamp: getFormatTime(new Date())}]
+              : conversations
+            }
             getConversations={getConversations}
             setConversations={setConversations}
             showUserDetail={() => setShowUserDetail(!showUserdetail)}

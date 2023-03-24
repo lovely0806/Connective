@@ -62,15 +62,9 @@ export default function Dashboard({ user, buttonOnClick }) {
 
   const getData = async () => {
     let type = await Util.accountType(user.id)
-    if (type == 'Business') {
-      let { data } = await axios.get('/api/dashboard/business')
-      console.log(data)
-      setData(data)
-    } else {
-      let { data } = await axios.get('/api/dashboard/individual')
-      console.log(data)
-      setData(data)
-    }
+    const url = type? '/api/dashboard/business':'/api/dashboard/individual'
+    let { data } = await axios.get(url)
+    setData(data)
   }
 
   useEffect(() => {

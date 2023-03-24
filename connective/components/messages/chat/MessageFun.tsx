@@ -55,8 +55,9 @@ const MessageFun = ({
           <div className="flex">
             {showAvatar ? (
               <div className="flex items-end mr-2 rounded-full">
+                
                 <Image
-                  src={selectedUser?.logo}
+                  src={selectedUser?.logo|| selectedUser?.profile_picture}
                   alt={selectedUser?.username}
                   width={44}
                   height={44}
