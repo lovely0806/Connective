@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { User } from '../../types/types'
 import Sidebar from '../sidebar'
 
@@ -22,7 +23,7 @@ const Layout = ({ title, scroll = true, user, children }: Props) => {
       <Sidebar user={user} />
       <div
         className={`w-screen h-screen flex flex-col relative 
-        ${scroll ? 'overflow-y-scroll' : 'h-full max-h-screen'}
+        ${scroll ? 'overflow-y-scroll' : 'h-full max-h-screen'} xs:hidden md:block
         `}
       >
         <div className="flex justify-between items-cener bg-[#F8F9FA] py-5">
@@ -80,6 +81,54 @@ const Layout = ({ title, scroll = true, user, children }: Props) => {
           </div>
         </div>
         {children}
+      </div>
+
+      <div className="w-full h-[100vh] xs:block md:hidden">
+        <div className="w-full overflow-x-hidden flex-none overflow-y-scroll">
+          <div className="w-full mx-auto">
+            <div className="flex flex-col font-[Poppins] my-[40px]">
+              <div className="cursor-pointer text-center mt-[45px] mb-[31px]">
+                <Link href="https://www.connective-app.xyz" passHref>
+                  <a>
+                    <Image
+                      src="/assets/logo.svg"
+                      alt="Connective logo"
+                      width="453.83px"
+                      height="89.57px"
+                    />
+                  </a>
+                </Link>
+              </div>
+              <p className="mx-auto mb-[40px] font-semibold text-[44px] leading-[39px] text-[#0D1011]">
+                About
+              </p>
+
+              {/* <div className="relative flex flex-row w-[85%] mx-auto mb-[35px]">
+                <div className={`after:absolute after:top-[20px]`}>
+                  <img
+                    className="h-48 w-[100%] object-cover relative shadow-md rounded-[12px]"
+                    src="/assets/profile/bg.svg"
+                  />
+                  <div
+                    className="absolute top-[20px] right-[20px] cursor-pointer bg-white/[0.2] rounded-full w-[40px] h-[40px] flex items-center justify-center"
+                    onClick={() => console.log('asdf')}
+                  >
+                    <Image
+                      src="/assets/profile/edit-white.svg"
+                      height={24}
+                      width={24}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className=''>
+
+              </div> */}
+            {children}
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   )
