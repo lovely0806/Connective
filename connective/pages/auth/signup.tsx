@@ -140,8 +140,8 @@ const SignUp = () => {
       <OnboardingSidebar isSignUp />
       <div className="w-100 flex overflow-hidden h-[100vh]">
         <div className="w-100 overflow-x-hidden flex overflow-y-scroll">
-          <div className="mx-auto relative min-h-screen">
-            <div className="flex flex-col font-[Montserrat] mt-[76px] py-[30px] px-[50px]">
+          <div className="w-4/5 mx-auto relative min-h-screen">
+            <div className="flex flex-col max-w-[704px] w-[100%] font-[Montserrat] my-[32px]">
             <div className="cursor-pointer text-center">
                 <Link href="https://www.connective-app.xyz" passHref>
                   <a>

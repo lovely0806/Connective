@@ -84,7 +84,7 @@ const Layout = ({ title, scroll = true, user, children }: Props) => {
       </div>
 
       <div className="w-full h-[100vh] xs:block md:hidden">
-        <div className="w-full overflow-x-hidden flex-none overflow-y-scroll">
+        <div className="w-full overflow-x-hidden flex-none overflow-y-scroll bg-[#f5f5f5]">
           <div className="w-full mx-auto">
             <div className="flex flex-col font-[Poppins] my-[40px]">
               <div className="cursor-pointer text-center mt-[45px] mb-[31px]">

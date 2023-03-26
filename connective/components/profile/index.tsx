@@ -72,7 +72,7 @@ const Profile = ({
             </div>
           </div>
         </div>
-        <div className="w-[100%] flex flex-row justify-between items-start font-[Poppins]">
+        <div className="w-[100%] flex flex-row justify-between items-start">
           <div className="relative flex flex-row items-center gap-[40px] pl-[50px]">
             <div
               className="w-[140px] h-[140px] border-4 border-white absolute top-0 -translate-y-1/2 rounded-full after:absolute after:right-[-10px] after:bottom-[14px] after:w-[40px] after:h-[40px] after:bg-[url('/assets/profile/edit.svg')] after:bg-[leng:24px_24px] after:bg-no-repeat after:bg-center  after:z-50 after:bg-white after:rounded-full after:cursor-pointer"
@@ -178,7 +178,7 @@ const Profile = ({
         </div>
       </div>
 
-      <div className="xs:block md:hidden">
+      <div className="xs:block md:hidden bg-[#f5f5f5]">
         <div className="relative w-full mx-auto">
           <div className={`after:absolute after:top-[20px]`}>
             <img
@@ -262,7 +262,7 @@ const Profile = ({
                 src="/assets/profile/message-purple.svg"
               />
               <p>{user?.email}</p>
-              {data?.location && (
+              {/* {data?.location && (
                 <>
                   <div className="text-gray"> | </div>
                   <Image
@@ -272,7 +272,7 @@ const Profile = ({
                   />
                   <p>{data?.location}</p>
                 </>
-              )}
+              )} */}
             </div>
             <div className="flex flex-row gap-2 items-center">
               <Image
@@ -300,7 +300,7 @@ const Profile = ({
         </div>
         <div className="w-100 h-[1px] bg-gray/[0.3] my-5"></div>
         <div className="flex flex-row justify-center w-[85%] ml-[-50px] mb-[35px]">
-          <div className="mb-5">
+          <div className="ml-[80px] mb-5">
             <p className="text-[28px] leading-[42px] text-purple font-[700] mb-3">
               About
             </p>
