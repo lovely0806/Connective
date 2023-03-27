@@ -168,7 +168,7 @@ const EmailVerification = ({
                             type="text"
                             id={`code_${index}`}
                             name={`code${number}`}
-                            className="w-[80px] h-[80px] inline-block rounded-[8px] mr-4 py-3 px-4 border-2 border-gray text-[20px] focus:border-purple focus:outline-none focus-visible:border-purple text-center"
+                            className="w-[80px] h-[80px] w-[8vw] h-[8vw] inline-block rounded-[8px] mr-4 py-3 px-4 border-2 border-gray text-[44px] focus:border-purple focus:outline-none focus-visible:border-purple text-center"
                             required
                             maxLength={4}
                             onChange={(e) => handleOnChangeNumber(e, index)}

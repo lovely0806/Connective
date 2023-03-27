@@ -121,8 +121,7 @@ const EditProfile = ({ data, isBusiness, user, industries }: Props) => {
   }
 
   return (
-    <>
-    <div className="w-full h-[100vh] xs:hidden lg:block">
+    <div className="w-full h-[100vh]">
       <div className="relative w-full h-[25%] flex bg-[url('/assets/profile/bg-edit.svg')] bg-no-repeat bg-center bg-cover">
         <div className="absolute top-0 flex justify-between w-full h-fit px-5 py-4">
           <div className="flex items-center">
@@ -327,224 +326,16 @@ const EditProfile = ({ data, isBusiness, user, industries }: Props) => {
           Save Changes
         </button>
       </div>
+      <FileUpload
+        show={showUpload}
+        onClose={() => setShowUpload(false)}
+        onSubmit={(value) => {
+          setUserInfo({ ...userInfo, logo: value })
+          setShowUpload(false)
+        }}
+        data={userInfo}
+      />
     </div>
-    <div className="w-full h-[100vh] xs:block lg:hidden">
-        <div className="w-100 overflow-x-hidden flex-none overflow-y-scroll">
-          <div className="w-3/4 mx-auto">
-            <div className="flex flex-col font-[Poppins] my-[40px]">
-              <div className="cursor-pointer text-center mt-[45px] mb-[31px]">
-                <Link href="https://www.connective-app.xyz" passHref>
-                  <a>
-                    <Image
-                      src="/assets/logo.svg"
-                      alt="Connective logo"
-                      width="453.83px"
-                      height="89.57px"
-                    />
-                  </a>
-                </Link>
-              </div>
-              <div className="w-3/5 4bp:w-[85%] text-center bg-[url('/assets/profile/bg-edit.svg')] bg-no-repeat bg-center bg-cover w-[365px] h-[195px] mx-auto rounded-[20px]">
-              </div>
-              <div className="w-3/5 4bp:w-full text-center mt-[-40px]">
-                {!!userInfo?.logo && (
-                  <Image
-                    src={`${userInfo?.logo}`}
-                    height={81}
-                    width={81}
-                    className="rounded-full"
-                    loading="eager"
-                    priority
-                  />
-                )}
-
-                <div className="flex flex-col text-black gap-2">
-                  <div className="text-[22px]">{userInfo?.name}</div>
-                  <div className="text-[16px]">{user?.email}</div>
-                </div>
-  
-                <p className="font-semibold text-[31px] mt-[57px] leading-[39px] text-[#0D1011] mb-[56px]">
-                  Edit Profile
-                </p>
-
-              </div>
-              
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <InputField
-                  name={'Name'}
-                  placeholder={`Enter your ${
-                    isBusiness ? 'company name' : 'name'
-                  } here`}
-                  updateValue={(value) => setUserInfo({ ...userInfo, name: value })}
-                  value={userInfo?.name || ''}
-                />
-              </div>
-              
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <InputField
-                  name={isBusiness ? 'Company Bio' : 'Bio'}
-                  placeholder={`Enter your ${
-                    isBusiness ? 'company bio' : 'bio'
-                  } here...`}
-                  textarea
-                  isFull
-                  updateValue={(value) =>
-                    setUserInfo({ ...userInfo, description: value })
-                  }
-                  value={userInfo?.description || ''}
-                />
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <InputField
-                  name={'Website'}
-                  placeholder={'Enter company website URL'}
-                  updateValue={(value) =>
-                    setUserInfo({ ...userInfo, website: value })
-                  }
-                  value={userInfo?.website || ''}
-                />
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <InputField
-                  name={'Location'}
-                  placeholder={'Enter where your company is located'}
-                  updateValue={(value) =>
-                    setUserInfo({ ...userInfo, location: value })
-                  }
-                  value={userInfo?.location || ''}
-                />
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <SelectField
-                  title="Status"
-                  placeholder="Choose your status"
-                  options={statusOptions}
-                  onChange={(e) => {
-                    setUserInfo({ ...userInfo, status: e.value })
-                  }}
-                  value={userInfo?.status}
-                  errorText={
-                    fieldErrors
-                      ? fieldErrors.fields.filter(
-                          (field: IValidationItem) => field.name == 'status',
-                        )[0]?.error
-                      : ''
-                  }
-                />                
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <InputField
-                  name={'Email Address'}
-                  updateValue={() => {}}
-                  value={user?.email || ''}
-                  disabled={true}
-                />
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto">
-                <p className="text-[14px] leading-[15px] font-bold text-[#0D1011] font-[Montserrat] mb-3 1bp:text-[16.5px]">
-                  {isBusiness ? 'Company Logo' : 'Profile Picture'}
-                </p>
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <div
-                  className="border border-dotted border-gray w-full flex flex-col items-center justify-center gap-2 py-4 cursor-pointer"
-                  onClick={() => setShowUpload(true)}
-                >
-                  {userInfo?.logo ? (
-                    <>
-                      <Image
-                        src={userInfo?.logo}
-                        height={74}
-                        width={74}
-                        className="rounded-full"
-                      />
-                      <div className="text-black text-sm text-center">
-                        Change Profile Photo
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <Image src="/assets/cloud.svg" width={44} height={35} />
-                      <div className="text-black text-[14px] listing-[24px] mt-3">
-                        Upload {isBusiness ? 'company logo' : 'Profile Picture'}{' '}
-                        here
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <SelectField
-                  title="Industry"
-                  placeholder="Choose your industry"
-                  options={industries.map((industry) => ({
-                    value: industry.id,
-                    label: industry.name,
-                  }))}
-                  onChange={(e) => {
-                    setUserInfo({ ...userInfo, industry: e.value })
-                  }}
-                  value={userInfo?.industry}
-                  errorText={
-                    fieldErrors
-                      ? fieldErrors.fields.filter(
-                          (field: IValidationItem) => field.name == 'industry',
-                        )[0]?.error
-                      : ''
-                  }
-                />
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                {!isBusiness && <SelectField
-                  title="Occupation"
-                  placeholder="Choose your occupation"
-                  options={occupations}
-                  onChange={(e) => {
-                    setUserInfo({ ...userInfo, occupation: e.value })
-                  }}
-                  value={userInfo?.occupation}
-                  errorText={
-                    fieldErrors
-                      ? fieldErrors.fields.filter(
-                          (field: IValidationItem) => field.name == 'occupation',
-                        )[0]?.error
-                      : ''
-                  }
-                />}
-              </div>
-
-              <div className="flex flex-row w-[85%] mx-auto mb-[35px]">
-                <button
-                  className="bg-purple w-full text-white text-[16px] font-[500] py-2 rounded-full"
-                  onClick={submit}
-                  disabled={processing}
-                >
-                  Save Changes
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-    </div>
-    <FileUpload
-      show={showUpload}
-      onClose={() => setShowUpload(false)}
-      onSubmit={(value) => {
-        setUserInfo({ ...userInfo, logo: value })
-        setShowUpload(false)
-      }}
-      data={userInfo}
-    />
-    </>
   )
 }
 
