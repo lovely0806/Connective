@@ -31,20 +31,20 @@ const SigninModal = ({ onClick, onClose, emailSet, isShow }: Props) => {
             onClick={onClose}
           ></div>
           <div className="flex items-center min-h-screen px-4 py-8">
-            <div className="relative w-3/4 w-[984px] max-w-3xl p-4 mx-auto bg-white rounded-xl overflow-x-hidden">
+            <div className="relative w-full w-[984px] max-w-3xl p-4 mx-auto bg-white rounded-xl">
               <div className="mt-3">
-                <div className="cursor-pointer text-center mt-[76px] mb-[100px]">
-                  <Link href="https://www.connective-app.xyz" passHref>
-                    <a>
-                      <Image
-                        src="/assets/logo.svg"
-                        alt="Connective logo"
-                        width="453.83px"
-                        height="89.57px"
-                      />
-                    </a>
-                  </Link>
-                </div>
+              <div className="cursor-pointer text-center mt-[76px] mb-[100px]">
+                <Link href="https://www.connective-app.xyz" passHref>
+                  <a>
+                    <Image
+                      src="/assets/logo.svg"
+                      alt="Connective logo"
+                      width="453.83px"
+                      height="89.57px"
+                    />
+                  </a>
+                </Link>
+              </div>
                 <div className="mt-2 text-center sm:ml-4 sm:text-left">
                   <h1 className="text-[40px] font-bold font-[Poppins] leading-[60px] text-black">
                     Forgot Password?
@@ -53,7 +53,7 @@ const SigninModal = ({ onClick, onClose, emailSet, isShow }: Props) => {
                     Please enter the email. We will send you the link<br/>
                     on your email to reset your password.
                   </p>
-                  <div className="w-3/4 mx-auto text-left mt-5">
+                  <div className="w-[370px] mx-auto text-left mt-5">
                     <InputField
                       placeholder={'Enter your email'}
                       updateValue={setEmail}
@@ -61,14 +61,14 @@ const SigninModal = ({ onClick, onClose, emailSet, isShow }: Props) => {
                   </div>
                   <div className="gap-2 my-10">
                     <button
-                      className="w-3/4 mx-auto mt-2 p-2.5 flex-1 text-white bg-purple rounded-full"
+                      className="w-[370px] mx-auto mt-2 p-2.5 flex-1 text-white bg-purple rounded-full"
                       disabled={disabled}
                       onClick={handleContinue}
                     >
                       Continue
                     </button>
                     <button
-                      className="w-3/4 mx-auto mt-4 p-2.5 flex-1 text-purple bg-white border-2 border-solid border-purple rounded-full"
+                      className="w-[370px] mx-auto mt-4 p-2.5 flex-1 text-purple bg-white border-2 border-solid border-purple rounded-full"
                       disabled={disabled}
                       onClick={handleContinue}
                     >
