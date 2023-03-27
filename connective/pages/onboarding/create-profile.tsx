@@ -285,7 +285,7 @@ export default function CreateProfile({ user, industries }) {
                   /> 
                 </div>
 
-                <div className="flex flex-row gap-[24px]">
+                <div className="flex flex-row w-full">
                   {!isIndividual && (
                     <InputField
                       name={'Website'}
@@ -293,6 +293,9 @@ export default function CreateProfile({ user, industries }) {
                       updateValue={setUrl}
                     />
                   )}
+                </div>
+
+                <div className="flex flex-row w-full">
                   <InputField
                     name={'Location'}
                     placeholder={'Enter where your company is located'}
@@ -302,7 +305,7 @@ export default function CreateProfile({ user, industries }) {
 
                 <div className="flex flex-row justify-between gap-[24px]">
                   <div className="flex flex-col w-full gap-3">
-                    <div className="flex flex-row w-full gap-10">
+                    <div className="flex flex-row w-full">
                       <SelectField
                         title="Industry"
                         placeholder="Choose your industry"
@@ -325,8 +328,10 @@ export default function CreateProfile({ user, industries }) {
                             : ''
                         }
                       />
+                    </div>
 
-                      {isIndividual &&
+                    <div className="flex flex-row w-full">
+                    {isIndividual &&
 
                       <SelectField
                         title="Occupation"
@@ -347,6 +352,7 @@ export default function CreateProfile({ user, industries }) {
                       />
                       }
                     </div>
+
                     <div
                       className={`flex flex-row gap-10 ${
                         isIndividual ? 'w-50 pr-5' : 'w-full'

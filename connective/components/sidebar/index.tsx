@@ -159,7 +159,7 @@ const Sidebar = ({ user }) => {
   }, [getConversations])
 
   return (
-    <div className="z-10 min-w-[25vh] w-1/6 bg-[#F8F9FA] flex flex-col text-white font-[Montserrat] px-[30px] py-[25px]">
+    <div className="z-10 min-w-[25vh] w-1/6 bg-[#F8F9FA] flex flex-col text-white font-[Montserrat] px-[30px] py-[25px] xs:hidden md:block">
       <Link href="/">
         <div className="flex flex-row cursor-pointer items-center mb-9">
           <Image
